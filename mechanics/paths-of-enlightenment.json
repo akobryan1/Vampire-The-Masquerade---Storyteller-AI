@@ -1,0 +1,80 @@
+[
+  {
+    "name": "Humanity",
+    "summary": "The default Camarilla moral code, anchored in human ethics and remorse.",
+    "virtues": ["Conscience", "Self-Control", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Blood",
+    "summary": "A Tremere-associated path centered on blood mastery, restraint, and occult understanding.",
+    "virtues": ["Conviction", "Instinct", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Death and the Soul",
+    "summary": "A reflective necromantic morality focused on the meaning of death, undeath, and the soul.",
+    "virtues": ["Conviction", "Instinct", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Caine",
+    "summary": "A rigorous Sabbat path that seeks meaning in the curse through Caine's example and revelation.",
+    "virtues": ["Conviction", "Instinct", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Cathari",
+    "summary": "A path of vice, temptation, and the deliberate embrace of corruption as revelation.",
+    "virtues": ["Conviction", "Instinct", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of the Feral Heart",
+    "summary": "Sometimes called the old Path of Harmony, this morality embraces predatory instinct and the natural world.",
+    "virtues": ["Conviction", "Instinct", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Honorable Accord",
+    "summary": "A code of obligation, oath, and conduct built on duty, hierarchy, and martial honor.",
+    "virtues": ["Conviction", "Self-Control", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Lilith",
+    "summary": "A rare path of pain, awakening, and hidden wisdom tied to Lilith's revelations.",
+    "virtues": ["Conviction", "Instinct", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Metamorphosis",
+    "summary": "A Tzimisce-associated pursuit of transcendence through change, experimentation, and evolution.",
+    "virtues": ["Conviction", "Instinct", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Night",
+    "summary": "A path that frames the vampire as a sacred terror and predator of the night.",
+    "virtues": ["Conviction", "Instinct", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Paradox",
+    "summary": "A Ravnos-associated philosophy built on illusion, contradiction, and detachment from fixed mortal truth.",
+    "virtues": ["Conviction", "Instinct", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Power and the Inner Voice",
+    "summary": "A path of rulership, self-mastery, and the certainty that the strong should direct the weak.",
+    "virtues": ["Conviction", "Self-Control", "Courage"],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Path of Typhon",
+    "summary": "A Setite path of temptation, corruption, and ecstatic surrender to dark transformation.",
+    "virtues": ["Conviction", "Instinct", "Courage"],
+    "source": "V20 Core"
+  }
+]

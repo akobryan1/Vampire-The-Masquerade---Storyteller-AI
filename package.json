@@ -1,0 +1,21 @@
+{
+  "name": "vtm-storyteller-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "extract:v20": "node extract.js",
+    "desktop": "vite build && electron electron/main.cjs"
+  },
+  "devDependencies": {
+    "electron": "^30.5.1",
+    "vite": "^8.0.12"
+  },
+  "dependencies": {
+    "firebase": "^11.10.0",
+    "pdf-parse": "^2.4.5"
+  }
+}

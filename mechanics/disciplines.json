@@ -1,0 +1,223 @@
+[
+  {
+    "name": "Chimerstry",
+    "summary": "Creates illusions and sensory deceptions potent enough to mislead the unwary.",
+    "commonClans": ["Ravnos"],
+    "levels": [
+      "Creates simple illusions",
+      "Extends sensory complexity",
+      "Sustains convincing false scenes",
+      "Deepens illusionary control",
+      "Turns deception into near-reality"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Dementation",
+    "summary": "Inflicts madness, instability, and emotional derangement through insight into fractured minds.",
+    "commonClans": ["Malkavian"],
+    "levels": [
+      "Stirs subtle emotional imbalance",
+      "Intensifies confusion and fixation",
+      "Projects disorientation at scale",
+      "Unleashes crippling mental torment",
+      "Spreads catastrophic insanity"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Animalism",
+    "summary": "Command beasts, stir the Beast in others, and master predatory instinct.",
+    "commonClans": ["Gangrel", "Nosferatu"],
+    "levels": [
+      "Feral Whispers",
+      "Beckoning",
+      "Quell the Beast",
+      "Subsume the Spirit",
+      "Drawing Out the Beast"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Auspex",
+    "summary": "Sharpened senses, aura reading, and supernatural perception.",
+    "commonClans": ["Malkavian", "Toreador", "Tremere"],
+    "levels": [
+      "Heightened Senses",
+      "Aura Perception",
+      "The Spirit's Touch",
+      "Telepathy",
+      "Psychic Projection"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Celerity",
+    "summary": "Impossible speed, split-second reactions, and bursts of predatory motion.",
+    "commonClans": ["Brujah", "Toreador"],
+    "levels": [
+      "One dot improves initiative and reflexive speed",
+      "Two dots deepen reaction advantage",
+      "Three dots create overwhelming tempo",
+      "Four dots approach supernatural blur",
+      "Five dots dominate action economy"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Dominate",
+    "summary": "Overpower minds through command, memory editing, and psychic rule.",
+    "commonClans": ["Tremere", "Ventrue"],
+    "levels": [
+      "Command",
+      "Mesmerize",
+      "The Forgetful Mind",
+      "Conditioning",
+      "Possession"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Fortitude",
+    "summary": "Inhuman resilience against injury and the worst violence of the night.",
+    "commonClans": ["Gangrel", "Ventrue"],
+    "levels": [
+      "One dot grants notable durability",
+      "Two dots harden the body further",
+      "Three dots endure brutal punishment",
+      "Four dots resist what would cripple others",
+      "Five dots create monstrous staying power"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Necromancy",
+    "summary": "Summons, compels, and manipulates the dead through paths and rituals tied to the Underworld.",
+    "commonClans": ["Giovanni"],
+    "levels": [
+      "Begins command of a primary necromantic path",
+      "Deepens access to the dead",
+      "Strengthens path mastery",
+      "Allows formidable underworld manipulation",
+      "Commands high-circle necromantic force"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Obfuscate",
+    "summary": "Hide from mortal perception, vanish, and reshape how the world notices you.",
+    "commonClans": ["Malkavian", "Nosferatu"],
+    "levels": [
+      "Cloak of Shadows",
+      "Unseen Presence",
+      "Mask of a Thousand Faces",
+      "Vanish from the Mind's Eye",
+      "Cloak the Gathering"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Obtenebration",
+    "summary": "Commands living darkness, shadow tentacles, and impossible black voids.",
+    "commonClans": ["Lasombra"],
+    "levels": [
+      "Summons a grasping shadow play",
+      "Shapes darkness into visible force",
+      "Moves through or within shadow",
+      "Creates devastating umbral manifestations",
+      "Becomes one with abyssal darkness"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Potence",
+    "summary": "Channel supernatural might through decisive, crushing force.",
+    "commonClans": ["Brujah", "Nosferatu"],
+    "levels": [
+      "One dot grants clear strength edge",
+      "Two dots make force difficult to contest",
+      "Three dots crack mortal limits",
+      "Four dots pulverize hardened resistance",
+      "Five dots reach legendary brutality"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Presence",
+    "summary": "Manipulate emotion, awe, terror, and devotion in social encounters.",
+    "commonClans": ["Brujah", "Toreador", "Ventrue"],
+    "levels": [
+      "Awe",
+      "Dread Gaze",
+      "Entrancement",
+      "Summon",
+      "Majesty"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Quietus",
+    "summary": "The silent art of assassination, blending vitae control, poison, and killing precision.",
+    "commonClans": ["Assamite"],
+    "levels": [
+      "Silences sound or breath",
+      "Distills blood-borne poison",
+      "Controls vitae with lethal finesse",
+      "Corrupts victims through tainted blood",
+      "Turns assassination into supernatural plague"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Protean",
+    "summary": "Shift body and senses toward the beast, the earth, and predatory transformation.",
+    "commonClans": ["Gangrel"],
+    "levels": [
+      "Eyes of the Beast",
+      "Feral Claws",
+      "Earth Meld",
+      "Shape of the Beast",
+      "Mist Form"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Serpentis",
+    "summary": "Reptilian transformation, hypnotic predation, and Setite body sorcery.",
+    "commonClans": ["Followers of Set"],
+    "levels": [
+      "Unfurls the Eyes of the Serpent",
+      "Extends a serpent's tongue and senses",
+      "Sloughs skin or shape more deeply",
+      "Removes and safeguards the heart",
+      "Assumes a higher serpent form"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Thaumaturgy",
+    "summary": "Hermetic blood magic built from rituals, paths, and occult hierarchy.",
+    "commonClans": ["Tremere"],
+    "levels": [
+      "Basic blood path mastery",
+      "Improved path control",
+      "Reliable ritual practice",
+      "Formidable sorcery",
+      "High-circle blood magic"
+    ],
+    "source": "V20 Core"
+  },
+  {
+    "name": "Vicissitude",
+    "summary": "Flesh-shaping and bonecraft that remake bodies into works of cruelty or utility.",
+    "commonClans": ["Tzimisce"],
+    "levels": [
+      "Alters superficial flesh",
+      "Reshapes muscle and bone",
+      "Remakes bodies into tools or horrors",
+      "Builds war forms and crafted monstrosities",
+      "Reaches monstrous full transformation"
+    ],
+    "source": "V20 Core"
+  }
+]

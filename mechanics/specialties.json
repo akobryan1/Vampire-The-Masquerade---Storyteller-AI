@@ -1,0 +1,27 @@
+[
+  {
+    "ability": "streetwise",
+    "examples": ["Street rumors", "Night markets", "Gang protocols"],
+    "source": "V20 Core starter interpretation"
+  },
+  {
+    "ability": "subterfuge",
+    "examples": ["Cold reading", "Feigning innocence", "Negotiation lies"],
+    "source": "V20 Core starter interpretation"
+  },
+  {
+    "ability": "investigation",
+    "examples": ["Crime scenes", "Financial trails", "Digital archives"],
+    "source": "V20 Core starter interpretation"
+  },
+  {
+    "ability": "melee",
+    "examples": ["Knives", "Batons", "Sword canes"],
+    "source": "V20 Core starter interpretation"
+  },
+  {
+    "ability": "occult",
+    "examples": ["Blood sorcery", "Kindred folklore", "Infernal signs"],
+    "source": "V20 Core starter interpretation"
+  }
+]

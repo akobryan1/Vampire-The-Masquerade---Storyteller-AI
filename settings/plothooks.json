@@ -1,0 +1,30 @@
+[
+  {
+    "id": "vanishing-couriers",
+    "title": "The Vanishing Couriers",
+    "summary": "Trusted messengers carrying blood, secrets, and paper boons are disappearing before dawn.",
+    "stakes": "If the pattern continues, the domain's economy of obligation fractures.",
+    "source": "Original plothook pack"
+  },
+  {
+    "id": "ghost-station-ledger",
+    "title": "Ghost Station Ledger",
+    "summary": "A transit node closed to the public still shows encrypted movement tied to dead feeding grounds.",
+    "stakes": "Whoever controls the ledger can expose havens, routes, and herd assets.",
+    "source": "Original plothook pack"
+  },
+  {
+    "id": "thin-blood-stream",
+    "title": "Thin-Blood Livestream",
+    "summary": "Someone is staging near-masquerade breaches as viral performances that keep vanishing after they spread.",
+    "stakes": "Stop it too slowly and hunters notice; stop it too brutally and the streets ignite.",
+    "source": "Original plothook pack"
+  },
+  {
+    "id": "elysium-restoration",
+    "title": "Elysium Restoration Contract",
+    "summary": "A sacred venue is being renovated by a mortal firm with the wrong sort of curiosity.",
+    "stakes": "Save the site, exploit the project, or let an enemy weaponize the workers and plans.",
+    "source": "Original plothook pack"
+  }
+]

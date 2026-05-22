@@ -1,0 +1,76 @@
+{
+  "source": "V20 Core starter schema",
+  "attributes": [
+    {
+      "label": "Physical",
+      "fields": [
+        { "id": "strength", "label": "Strength" },
+        { "id": "dexterity", "label": "Dexterity" },
+        { "id": "stamina", "label": "Stamina" }
+      ]
+    },
+    {
+      "label": "Social",
+      "fields": [
+        { "id": "charisma", "label": "Charisma" },
+        { "id": "manipulation", "label": "Manipulation" },
+        { "id": "appearance", "label": "Appearance" }
+      ]
+    },
+    {
+      "label": "Mental",
+      "fields": [
+        { "id": "perception", "label": "Perception" },
+        { "id": "intelligence", "label": "Intelligence" },
+        { "id": "wits", "label": "Wits" }
+      ]
+    }
+  ],
+  "abilities": [
+    {
+      "label": "Talents",
+      "fields": [
+        { "id": "alertness", "label": "Alertness" },
+        { "id": "athletics", "label": "Athletics" },
+        { "id": "awareness", "label": "Awareness" },
+        { "id": "brawl", "label": "Brawl" },
+        { "id": "empathy", "label": "Empathy" },
+        { "id": "expression", "label": "Expression" },
+        { "id": "intimidation", "label": "Intimidation" },
+        { "id": "leadership", "label": "Leadership" },
+        { "id": "streetwise", "label": "Streetwise" },
+        { "id": "subterfuge", "label": "Subterfuge" }
+      ]
+    },
+    {
+      "label": "Skills",
+      "fields": [
+        { "id": "animalKen", "label": "Animal Ken" },
+        { "id": "crafts", "label": "Crafts" },
+        { "id": "drive", "label": "Drive" },
+        { "id": "etiquette", "label": "Etiquette" },
+        { "id": "firearms", "label": "Firearms" },
+        { "id": "larceny", "label": "Larceny" },
+        { "id": "melee", "label": "Melee" },
+        { "id": "performance", "label": "Performance" },
+        { "id": "stealth", "label": "Stealth" },
+        { "id": "survival", "label": "Survival" }
+      ]
+    },
+    {
+      "label": "Knowledges",
+      "fields": [
+        { "id": "academics", "label": "Academics" },
+        { "id": "computer", "label": "Computer" },
+        { "id": "finance", "label": "Finance" },
+        { "id": "investigation", "label": "Investigation" },
+        { "id": "law", "label": "Law" },
+        { "id": "medicine", "label": "Medicine" },
+        { "id": "occult", "label": "Occult" },
+        { "id": "politics", "label": "Politics" },
+        { "id": "science", "label": "Science" },
+        { "id": "technology", "label": "Technology" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "source": "V20 Core starter interpretation",
+  "summary": "Roll a number of d10 equal to your dice pool against a difficulty from 2 to 10. Each die meeting or exceeding the difficulty is a success. Ones cancel successes. If no successes remain and at least one 1 was rolled, the result is a botch.",
+  "defaults": {
+    "difficulty": 6,
+    "minPool": 1,
+    "maxPool": 20
+  },
+  "notes": [
+    "This app resolves standard V20 success, failure, and botch outcomes locally.",
+    "Special cases such as automatic successes, split actions, and full combat exchanges are deferred to later milestones."
+  ]
+}

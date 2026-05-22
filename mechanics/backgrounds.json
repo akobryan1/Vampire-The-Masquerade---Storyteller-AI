@@ -1,0 +1,153 @@
+[
+  {
+    "name": "Allies",
+    "summary": "Mortals who support and help you voluntarily, though they have their own concerns and limits.",
+    "ratingGuide": [
+      "One dot: one ally of moderate influence and power",
+      "Two dots: two allies, both of moderate power",
+      "Three dots: three allies, one of whom is quite influential",
+      "Four dots: four allies, one of whom is very influential",
+      "Five dots: five allies, one of whom is extremely influential"
+    ],
+    "poolable": true,
+    "source": "V20 Core, p. 111"
+  },
+  {
+    "name": "Alternate Identity",
+    "summary": "A complete second identity with papers, records, and a believable cover life.",
+    "ratingGuide": [
+      "One dot: new identity, easy to slip out of character",
+      "Two dots: convincing enough for skilled professional covers",
+      "Three dots: recognized reputation in the infiltrated area",
+      "Four dots: trusted and respected within the cover sphere",
+      "Five dots: commands respect and may include real influence"
+    ],
+    "source": "V20 Core, p. 111"
+  },
+  {
+    "name": "Contacts",
+    "summary": "Information sources across the city, from major experts to minor bureaucrats and hangers-on.",
+    "ratingGuide": [
+      "One dot: one major contact",
+      "Two dots: two major contacts",
+      "Three dots: three major contacts",
+      "Four dots: four major contacts",
+      "Five dots: five major contacts"
+    ],
+    "poolable": true,
+    "source": "V20 Core, p. 112"
+  },
+  {
+    "name": "Domain",
+    "summary": "Recognized feeding territory whose size and security can be shaped to suit the chronicle.",
+    "ratingGuide": [
+      "One dot: a single small building, enough for a basic haven",
+      "Two dots: a large structure with controllable access",
+      "Three dots: a high-rise, city block, or major intersection",
+      "Four dots: a defensible enclave or protected access zone",
+      "Five dots: an entire neighborhood or suburb"
+    ],
+    "poolable": true,
+    "source": "V20 Core, pp. 112-113"
+  },
+  {
+    "name": "Fame",
+    "summary": "Recognition in mortal society that opens doors, complicates hunting, and attracts attention.",
+    "ratingGuide": [
+      "One dot: known to a select subculture",
+      "Two dots: a minor celebrity recognized by random people",
+      "Three dots: notable renown, such as a senator or established entertainer",
+      "Four dots: a full celebrity recognized by the average person",
+      "Five dots: a household name"
+    ],
+    "source": "V20 Core, p. 114"
+  },
+  {
+    "name": "Generation",
+    "summary": "Purity of blood and proximity to the First Vampire, shaping blood pool and per-turn expenditure.",
+    "ratingGuide": [
+      "One dot: Twelfth Generation, 11 blood pool, spend 1 blood per turn",
+      "Two dots: Eleventh Generation, 12 blood pool, spend 1 blood per turn",
+      "Three dots: Tenth Generation, 13 blood pool, spend 1 blood per turn",
+      "Four dots: Ninth Generation, 14 blood pool, spend 2 blood per turn",
+      "Five dots: Eighth Generation, 15 blood pool, spend 3 blood per turn"
+    ],
+    "source": "V20 Core, p. 114"
+  },
+  {
+    "name": "Herd",
+    "summary": "A stable group of mortals from whom you can feed without immediate fear of exposure.",
+    "ratingGuide": [
+      "One dot: three vessels",
+      "Two dots: seven vessels",
+      "Three dots: 15 vessels",
+      "Four dots: 30 vessels",
+      "Five dots: 60 vessels"
+    ],
+    "poolable": true,
+    "source": "V20 Core, p. 114"
+  },
+  {
+    "name": "Influence",
+    "summary": "Pull in mortal institutions, especially police and bureaucracy, able to sway policy and access.",
+    "ratingGuide": [
+      "One dot: moderately influential, a factor in city politics",
+      "Two dots: well-connected, a force in state politics",
+      "Three dots: influential position in regional politics",
+      "Four dots: broad personal power in national politics",
+      "Five dots: a factor in global politics"
+    ],
+    "poolable": true,
+    "source": "V20 Core, pp. 114-115"
+  },
+  {
+    "name": "Mentor",
+    "summary": "A Kindred patron or group that offers guidance, warning, and occasional leverage.",
+    "ratingGuide": [
+      "One dot: an ancilla of little influence, or a Ductus or Pack Priest",
+      "Two dots: a respected elder or decorated veteran",
+      "Three dots: a heavily influential mentor such as Primogen or Bishop",
+      "Four dots: city-shaping power such as Prince or Archbishop",
+      "Five dots: extraordinary power such as Justicar or Cardinal"
+    ],
+    "source": "V20 Core, p. 115"
+  },
+  {
+    "name": "Resources",
+    "summary": "Money, assets, holdings, and access to a standard of living suited to your station.",
+    "ratingGuide": [
+      "One dot: sufficient working-class stability",
+      "Two dots: moderate middle-class comfort with occasional indulgence",
+      "Three dots: comfortable and established with land, credit, and long-term stability",
+      "Four dots: wealthy, mostly in durable assets rather than ready cash",
+      "Five dots: extremely wealthy with vast, distributed assets and high-end mobility"
+    ],
+    "poolable": true,
+    "source": "V20 Core, pp. 115-116"
+  },
+  {
+    "name": "Retainers",
+    "summary": "Servants, assistants, ghouls, or other loyal helpers who support your unlife directly.",
+    "ratingGuide": [
+      "One dot: one retainer",
+      "Two dots: two retainers",
+      "Three dots: three retainers",
+      "Four dots: four retainers",
+      "Five dots: five retainers"
+    ],
+    "poolable": true,
+    "source": "V20 Core, p. 116"
+  },
+  {
+    "name": "Status",
+    "summary": "Standing and reputation in local Kindred society, shaped by Sect and lineage as much as deed.",
+    "ratingGuide": [
+      "One dot: known, such as a neonate or Pack Priest",
+      "Two dots: respected, such as an ancilla or Ductus",
+      "Three dots: influential, such as an elder or Templar",
+      "Four dots: powerful, such as Primogen or Bishop",
+      "Five dots: luminary, such as Prince or Archbishop"
+    ],
+    "source": "V20 Core, p. 118"
+  }
+]

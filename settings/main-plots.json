@@ -1,0 +1,26 @@
+[
+  {
+    "id": "domain-inheritance-crisis",
+    "title": "Domain Inheritance Crisis",
+    "summary": "A dead or vanished power-holder has left behind territory, retainers, and obligations that several factions now claim.",
+    "use": "Use as a long-form domain struggle involving boons, contested legitimacy, and escalating reprisals."
+  },
+  {
+    "id": "masquerade-audit",
+    "title": "Masquerade Audit",
+    "summary": "A cluster of digital traces, witness accounts, and financial anomalies suggests someone is mapping predation patterns in the city.",
+    "use": "Use for a slow-burn hunter pressure arc or political cover-up that forces the character into uncomfortable alliances."
+  },
+  {
+    "id": "blood-supply-capture",
+    "title": "Blood Supply Capture",
+    "summary": "A faction is quietly consolidating access to clinics, couriers, herd pipelines, and feeding routes across the city.",
+    "use": "Use for a campaign-scale fight over survival logistics, dependency, and coercive patronage."
+  },
+  {
+    "id": "buried-elder-agenda",
+    "title": "Buried Elder Agenda",
+    "summary": "Old favors and sealed instructions begin surfacing, implying an elder planned the current unrest years before it started.",
+    "use": "Use for layered reveals, inherited enemies, and a sense that the character has walked into a prewritten trap."
+  }
+]
