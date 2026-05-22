@@ -44,6 +44,7 @@ import {
   DIFFICULTY_LEVELS,
   ensureActiveChronicle,
   formatTimestamp,
+  getDefaultCharacter,
   getDefaultChronicle,
   getCityById,
   loadState,
@@ -61,14 +62,361 @@ const DEBUG_PREFIX = '[VTM Debug]';
 const RATE_LIMIT_BASE_COOLDOWN_MS = 30 * 1000;
 const RATE_LIMIT_MAX_COOLDOWN_MS = 10 * 60 * 1000;
 const ADDITIONAL_DISCIPLINE_MERIT_NAMES = new Set(['Additional Discipline', 'Additional Clan Discipline']);
+const BACKGROUND_NAME_LOOKUP = new Map((backgroundsData ?? []).map((item) => [item.name.trim().toLowerCase(), item.name]));
+const NPC_MUTABLE_FIELDS = ['summary', 'status', 'ambition', 'desire', 'notes', 'secrets'];
 const TEMPORARY_WILLPOWER_RECOVERY = 1;
 const TEMPORARY_RESOURCES_RECOVERY = 1;
 const AGE_CATEGORY_OPTIONS = ['Fledgling', 'Neonate', 'Ancilla'];
+const READY_CHARACTER_TEMPLATES = Object.freeze([
+  {
+    id: 'brujah-enforcer',
+    label: 'Brujah Enforcer',
+    pitch: 'Combat-forward and aggressive, built for intimidation, pursuit, and close violence.',
+    clan: 'Brujah',
+    name: 'Mara Voss',
+    concept: 'Anarch street enforcer',
+    nature: 'Rebel',
+    demeanor: 'Bravo',
+    sire: 'Lucien Vale',
+    age: 12,
+    ageCategory: 'Neonate',
+    pronouns: 'she/her',
+    ambition: 'Break the Prince\'s grip on the waterfront and carve out space for the local Anarchs.',
+    desire: 'Make tonight\'s bully back down in front of witnesses.',
+    physicalDescription: 'A hard-eyed brawler in a worn leather jacket, scarred knuckles, steel-toed boots, and a gaze that dares people to test her.',
+    backstory: 'Mara was a dockworker organizer who learned that every promise from City Hall hid a baton behind it. When a labor action turned into a midnight bloodbath, Lucien Vale Embraced her instead of letting the sheriff bury her in the river. She now works the line where agitation, protection rackets, and Anarch politics overlap, and she meets courtly cruelty with open contempt.',
+    attributes: {
+      strength: 4,
+      dexterity: 3,
+      stamina: 4,
+      charisma: 2,
+      manipulation: 2,
+      appearance: 2,
+      perception: 3,
+      intelligence: 2,
+      wits: 3,
+    },
+    abilities: {
+      alertness: 3,
+      athletics: 3,
+      brawl: 4,
+      dodge: 3,
+      intimidation: 4,
+      leadership: 2,
+      streetwise: 3,
+      subterfuge: 1,
+      drive: 1,
+      firearms: 2,
+      melee: 3,
+      survival: 2,
+      investigation: 1,
+      politics: 1,
+    },
+    disciplines: [
+      { name: 'Celerity', dots: 2 },
+      { name: 'Potence', dots: 2 },
+      { name: 'Presence', dots: 1 },
+    ],
+    backgrounds: [
+      { name: 'Allies', dots: 2 },
+      { name: 'Contacts', dots: 1 },
+      { name: 'Resources', dots: 2 },
+      { name: 'Retainers', dots: 1 },
+      { name: 'Status', dots: 1 },
+      { name: 'Generation', dots: 1 },
+    ],
+    merits: ['Bruiser', 'Iron Will'],
+    flaws: ['Short Fuse', 'Enemy'],
+    clanMerits: ['Fury\'s Focus'],
+    clanFlaws: ['Obvious Predator'],
+    specialties: [
+      { ability: 'brawl', name: 'Grappling' },
+      { ability: 'intimidation', name: 'Face-to-face threats' },
+      { ability: 'melee', name: 'Batons' },
+    ],
+    equipment: [
+      { name: 'Heavy flashlight', details: 'A metal torch weighted like a club.' },
+      { name: 'Motorcycle leathers', details: 'Road armor disguised as style.' },
+      { name: 'Burner phone', details: 'Rotated often for street contacts.' },
+    ],
+    items: [
+      { name: 'Union ring', details: 'A reminder of the life she lost and the people she still claims.' },
+      { name: 'Haven keys', details: 'Keys to a reinforced room above a closed machine shop.' },
+    ],
+    virtues: {
+      conscience: 2,
+      selfControl: 3,
+      courage: 4,
+    },
+    humanity: 5,
+    willpower: 6,
+  },
+  {
+    id: 'ventrue-fixer',
+    label: 'Ventrue Fixer',
+    pitch: 'Social and political, built for court play, leverage, and controlled intimidation.',
+    clan: 'Ventrue',
+    name: 'Julian Mercer',
+    concept: 'Corporate political fixer',
+    nature: 'Autocrat',
+    demeanor: 'Traditionalist',
+    sire: 'Genevieve Harrow',
+    age: 23,
+    ageCategory: 'Ancilla',
+    pronouns: 'he/him',
+    ambition: 'Become indispensable to the city\'s court until no major boon exchange happens without his approval.',
+    desire: 'Turn tonight\'s confrontation into a debt someone powerful owes him.',
+    physicalDescription: 'An immaculate Ventrue in charcoal tailoring, pale gloves, a controlled smile, and the kind of posture that assumes the room already belongs to him.',
+    backstory: 'Julian handled crises for a private equity syndicate before his sire decided that mortal boardrooms were a proper apprenticeship for undead power. He was Embraced into a Ventrue lineage that treats prestige as a weapon, and he now lives in the overlap between city contracts, Elysium etiquette, and quiet blackmail. He prefers to ruin enemies with a conversation they think they are winning.',
+    attributes: {
+      strength: 2,
+      dexterity: 2,
+      stamina: 2,
+      charisma: 4,
+      manipulation: 4,
+      appearance: 3,
+      perception: 3,
+      intelligence: 3,
+      wits: 3,
+    },
+    abilities: {
+      empathy: 3,
+      expression: 2,
+      intimidation: 2,
+      leadership: 4,
+      streetwise: 1,
+      subterfuge: 3,
+      etiquette: 4,
+      finance: 3,
+      investigation: 2,
+      law: 2,
+      politics: 4,
+      academics: 2,
+      drive: 1,
+      firearms: 1,
+      melee: 1,
+    },
+    disciplines: [
+      { name: 'Dominate', dots: 2 },
+      { name: 'Presence', dots: 2 },
+      { name: 'Fortitude', dots: 1 },
+    ],
+    backgrounds: [
+      { name: 'Resources', dots: 4 },
+      { name: 'Status', dots: 2 },
+      { name: 'Contacts', dots: 2 },
+      { name: 'Influence', dots: 2 },
+      { name: 'Mentor', dots: 2 },
+      { name: 'Generation', dots: 1 },
+    ],
+    merits: ['Elysium Regular', 'Prestigious Sire', 'Sanctity'],
+    flaws: ['Dark Secret'],
+    clanMerits: ['Connoisseur'],
+    clanFlaws: ['Uncommon Vitae Preference'],
+    specialties: [
+      { ability: 'etiquette', name: 'Court protocol' },
+      { ability: 'finance', name: 'Hostile takeovers' },
+      { ability: 'subterfuge', name: 'Polite lies' },
+    ],
+    equipment: [
+      { name: 'Tailored evening wear', details: 'Formal clothing suited to Elysium and closed-door negotiations.' },
+      { name: 'Town car access', details: 'A hired driver on call through corporate channels.' },
+      { name: 'Encrypted phone', details: 'Used for sensitive conversations and deniable instructions.' },
+    ],
+    items: [
+      { name: 'Boon ledger', details: 'A private notebook encoded in innocuous shorthand.' },
+      { name: 'Signet cufflinks', details: 'A gift from his sire and a quiet badge of status.' },
+    ],
+    virtues: {
+      conscience: 3,
+      selfControl: 4,
+      courage: 3,
+    },
+    humanity: 7,
+    willpower: 5,
+  },
+  {
+    id: 'tremere-occultist',
+    label: 'Tremere Occultist',
+    pitch: 'Mental and occult, built for investigation, ritual work, and disciplined supernatural control.',
+    clan: 'Tremere',
+    name: 'Sabine Thorne',
+    concept: 'Occult researcher and chantry analyst',
+    nature: 'Scientist',
+    demeanor: 'Pedagogue',
+    sire: 'Magister Corvin Hale',
+    age: 16,
+    ageCategory: 'Neonate',
+    pronouns: 'she/her',
+    ambition: 'Uncover the occult architecture underneath the city before another chantry claims it first.',
+    desire: 'Prove that tonight\'s anomaly fits a ritual pattern only she has recognized.',
+    physicalDescription: 'A severe scholar in dark wool, silver rings etched with sigils, and a gaze that seems to catalogue every object before she speaks.',
+    backstory: 'Sabine was a graduate researcher in comparative religion whose thesis work kept intersecting with places the Tremere preferred unexamined. Her sire recruited rather than silenced her, then bound her to a chantry culture built on paranoia, ritual obligation, and carefully rationed secrets. She approaches mysteries like dissections, but every answer she finds seems to demand a cost in blood, favors, or conscience.',
+    attributes: {
+      strength: 1,
+      dexterity: 2,
+      stamina: 2,
+      charisma: 2,
+      manipulation: 3,
+      appearance: 2,
+      perception: 4,
+      intelligence: 4,
+      wits: 3,
+    },
+    abilities: {
+      academics: 3,
+      computer: 2,
+      empathy: 1,
+      expression: 1,
+      etiquette: 2,
+      investigation: 3,
+      linguistics: 2,
+      medicine: 2,
+      occult: 4,
+      politics: 2,
+      science: 3,
+      subterfuge: 2,
+      finance: 1,
+      intimidation: 1,
+    },
+    disciplines: [
+      { name: 'Auspex', dots: 2 },
+      { name: 'Thaumaturgy', dots: 2 },
+      { name: 'Dominate', dots: 1 },
+    ],
+    backgrounds: [
+      { name: 'Mentor', dots: 2 },
+      { name: 'Resources', dots: 2 },
+      { name: 'Contacts', dots: 1 },
+      { name: 'Status', dots: 1 },
+      { name: 'Allies', dots: 1 },
+      { name: 'Generation', dots: 1 },
+    ],
+    merits: ['Eidetic Memory', 'Magic Resistance'],
+    flaws: ['Prey Exclusion'],
+    clanMerits: ['Keys to the Library', 'Quartermaster'],
+    clanFlaws: ['Arcane Curse'],
+    specialties: [
+      { ability: 'occult', name: 'Blood sorcery' },
+      { ability: 'investigation', name: 'Occult crime scenes' },
+      { ability: 'science', name: 'Hematology' },
+    ],
+    equipment: [
+      { name: 'Ritual case', details: 'Candles, chalk, silver dust, and carefully labeled implements.' },
+      { name: 'Research satchel', details: 'Notebook, scanner, and warded storage for recovered texts.' },
+      { name: 'Compact pistol', details: 'A last resort kept out of sight.' },
+    ],
+    items: [
+      { name: 'Chantry cipherbook', details: 'A pocket reference for codes, signs, and minor correspondences.' },
+      { name: 'Blood-stained thesis notes', details: 'Her mortal work, expanded with Kindred annotations.' },
+    ],
+    virtues: {
+      conscience: 4,
+      selfControl: 4,
+      courage: 3,
+    },
+    humanity: 8,
+    willpower: 5,
+  },
+]);
 const VIRTUE_OPTIONS = [
   { id: 'conscience', label: 'Conscience' },
   { id: 'selfControl', label: 'Self-Control' },
   { id: 'courage', label: 'Courage' },
 ];
+const CREATION_UI_STEPS = [
+  {
+    id: 'identity',
+    label: '1. Identity',
+    title: 'Identity And Chronicle Fit',
+    note: 'Who the vampire is, how they present, and what drives them.',
+  },
+  {
+    id: 'core',
+    label: '2. Core Stats',
+    title: 'Attributes, Abilities, And Core Resources',
+    note: 'Build the numbers that define how the character acts in play.',
+  },
+  {
+    id: 'traits',
+    label: '3. Traits',
+    title: 'Disciplines, Backgrounds, Merits, And Flaws',
+    note: 'Handle clan powers, advantages, drawbacks, and support structure.',
+  },
+  {
+    id: 'finishing',
+    label: '4. Finishing',
+    title: 'Specialties, Gear, And Starting XP',
+    note: 'Finalize the parts that round the sheet out before play starts.',
+  },
+  {
+    id: 'review',
+    label: '5. Review',
+    title: 'Review And Launch',
+    note: 'Check the whole sheet, resolve issues, and begin the chronicle.',
+  },
+];
+const STAT_HELP = Object.freeze({
+  strength: 'Raw physical power. Often matters for lifting, forcing things open, grappling, and melee damage.',
+  dexterity: 'Coordination and precision. Often matters for stealth, firearms, dodging, driving, and fine physical actions.',
+  stamina: 'Endurance and toughness. Often matters for resisting harm, staying active, and some soak-related situations.',
+  charisma: 'Personal magnetism. Often matters when you win people over with presence, warmth, or force of personality.',
+  manipulation: 'Social leverage and controlled influence. Often matters for lying, bargaining, seduction, or steering reactions.',
+  appearance: 'Immediate visual impact. Often matters for first impressions, allure, and some social pools.',
+  perception: 'What the character notices. Often matters for spotting danger, reading scenes, and catching small details.',
+  intelligence: 'Reasoning and learned analysis. Often matters for problem-solving, research, and structured knowledge.',
+  wits: 'Fast thinking and instinctive judgment. Often matters for initiative, snap decisions, and reading shifting situations.',
+  alertness: 'Awareness of nearby details, danger, and change around the character.',
+  athletics: 'Running, climbing, jumping, throwing, and general physical movement.',
+  brawl: 'Unarmed fighting, grappling, and rough close-quarters violence.',
+  dodge: 'Actively avoiding incoming attacks or danger when speed and timing matter.',
+  empathy: 'Reading emotions, motives, and social tone in other people.',
+  expression: 'Communicating clearly through speech, writing, performance, or presentation.',
+  intimidation: 'Applying pressure through threat, menace, or forceful presence.',
+  leadership: 'Directing people, keeping control, and getting others to follow.',
+  streetwise: 'Knowing underworld habits, rumors, hustles, and informal power.',
+  subterfuge: 'Lying, bluffing, misdirection, and concealment in social situations.',
+  animalKen: 'Handling, calming, reading, or controlling animal behavior.',
+  crafts: 'Making, repairing, or understanding practical built things and handiwork.',
+  drive: 'Operating vehicles under routine or stressful conditions.',
+  etiquette: 'Knowing formal social expectations, status behavior, and proper conduct.',
+  firearms: 'Using guns accurately and safely under pressure.',
+  melee: 'Using handheld weapons in close combat.',
+  performance: 'Entertaining or captivating an audience through practiced presentation.',
+  security: 'Bypassing or setting mundane security, locks, and alarms.',
+  stealth: 'Moving quietly, hiding, and avoiding notice.',
+  survival: 'Enduring hostile conditions, tracking needs, and staying functional in the field.',
+  academics: 'Scholarly knowledge, formal study, and educated reference points.',
+  computer: 'Using digital systems, networks, and common computer tasks.',
+  finance: 'Understanding money, assets, debt, and practical economic leverage.',
+  investigation: 'Following clues, piecing evidence together, and digging into hidden facts.',
+  law: 'Knowing legal systems, procedure, and institutional rules.',
+  linguistics: 'Languages, translation, and nuanced verbal understanding.',
+  medicine: 'Treating injury and understanding bodies, health, and medical procedure.',
+  occult: 'Supernatural lore, hidden traditions, and mystical reference knowledge.',
+  politics: 'Institutions, factions, power blocs, and how authority actually moves.',
+  science: 'Scientific method, technical reasoning, and structured empirical knowledge.',
+  disciplines: 'Supernatural vampire powers. In creation they are tightly limited by clan and phase rules.',
+  backgrounds: 'External assets and support such as contacts, herd, allies, or resources. They describe what the character can rely on.',
+  specialties: 'A narrow edge inside an Ability. They help define what the character is notably good at.',
+  merits: 'Creation-time advantages that broaden options or sharpen strengths. They usually cost freebie points.',
+  flaws: 'Creation-time drawbacks that create pressure or limitations. They usually grant extra freebie points.',
+  virtues: 'The moral and instinctive backbone of the character. Virtues feed Humanity or Path rating and Willpower baselines.',
+  conscience: 'For Humanity characters, this reflects guilt and moral restraint. It helps anchor the character to human ethics.',
+  selfControl: 'For Humanity characters, this reflects restraint over impulse and appetite. It matters when resisting excess or frenzy-related pressure.',
+  courage: 'Resolve in the face of fear, danger, and supernatural pressure. It also sets the base Willpower rating in creation.',
+  humanity: 'The character\'s remaining connection to human morality. Lower values usually mean harsher behavior and social alienation.',
+  willpower: 'The character\'s reserve of resolve. Permanent dots set the cap; temporary Willpower is the spendable current pool.',
+  currentWillpower: 'Temporary Willpower is the current spendable reserve of resolve. It can recover in play without changing the permanent rating.',
+  generation: 'How far the vampire is from Caine. Lower generation usually means stronger blood and a larger maximum blood pool.',
+  bloodPool: 'The blood available to fuel healing, certain disciplines, and physical boosts. Current blood is temporary and Storyteller-managed.',
+  health: 'The wound track shows how injured the character currently is. Deeper injury states carry harsher penalties and risk.',
+  temporaryResources: 'A spendable snapshot of current cash or liquid means. It can drop temporarily without changing the permanent Resources background.',
+  ageCategory: 'A social shorthand such as Fledgling, Neonate, or Ancilla. It helps frame status expectations and how older Kindred react.',
+  physicalDescription: 'How the character reads at a glance: appearance, posture, style, and other immediately noticeable cues.',
+  ambition: 'A larger long-term drive. It helps the Storyteller pressure and reward the character over the chronicle.',
+  desire: 'A shorter-term hunger or want. It helps create immediate temptations and smaller reward moments.',
+});
 
 function debugLog(event, payload = null) {
   if (payload === null) {
@@ -76,6 +424,256 @@ function debugLog(event, payload = null) {
     return;
   }
   console.log(DEBUG_PREFIX, event, payload);
+}
+
+function createTemplateTraitEntries(items, prefix) {
+  return items.map((item) => ({
+    id: uid(prefix),
+    name: item.name,
+    dots: item.dots,
+  }));
+}
+
+function createTemplatePointEntries(kind, names, clanName) {
+  return names.map((name) => {
+    const definition = getPointTraitDefinition(kind, name, clanName);
+    return {
+      id: uid(kind),
+      name: definition.name,
+      points: definition.points,
+      details: definition.summary,
+    };
+  });
+}
+
+function createTemplateInventoryEntries(items, prefix) {
+  return items.map((item) => ({
+    id: uid(prefix),
+    name: item.name,
+    details: item.details,
+  }));
+}
+
+function createReadyCharacterFromTemplate(templateId) {
+  const template = READY_CHARACTER_TEMPLATES.find((item) => item.id === templateId);
+  if (!template) {
+    return null;
+  }
+
+  const character = getDefaultCharacter(schema);
+  character.created = true;
+  character.name = template.name;
+  character.concept = template.concept;
+  character.clan = template.clan;
+  character.path = 'Humanity';
+  character.sire = template.sire;
+  character.nature = template.nature;
+  character.demeanor = template.demeanor;
+  character.age = template.age;
+  character.ageCategory = template.ageCategory;
+  character.pronouns = template.pronouns;
+  character.ambition = template.ambition;
+  character.desire = template.desire;
+  character.physicalDescription = template.physicalDescription;
+  character.backstory = template.backstory;
+  character.attributes = { ...character.attributes, ...template.attributes };
+  character.abilities = { ...character.abilities, ...template.abilities };
+  character.disciplines = createTemplateTraitEntries(template.disciplines, 'discipline');
+  character.backgrounds = createTemplateTraitEntries(template.backgrounds, 'background');
+  character.merits = createTemplatePointEntries('merit', template.merits, template.clan);
+  character.flaws = createTemplatePointEntries('flaw', template.flaws, template.clan);
+  character.clanMerits = createTemplatePointEntries('clan-merit', template.clanMerits, template.clan);
+  character.clanFlaws = createTemplatePointEntries('clan-flaw', template.clanFlaws, template.clan);
+  character.specialties = template.specialties.map((item) => ({
+    id: uid('specialty'),
+    ability: item.ability,
+    name: item.name,
+    isAuto: false,
+  }));
+  character.equipment = createTemplateInventoryEntries(template.equipment, 'equipment');
+  character.items = createTemplateInventoryEntries(template.items, 'item');
+  character.virtues = { ...character.virtues, ...template.virtues };
+  character.humanity = template.humanity;
+  character.willpower = template.willpower;
+  character.currentWillpower = template.willpower;
+  character.creation = {
+    ...getDefaultCreationState(),
+    phase: 'experience',
+    uiStep: 'review',
+    startingExperience: 15,
+  };
+  character.experience = {
+    unspent: 0,
+    spent: 0,
+    log: [],
+  };
+  syncCharacterDerivedStats(character);
+  character.currentBloodPool = character.bloodPool;
+  character.currentHealthLevel = 0;
+  character.currentResources = getBackgroundDotsByName(character, 'Resources');
+  return character;
+}
+
+function renderReadyCharacterTemplates() {
+  return `
+    <div class="list-card">
+      ${renderCardHeading('Ready-To-Play Templates')}
+      <p class="helper-text">Load a complete, ready-to-play sheet instantly. Applying a template replaces the unfinished sheet and locks the character as created.</p>
+      <div class="template-grid">
+        ${READY_CHARACTER_TEMPLATES.map((template) => `
+          <button class="template-card" type="button" data-action="apply-ready-template" data-template-id="${template.id}">
+            <strong>${escapeHtml(template.label)}</strong>
+            <span class="meta-text">${escapeHtml(template.clan)}</span>
+            <span>${escapeHtml(template.pitch)}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function getCanonicalBackgroundName(name) {
+  if (typeof name !== 'string') {
+    return '';
+  }
+
+  return BACKGROUND_NAME_LOOKUP.get(name.trim().toLowerCase()) || '';
+}
+
+function sanitizeStructuredBackgrounds(items) {
+  if (!Array.isArray(items)) {
+    return [];
+  }
+
+  const sanitized = [];
+  const seen = new Set();
+
+  for (const item of items) {
+    const canonicalName = getCanonicalBackgroundName(item?.name);
+    if (!canonicalName) {
+      debugLog('Rejected invalid background update', item);
+      continue;
+    }
+
+    const normalizedKey = canonicalName.toLowerCase();
+    if (seen.has(normalizedKey)) {
+      debugLog('Rejected duplicate background update', item);
+      continue;
+    }
+
+    seen.add(normalizedKey);
+    sanitized.push({
+      id: uid('background'),
+      name: canonicalName,
+      dots: Math.max(0, Math.min(5, Number(item?.dots) || 0)),
+    });
+  }
+
+  return sanitized;
+}
+
+function sanitizeNpcFieldValue(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function applyStructuredNpcUpdate(existingNpc, incomingNpc) {
+  for (const field of NPC_MUTABLE_FIELDS) {
+    const nextValue = sanitizeNpcFieldValue(incomingNpc?.[field]);
+    if (nextValue) {
+      existingNpc[field] = nextValue;
+    }
+  }
+}
+
+function createStructuredNpcRecord(incomingNpc) {
+  return {
+    id: uid('npc'),
+    name: sanitizeNpcFieldValue(incomingNpc?.name) || 'Unnamed NPC',
+    clan: sanitizeNpcFieldValue(incomingNpc?.clan),
+    ageCategory: sanitizeNpcFieldValue(incomingNpc?.ageCategory),
+    role: sanitizeNpcFieldValue(incomingNpc?.role),
+    summary: sanitizeNpcFieldValue(incomingNpc?.summary),
+    status: sanitizeNpcFieldValue(incomingNpc?.status),
+    ambition: sanitizeNpcFieldValue(incomingNpc?.ambition),
+    desire: sanitizeNpcFieldValue(incomingNpc?.desire),
+    notes: sanitizeNpcFieldValue(incomingNpc?.notes),
+    secrets: sanitizeNpcFieldValue(incomingNpc?.secrets),
+  };
+}
+
+function getCreationStep(stepId) {
+  return CREATION_UI_STEPS.find((item) => item.id === stepId) ?? CREATION_UI_STEPS[0];
+}
+
+function getCharacterCreationUiStep(character) {
+  const creation = ensureCharacterCreationState(character);
+  if (!CREATION_UI_STEPS.some((item) => item.id === creation.uiStep)) {
+    creation.uiStep = CREATION_UI_STEPS[0].id;
+  }
+  return creation.uiStep;
+}
+
+function setCharacterCreationUiStep(character, stepId) {
+  const creation = ensureCharacterCreationState(character);
+  creation.uiStep = getCreationStep(stepId).id;
+}
+
+function getCharacterCreationUiStepIndex(character) {
+  return CREATION_UI_STEPS.findIndex((item) => item.id === getCharacterCreationUiStep(character));
+}
+
+function getStatHelpText(helpKey) {
+  return typeof helpKey === 'string' ? STAT_HELP[helpKey] || '' : '';
+}
+
+function renderHelpTrigger(label, helpKey) {
+  const helpText = getStatHelpText(helpKey);
+  if (!helpText) {
+    return '';
+  }
+
+  return `
+    <button class="info-chip" type="button" aria-label="Explain ${escapeHtml(label)}">
+      <span aria-hidden="true">?</span>
+      <span class="tooltip-bubble" role="tooltip">
+        <strong>${escapeHtml(label)}</strong>
+        <span>${escapeHtml(helpText)}</span>
+      </span>
+    </button>
+  `;
+}
+
+function renderFieldLabel(label, helpKey = '') {
+  return `<span class="helper-text field-label"><span>${escapeHtml(label)}</span>${renderHelpTrigger(label, helpKey)}</span>`;
+}
+
+function renderCardHeading(title, helpKey = '') {
+  return `
+    <div class="card-heading-row">
+      <h4>${escapeHtml(title)}</h4>
+      ${renderHelpTrigger(title, helpKey)}
+    </div>
+  `;
+}
+
+function renderLockedCard(label, value, helpKey = '', meta = '') {
+  return `
+    <div class="locked-card">
+      ${renderFieldLabel(label, helpKey)}
+      <strong>${escapeHtml(String(value))}</strong>
+      ${meta ? `<div class="meta-text">${escapeHtml(meta)}</div>` : ''}
+    </div>
+  `;
+}
+
+function renderReadonlyFieldSummary(label, value, helpKey = '') {
+  return `
+    <div class="summary-row with-help">
+      <span class="summary-label">${escapeHtml(label)}</span>
+      ${renderHelpTrigger(label, helpKey)}
+      <strong>${escapeHtml(String(value))}</strong>
+    </div>
+  `;
 }
 
 export function createApp(root) {
@@ -104,11 +702,13 @@ export function createApp(root) {
 
   const ui = {
     stage: null,
+    playShell: null,
     chatLog: null,
     chronicleList: null,
     overlayHost: null,
     messageInput: null,
     composer: null,
+    regenerateButton: null,
     topbarControls: null,
     rollLog: null,
     cloudAuth: null,
@@ -221,12 +821,17 @@ export function createApp(root) {
 
           <div class="notice-bar" data-role="status-bar">Ready for the next scene.</div>
           <section class="stage-panel" data-role="stage"></section>
-          <section class="chat-log" data-role="chat-log" style="display: none;"></section>
+          <section class="play-shell" data-role="play-shell" style="display: none;">
+            <section class="chat-log" data-role="chat-log"></section>
 
-          <form class="composer" data-role="composer" style="display: none;">
-            <textarea data-role="message-input" placeholder="Describe your action, ask for a scene, or tell the Storyteller how your vampire responds."></textarea>
-            <button class="send-button" type="submit">Send To Storyteller</button>
-          </form>
+            <form class="composer" data-role="composer">
+              <textarea data-role="message-input" placeholder="Describe your action, ask for a scene, or tell the Storyteller how your vampire responds."></textarea>
+              <div class="composer-actions">
+                <button class="ghost-button" type="button" data-action="regenerate-response">Regenerate Response</button>
+                <button class="send-button" type="submit">Send To Storyteller</button>
+              </div>
+            </form>
+          </section>
 
           <div class="overlay-host" data-role="overlay-host"></div>
         </main>
@@ -234,17 +839,20 @@ export function createApp(root) {
     `;
 
     ui.stage = root.querySelector('[data-role="stage"]');
+    ui.playShell = root.querySelector('[data-role="play-shell"]');
     ui.chatLog = root.querySelector('[data-role="chat-log"]');
     ui.chronicleList = root.querySelector('[data-role="chronicle-list"]');
     ui.overlayHost = root.querySelector('[data-role="overlay-host"]');
     ui.messageInput = root.querySelector('[data-role="message-input"]');
     ui.composer = root.querySelector('[data-role="composer"]');
+    ui.regenerateButton = root.querySelector('[data-action="regenerate-response"]');
     ui.topbarControls = root.querySelector('[data-role="topbar-controls"]');
     ui.rollLog = root.querySelector('[data-role="roll-log"]');
     ui.cloudAuth = root.querySelector('[data-role="cloud-auth"]');
     ui.cloudBank = root.querySelector('[data-role="cloud-bank"]');
 
     root.querySelector('[data-role="composer"]').addEventListener('submit', onSendMessage);
+    ui.regenerateButton?.addEventListener('click', onRegenerateResponse);
     ui.messageInput?.addEventListener('input', syncComposerHeight);
     root.querySelector('[data-action="new-chronicle"]').addEventListener('click', onNewChronicle);
     root.querySelector('[data-action="delete-chronicle"]').addEventListener('click', onDeleteChronicle);
@@ -857,8 +1465,7 @@ export function createApp(root) {
     copy.textContent = 'Create a new chronicle to choose its chronicle foundation first, then build the vampire who enters it.';
     ui.topbarControls.innerHTML = '<div class="pill-row"><span class="status-pill">Waiting for a new chronicle</span></div>';
     ui.stage.style.display = 'block';
-    ui.chatLog.style.display = 'none';
-    ui.composer.style.display = 'none';
+    ui.playShell.style.display = 'none';
     ui.stage.innerHTML = `
       <div class="stage-card">
         <div class="stage-copy">
@@ -982,10 +1589,8 @@ export function createApp(root) {
   function renderPlayControls(chronicle) {
     const city = getChronicleCity(chronicle);
     const progression = ensureChronicleProgressionState(chronicle);
-    const desireCap = progression.rewardCaps.desireGranted ? 'Desire XP used' : 'Desire XP available';
-    const ambitionCap = progression.rewardCaps.ambitionGranted ? 'Ambition XP used' : 'Ambition XP available';
     return `
-      <div class="topbar-row four">
+      <div class="topbar-row play-topbar-row">
         <div class="topbar-card">
           <span class="helper-text">Chronicle</span>
           <strong>${escapeHtml(city.chronicleBook || city.name)}</strong>
@@ -1015,11 +1620,8 @@ export function createApp(root) {
           <strong>${chronicle.character.currentWillpower}/${chronicle.character.willpower}</strong>
         </div>
       </div>
-      <div class="pill-row">
-        <span class="status-pill">${progression.phase === 'downtime' ? 'Downtime is active' : 'Scene play is active'}</span>
-        ${progression.downtimeReason ? `<span class="status-pill">${escapeHtml(progression.downtimeReason)}</span>` : ''}
-        <span class="status-pill">${escapeHtml(desireCap)}</span>
-        <span class="status-pill">${escapeHtml(ambitionCap)}</span>
+      <div class="play-topbar-actions">
+        ${progression.downtimeReason ? `<span class="status-pill compact">${escapeHtml(progression.downtimeReason)}</span>` : ''}
         <button class="secondary-button" type="button" data-action="toggle-downtime">${progression.phase === 'downtime' ? 'Resume Scenes' : 'Enter Downtime'}</button>
       </div>
     `;
@@ -1061,10 +1663,12 @@ export function createApp(root) {
     
     // Show/hide sections based on view
     ui.stage.style.display = isPlay ? 'none' : 'block';
-    ui.chatLog.style.display = isPlay ? 'flex' : 'none';
-    ui.composer.style.display = isPlay ? 'grid' : 'none';
+    ui.playShell.style.display = isPlay ? 'grid' : 'none';
 
     if (isPlay) {
+      if (ui.regenerateButton) {
+        ui.regenerateButton.disabled = !canRegenerateStorytellerResponse(chronicle);
+      }
       syncComposerHeight();
       renderChat(chronicle.messages);
       return;
@@ -1133,85 +1737,238 @@ export function createApp(root) {
     const clanFlawTitle = character.clan === 'Caitiff' ? 'Clan-Exclusive Flaws' : `${character.clan} Flaws`;
     const morality = getMoralityConfig(character.path);
     const phase = getCharacterCreationPhase(character);
+    const currentStepId = getCharacterCreationUiStep(character);
+    const currentStep = getCreationStep(currentStepId);
     return `
-      <div class="stage-card">
+      <div class="stage-card creation-stage">
         <div class="stage-copy">
           <div class="brand-eyebrow">Page 2</div>
           <h2>Create Your Vampire</h2>
           <p class="helper-text">Build the vampire who belongs in this chronicle. After creation, only Name, Age as a Vampire, Sire, Pronouns, Ambition, and Desire stay freely editable. Other progression must be confirmed as an XP purchase. Backgrounds, items, and equipment become Storyteller-managed from play onward.</p>
+          ${renderCreationStepTabs(currentStepId)}
         </div>
 
+        <div class="creation-layout">
+          <div class="creation-main">
+            <div class="list-card creation-section-header">
+              <div class="npc-header-row">
+                <div>
+                  <div class="brand-eyebrow">${escapeHtml(currentStep.label)}</div>
+                  <h3>${escapeHtml(currentStep.title)}</h3>
+                </div>
+                <span class="status-pill">${escapeHtml(validation.statusLabel)}</span>
+              </div>
+              <p class="helper-text">${escapeHtml(currentStep.note)}</p>
+            </div>
+
+            ${renderCreationStepContent({
+              character,
+              validation,
+              creationBudget,
+              clanOptions,
+              clanMeritTitle,
+              clanFlawTitle,
+              morality,
+              phase,
+              currentStepId,
+            })}
+
+            ${renderCreationFooter(character, validation)}
+          </div>
+
+          <aside class="creation-rail">
+            ${renderCreationRail(character, validation, creationBudget, morality, currentStepId)}
+          </aside>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderCreationStepTabs(currentStepId) {
+    return `
+      <div class="creation-step-strip">
+        ${CREATION_UI_STEPS.map((step) => `
+          <button class="step-tab ${step.id === currentStepId ? 'active' : ''}" type="button" data-action="goto-creation-step" data-step="${step.id}">
+            <span>${escapeHtml(step.label)}</span>
+            <small>${escapeHtml(step.title)}</small>
+          </button>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderCreationStepContent({ character, validation, creationBudget, clanOptions, clanMeritTitle, clanFlawTitle, morality, phase, currentStepId }) {
+    if (currentStepId === 'identity') {
+      return renderCreationIdentitySection(character, creationBudget, morality);
+    }
+    if (currentStepId === 'core') {
+      return `
+        ${phase === 'experience' ? renderReadOnlyStats(character) : renderNumericCards(character, false)}
+        ${phase === 'experience' ? renderReadOnlyResources(character) : renderResourceCards(character, false)}
+      `;
+    }
+    if (currentStepId === 'traits') {
+      return `
+        ${phase === 'experience' ? renderSimpleCreationTraitCard('Disciplines', character.disciplines, 'Disciplines are locked after the freebie phase and advance only through XP.') : renderDisciplineCard(character, false)}
+        ${renderAdditionalDisciplineMeritCard(character, false)}
+        ${phase === 'experience' ? renderSimpleCreationTraitCard('Backgrounds', character.backgrounds, 'Backgrounds are locked after the freebie phase and advance only through play or Storyteller updates.') : renderBackgroundCard(character, false)}
+        ${phase === 'allocation' ? renderCreationLockedCard('Freebie Purchases', 'Merits, flaws, and above-baseline increases unlock after you confirm the allocation phase.') : phase === 'experience' ? renderPointSummaryCard('Merits', character.merits, 'Creation-only merits confirmed during the freebie phase.') : renderPointTraitCard('merit', 'Merits', character.merits, meritsFlawsData.merits)}
+        ${phase === 'allocation' ? '' : phase === 'experience' ? renderPointSummaryCard('Flaws', character.flaws, 'Creation-only flaws confirmed during the freebie phase.') : renderPointTraitCard('flaw', 'Flaws', character.flaws, meritsFlawsData.flaws)}
+        ${phase === 'allocation' ? '' : phase === 'experience' ? renderPointSummaryCard(clanMeritTitle, character.clanMerits, 'Clan-specific merits confirmed during the freebie phase.') : renderPointTraitCard('clan-merit', clanMeritTitle, character.clanMerits, clanOptions.merits)}
+        ${phase === 'allocation' ? '' : phase === 'experience' ? renderPointSummaryCard(clanFlawTitle, character.clanFlaws, 'Clan-specific flaws confirmed during the freebie phase.') : renderPointTraitCard('clan-flaw', clanFlawTitle, character.clanFlaws, clanOptions.flaws)}
+      `;
+    }
+    if (currentStepId === 'finishing') {
+      return `
+        ${renderSpecialtyCard(character, false)}
+        ${renderInventoryCard('equipment', 'Equipment', character.equipment, false)}
+        ${renderInventoryCard('items', 'Items', character.items, false)}
+        ${phase === 'experience' ? renderCreationExperienceCard(character) : renderCreationLockedCard('Starting Experience', 'Starting XP unlocks only after you confirm the freebie phase.')}
+      `;
+    }
+
+    return renderCreationReviewSection(character, validation, morality);
+  }
+
+  function renderCreationIdentitySection(character, creationBudget, morality) {
+    return `
+      ${renderReadyCharacterTemplates()}
+
+      <div class="list-card">
+        ${renderCardHeading('Identity', 'ageCategory')}
         <div class="form-grid">
           <div class="inline-grid three">
-            <label><span class="helper-text">Name</span><input data-field="name" value="${escapeHtml(character.name)}" /></label>
-            <label><span class="helper-text">Concept</span><input data-field="concept" value="${escapeHtml(character.concept)}" /></label>
-            <label><span class="helper-text">Clan</span>${renderSelect('clan', clansData.map((item) => item.name), character.clan)}</label>
-          </div>
-
-          <div class="inline-grid three">
-            <label><span class="helper-text">Nature</span>${renderSelect('nature', natureDemeanorData.natures.map((item) => item.name), character.nature)}</label>
-            <label><span class="helper-text">Demeanor</span>${renderSelect('demeanor', natureDemeanorData.demeanors.map((item) => item.name), character.demeanor)}</label>
-            <div class="locked-card"><span class="helper-text">Generation</span><strong>${escapeHtml(formatGenerationLabel(character.generation))}</strong><div class="meta-text">Driven by ${creationBudget.generation.backgroundDots} dot${creationBudget.generation.backgroundDots === 1 ? '' : 's'} in the Generation Background.</div></div>
-          </div>
-
-          <div class="inline-grid two">
-            <label><span class="helper-text">Morality</span>${renderSelect('path', pathsData.map((item) => item.name), character.path)}</label>
-            <div class="locked-card"><span class="helper-text">Virtue Pattern</span><strong>${escapeHtml(`${morality.primaryLabel} / ${morality.secondaryLabel} / Courage`)}</strong></div>
-            <label><span class="helper-text">Age as a Vampire</span><input type="number" min="0" max="1000" data-field="age" value="${character.age}" /></label>
-
-
-          <div class="inline-grid two">
-            <label><span class="helper-text">Age Category</span>${renderSelect('ageCategory', AGE_CATEGORY_OPTIONS, character.ageCategory)}</label>
-            <div class="locked-card"><span class="helper-text">Why NPCs Care</span><strong>Fledgling, Neonate, or Ancilla</strong><div class="meta-text">This helps the Storyteller frame status, etiquette, and how elders react to the PC.</div></div>
+            <label>${renderFieldLabel('Name')}<input data-field="name" value="${escapeHtml(character.name)}" /></label>
+            <label>${renderFieldLabel('Concept')}<input data-field="concept" value="${escapeHtml(character.concept)}" /></label>
+            <label>${renderFieldLabel('Clan')} ${renderSelect('clan', clansData.map((item) => item.name), character.clan)}</label>
           </div>
           <div class="inline-grid three">
-            <label><span class="helper-text">Sire</span><input data-field="sire" value="${escapeHtml(character.sire)}" /></label>
-            <label><span class="helper-text">Pronouns</span><input data-field="pronouns" value="${escapeHtml(character.pronouns)}" /></label>
-            <label><span class="helper-text">Age</span><input type="number" min="0" max="1000" data-field="age" value="${character.age}" /></label>
+            <label>${renderFieldLabel('Nature')} ${renderSelect('nature', natureDemeanorData.natures.map((item) => item.name), character.nature)}</label>
+            <label>${renderFieldLabel('Demeanor')} ${renderSelect('demeanor', natureDemeanorData.demeanors.map((item) => item.name), character.demeanor)}</label>
+            ${renderLockedCard('Generation', formatGenerationLabel(character.generation), 'generation', `Driven by ${creationBudget.generation.backgroundDots} dot${creationBudget.generation.backgroundDots === 1 ? '' : 's'} in the Generation Background.`)}
           </div>
+          <div class="inline-grid two">
+            <label>${renderFieldLabel('Morality')} ${renderSelect('path', pathsData.map((item) => item.name), character.path)}</label>
+            ${renderLockedCard('Virtue Pattern', `${morality.primaryLabel} / ${morality.secondaryLabel} / Courage`, 'virtues')}
+          </div>
+          <div class="inline-grid three">
+            <label>${renderFieldLabel('Age as a Vampire')}<input type="number" min="0" max="1000" data-field="age" value="${character.age}" /></label>
+            <label>${renderFieldLabel('Age Category', 'ageCategory')} ${renderSelect('ageCategory', AGE_CATEGORY_OPTIONS, character.ageCategory)}</label>
+            ${renderLockedCard('Why NPCs Care', 'Fledgling, Neonate, or Ancilla', 'ageCategory', 'This helps the Storyteller frame status, etiquette, and how elders react to the PC.')}
+          </div>
+        </div>
+      </div>
 
-          <label><span class="helper-text">Physical Description</span>
+      <div class="list-card">
+        ${renderCardHeading('Story Presence', 'physicalDescription')}
+        <div class="form-grid">
+          <div class="inline-grid two">
+            <label>${renderFieldLabel('Sire')}<input data-field="sire" value="${escapeHtml(character.sire)}" /></label>
+            <label>${renderFieldLabel('Pronouns')}<input data-field="pronouns" value="${escapeHtml(character.pronouns)}" /></label>
+          </div>
+          <label>${renderFieldLabel('Physical Description', 'physicalDescription')}
             <textarea rows="4" data-field="physicalDescription" placeholder="Describe the PC's appearance, style, posture, voice, and any details NPCs would notice at a glance.">${escapeHtml(character.physicalDescription || '')}</textarea>
           </label>
-
           <div class="inline-grid two">
-            <label><span class="helper-text">Ambition</span><input data-field="ambition" value="${escapeHtml(character.ambition)}" /></label>
-            <label><span class="helper-text">Desire</span><input data-field="desire" value="${escapeHtml(character.desire)}" /></label>
+            <label>${renderFieldLabel('Ambition', 'ambition')}<input data-field="ambition" value="${escapeHtml(character.ambition)}" /></label>
+            <label>${renderFieldLabel('Desire', 'desire')}<input data-field="desire" value="${escapeHtml(character.desire)}" /></label>
           </div>
-
           <label>
-            <span class="helper-text">Backstory</span>
-            <textarea rows="6" data-field="backstory">${escapeHtml(character.backstory)}</textarea>
+            ${renderFieldLabel('Backstory')}
+            <textarea rows="7" data-field="backstory">${escapeHtml(character.backstory)}</textarea>
           </label>
+        </div>
+      </div>
+    `;
+  }
 
-          ${renderCreationPhaseTracker(validation, creationBudget)}
-          ${renderCreationValidation(validation)}
-          ${renderCreationBudget(creationBudget, morality)}
+  function renderCreationReviewSection(character, validation, morality) {
+    return `
+      <div class="list-card">
+        ${renderCardHeading('Launch Review')}
+        <p class="helper-text">Use this final pass to check identity, core numbers, and locked-in traits before beginning the chronicle.</p>
+        <div class="locked-grid">
+          ${renderLockedCard('Name', character.name || 'Unnamed')}
+          ${renderLockedCard('Clan', character.clan)}
+          ${renderLockedCard('Nature / Demeanor', `${character.nature} / ${character.demeanor}`)}
+          ${renderLockedCard(morality.ratingLabel, character.humanity, 'humanity')}
+          ${renderLockedCard('Willpower', `${character.currentWillpower}/${character.willpower}`, 'willpower')}
+          ${renderLockedCard('Blood Pool', `${character.currentBloodPool}/${character.bloodPool}`, 'bloodPool')}
+        </div>
+      </div>
+      ${renderReadOnlyStats(character)}
+      <div class="inline-grid two">
+        <div class="list-card">
+          ${renderCardHeading('Backgrounds', 'backgrounds')}
+          ${renderSimpleList(character.backgrounds, 'Storyteller updates backgrounds through play once creation is complete.')}
+        </div>
+        <div class="list-card">
+          ${renderCardHeading('Equipment')}
+          ${renderSimpleInventory(character.equipment, 'Equipment and items become Storyteller-managed once the chronicle begins.')}
+        </div>
+      </div>
+      <div class="inline-grid two">
+        <div class="list-card">
+          ${renderCardHeading('Merits', 'merits')}
+          ${renderPointSummary(character.merits, 'Creation-only advantages confirmed during build.')}
+        </div>
+        <div class="list-card">
+          ${renderCardHeading('Flaws', 'flaws')}
+          ${renderPointSummary(character.flaws, 'Creation-only drawbacks confirmed during build.')}
+        </div>
+      </div>
+      ${validation.issues.length ? `<p class="footer-note">Outstanding issue: ${escapeHtml(validation.issues[0])}</p>` : '<p class="footer-note">The sheet currently satisfies the active creation rules phase.</p>'}
+    `;
+  }
 
-          ${phase === 'experience' ? renderReadOnlyStats(character) : renderNumericCards(character, false)}
-          ${phase === 'experience' ? renderSimpleCreationTraitCard('Disciplines', character.disciplines, 'Disciplines are locked after the freebie phase and advance only through XP.') : renderDisciplineCard(character, false)}
-          ${renderAdditionalDisciplineMeritCard(character, false)}
-          ${phase === 'experience' ? renderSimpleCreationTraitCard('Backgrounds', character.backgrounds, 'Backgrounds are locked after the freebie phase and advance only through play or Storyteller updates.') : renderBackgroundCard(character, false)}
-          ${phase === 'allocation' ? renderCreationLockedCard('Freebie Purchases', 'Merits, flaws, and above-baseline increases unlock after you confirm the allocation phase.') : phase === 'experience' ? renderPointSummaryCard('Merits', character.merits, 'Creation-only merits confirmed during the freebie phase.') : renderPointTraitCard('merit', 'Merits', character.merits, meritsFlawsData.merits)}
-          ${phase === 'allocation' ? '' : phase === 'experience' ? renderPointSummaryCard('Flaws', character.flaws, 'Creation-only flaws confirmed during the freebie phase.') : renderPointTraitCard('flaw', 'Flaws', character.flaws, meritsFlawsData.flaws)}
-          ${phase === 'allocation' ? '' : phase === 'experience' ? renderPointSummaryCard(clanMeritTitle, character.clanMerits, 'Clan-specific merits confirmed during the freebie phase.') : renderPointTraitCard('clan-merit', clanMeritTitle, character.clanMerits, clanOptions.merits)}
-          ${phase === 'allocation' ? '' : phase === 'experience' ? renderPointSummaryCard(clanFlawTitle, character.clanFlaws, 'Clan-specific flaws confirmed during the freebie phase.') : renderPointTraitCard('clan-flaw', clanFlawTitle, character.clanFlaws, clanOptions.flaws)}
-          ${renderSpecialtyCard(character, false)}
-          ${renderInventoryCard('equipment', 'Equipment', character.equipment, false)}
-          ${renderInventoryCard('items', 'Items', character.items, false)}
-          ${phase === 'experience' ? renderReadOnlyResources(character) : renderResourceCards(character, false)}
-          ${phase === 'experience' ? renderCreationExperienceCard(character) : ''}
+  function renderCreationRail(character, validation, budget, morality, currentStepId) {
+    const currentStep = getCreationStep(currentStepId);
+    return `
+      <div class="creation-rail-stack">
+        <div class="list-card compact-panel">
+          ${renderCardHeading('Current Step')}
+          <div class="meta-text">${escapeHtml(currentStep.label)}</div>
+          <strong>${escapeHtml(currentStep.title)}</strong>
+          <div class="helper-text">${escapeHtml(currentStep.note)}</div>
+        </div>
+        ${renderCreationPhaseTracker(validation, budget)}
+        ${renderCreationValidation(validation)}
+        ${renderCreationBudget(budget, morality)}
+        <div class="list-card compact-panel">
+          ${renderCardHeading('Quick Sheet Summary')}
+          ${renderReadonlyFieldSummary('Generation', formatGenerationLabel(character.generation), 'generation')}
+          ${renderReadonlyFieldSummary('Blood Pool', `${character.currentBloodPool}/${character.bloodPool}`, 'bloodPool')}
+          ${renderReadonlyFieldSummary('Current Willpower', `${character.currentWillpower}/${character.willpower}`, 'currentWillpower')}
+          ${renderReadonlyFieldSummary('Temporary Resources', `${character.currentResources}/${getBackgroundDotsByName(character, 'Resources')}`, 'temporaryResources')}
+        </div>
+      </div>
+    `;
+  }
 
-          <div class="stage-actions">
-            ${
-              phase === 'allocation'
-                ? `<button class="primary" type="button" data-action="confirm-allocation">Confirm Allocation Phase</button>`
-                : phase === 'freebies'
-                  ? `<button class="primary" type="button" data-action="confirm-freebies" ${validation.valid ? '' : 'disabled'}>Confirm Freebie Phase</button>`
-                  : `<button class="primary" type="button" data-action="finalize-character" ${validation.valid ? '' : 'disabled'}>Finalize Character And Begin Chronicle</button>`
-            }
-          </div>
-          ${phase === 'allocation' && !validation.valid ? `<p class="footer-note">You cannot proceed yet: ${escapeHtml(validation.issues[0] || 'The allocation phase still has unresolved issues.')}</p>` : ''}
+  function renderCreationFooter(character, validation) {
+    if (state.activePanel) {
+      return '';
+    }
+
+    const currentIndex = getCharacterCreationUiStepIndex(character);
+    const previousStep = CREATION_UI_STEPS[currentIndex - 1];
+    const nextStep = CREATION_UI_STEPS[currentIndex + 1];
+    const phase = getCharacterCreationPhase(character);
+    const phaseAction =
+      phase === 'allocation'
+        ? `<button class="primary" type="button" data-action="confirm-allocation">Confirm Allocation Phase</button>`
+        : phase === 'freebies'
+          ? `<button class="primary" type="button" data-action="confirm-freebies" ${validation.valid ? '' : 'disabled'}>Confirm Freebie Phase</button>`
+          : `<button class="primary" type="button" data-action="finalize-character" ${validation.valid ? '' : 'disabled'}>Finalize Character And Begin Chronicle</button>`;
+
+    return `
+      <div class="creation-footer-bar">
+        <div class="stage-actions">
+          ${previousStep ? `<button class="secondary-button" type="button" data-action="prev-creation-step">Back</button>` : ''}
+          ${nextStep ? `<button class="secondary-button" type="button" data-action="next-creation-step">Next</button>` : ''}
+        </div>
+        <div class="creation-phase-action">
+          ${phaseAction}
         </div>
       </div>
     `;
@@ -1460,31 +2217,44 @@ export function createApp(root) {
         <h2>Character Sheet</h2>
         <p class="helper-text">Only identity and motivation details stay editable here. All other progression must be confirmed through a one-way XP purchase. Backgrounds, equipment, and items are Storyteller-managed once play begins.</p>
 
-        <div class="inline-grid three">
-          ${ALWAYS_EDITABLE_FIELDS.map((field) => {
-            const label = startCase(field);
-            const type = field === 'age' ? 'number' : 'text';
-            return `<label><span class="helper-text">${escapeHtml(label)}</span><input type="${type}" data-sheet-field="${field}" value="${escapeHtml(character[field])}" /></label>`;
-          }).join('')}
+        <div class="inline-grid three sheet-summary-strip">
+          ${renderLockedCard('Clan', character.clan)}
+          ${renderLockedCard('Generation', formatGenerationLabel(character.generation), 'generation')}
+          ${renderLockedCard('Current Willpower', `${character.currentWillpower}/${character.willpower}`, 'currentWillpower')}
         </div>
 
         <div class="list-card">
-          <h4>Locked After Creation</h4>
-          <div class="locked-grid">
-            ${lockedFields.map(([label, value]) => `<div class="locked-card"><span class="helper-text">${escapeHtml(label)}</span><strong>${escapeHtml(String(value))}</strong></div>`).join('')}
+          ${renderCardHeading('Editable Identity')}
+          <div class="inline-grid three">
+            ${ALWAYS_EDITABLE_FIELDS.map((field) => {
+              const label = startCase(field);
+              const type = field === 'age' ? 'number' : 'text';
+              const helpKey = field === 'age' ? 'ageCategory' : field.toLowerCase();
+              return `<label>${renderFieldLabel(label, helpKey)}<input type="${type}" data-sheet-field="${field}" value="${escapeHtml(character[field])}" /></label>`;
+            }).join('')}
           </div>
         </div>
 
-        ${renderReadOnlyStats(character)}
+        <div class="list-card">
+          ${renderCardHeading('Locked After Creation')}
+          <div class="locked-grid">
+            ${lockedFields.map(([label, value]) => renderLockedCard(label, value, label === 'Generation' ? 'generation' : label === 'Age Category' ? 'ageCategory' : label === 'Physical Description' ? 'physicalDescription' : '')).join('')}
+          </div>
+        </div>
+
+        <div class="list-card">
+          ${renderCardHeading('Core Sheet')}
+          ${renderReadOnlyStats(character)}
+        </div>
 
         <div class="inline-grid two">
           <div class="list-card">
-            <h4>Backgrounds</h4>
+            ${renderCardHeading('Backgrounds', 'backgrounds')}
             ${renderSimpleList(character.backgrounds, 'Background dots can only change through roleplay and Storyteller updates.')}
           </div>
           <div class="list-card">
-            <h4>Experience</h4>
-            <div class="locked-card compact"><span class="helper-text">Unspent XP</span><strong>${character.experience.unspent}</strong></div>
+            ${renderCardHeading('Experience')}
+            <div class="locked-card compact">${renderFieldLabel('Unspent XP')}<strong>${character.experience.unspent}</strong></div>
             <div class="meta-text">Spent XP: ${character.experience.spent}</div>
             <div class="meta-text">Confirmed purchases cannot be refunded.</div>
             <div class="meta-text">${escapeHtml(xpSpendAllowed ? 'XP spending is currently available.' : getXpGateMessage(chronicle))}</div>
@@ -1493,8 +2263,8 @@ export function createApp(root) {
         </div>
 
         <div class="list-card">
-          <h4>Temporary Willpower</h4>
-          <div class="locked-card compact"><span class="helper-text">Current / Max</span><strong>${character.currentWillpower}/${character.willpower}</strong></div>
+          ${renderCardHeading('Temporary Willpower', 'currentWillpower')}
+          <div class="locked-card compact">${renderFieldLabel('Current / Max', 'currentWillpower')}<strong>${character.currentWillpower}/${character.willpower}</strong></div>
           <div class="meta-text">Restore 1 after downtime ends. The Storyteller may also restore 1 for strong Nature or Demeanor roleplay.</div>
           <div class="inline-actions">
             <button class="secondary-button" type="button" data-action="spend-temp-willpower" ${character.currentWillpower > 0 ? '' : 'disabled'}>Spend 1</button>
@@ -1503,33 +2273,33 @@ export function createApp(root) {
         </div>
 
         <div class="list-card">
-          <h4>Storyteller-Managed Temporary State</h4>
+          ${renderCardHeading('Storyteller-Managed Temporary State')}
           <div class="locked-grid">
-            <div class="locked-card"><span class="helper-text">Blood Pool</span><strong>${character.currentBloodPool}/${character.bloodPool}</strong></div>
-            <div class="locked-card"><span class="helper-text">Health Status</span><strong>${escapeHtml(character.health[character.currentHealthLevel] || 'Healthy')}</strong></div>
-            <div class="locked-card"><span class="helper-text">Temporary Resources</span><strong>${character.currentResources}/${getBackgroundDotsByName(character, 'Resources')}</strong></div>
+            ${renderLockedCard('Blood Pool', `${character.currentBloodPool}/${character.bloodPool}`, 'bloodPool')}
+            ${renderLockedCard('Health Status', character.health[character.currentHealthLevel] || 'Healthy', 'health')}
+            ${renderLockedCard('Temporary Resources', `${character.currentResources}/${getBackgroundDotsByName(character, 'Resources')}`, 'temporaryResources')}
           </div>
           <div class="meta-text">Only the Storyteller updates current blood points, temporary Resources, health status, and hidden temporary effect tracking.</div>
         </div>
 
         <div class="inline-grid two">
           <div class="list-card">
-            <h4>Merits</h4>
+            ${renderCardHeading('Merits', 'merits')}
             ${renderPointSummary(character.merits, 'Creation-only advantages chosen during character build.')}
           </div>
           <div class="list-card">
-            <h4>Flaws</h4>
+            ${renderCardHeading('Flaws', 'flaws')}
             ${renderPointSummary(character.flaws, 'Creation-only drawbacks chosen during character build.')}
           </div>
         </div>
 
         <div class="inline-grid two">
           <div class="list-card">
-            <h4>${escapeHtml(character.clan)} Merits</h4>
+            ${renderCardHeading(`${character.clan} Merits`, 'merits')}
             ${renderPointSummary(character.clanMerits, 'Curated clan-appropriate options chosen during character build.')}
           </div>
           <div class="list-card">
-            <h4>${escapeHtml(character.clan)} Flaws</h4>
+            ${renderCardHeading(`${character.clan} Flaws`, 'flaws')}
             ${renderPointSummary(character.clanFlaws, 'Curated clan-appropriate drawbacks chosen during character build.')}
           </div>
         </div>
@@ -1538,17 +2308,17 @@ export function createApp(root) {
 
         <div class="inline-grid two">
           <div class="list-card">
-            <h4>Equipment</h4>
+            ${renderCardHeading('Equipment')}
             ${renderSimpleInventory(character.equipment, 'Equipment changes come from scenes or Storyteller updates.')}
           </div>
           <div class="list-card">
-            <h4>Items</h4>
+            ${renderCardHeading('Items')}
             ${renderSimpleInventory(character.items, 'Inventory changes come from play, not direct edits.')}
           </div>
         </div>
 
         <div class="list-card">
-          <h4>Confirmed XP Log</h4>
+          ${renderCardHeading('Confirmed XP Log')}
           <div class="xp-log">${renderXpLog(character.experience.log)}</div>
         </div>
       </div>
@@ -1724,6 +2494,73 @@ export function createApp(root) {
     bindInventory(container, chronicle.character, 'equipment');
     bindInventory(container, chronicle.character, 'items');
 
+    container.querySelectorAll('[data-action="apply-ready-template"]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const templateId = button.getAttribute('data-template-id') || '';
+        const template = READY_CHARACTER_TEMPLATES.find((item) => item.id === templateId);
+        if (!template) {
+          setStatus('That template could not be loaded.', true);
+          return;
+        }
+
+        const confirmed = window.confirm(`Replace the unfinished sheet with the ready-to-play template "${template.label}"?`);
+        if (!confirmed) {
+          return;
+        }
+
+        const nextCharacter = createReadyCharacterFromTemplate(templateId);
+        if (!nextCharacter) {
+          setStatus('That template could not be created.', true);
+          return;
+        }
+
+        chronicle.character = nextCharacter;
+        state.activePanel = null;
+        runtime.xpDraft = null;
+        markCharacterSummaryDirty(chronicle);
+        updateChronicleTitle(chronicle);
+        persist();
+
+        if (chronicle.setupComplete) {
+          state.activeView = 'play';
+          render();
+          setStatus(`${template.label} loaded. The chronicle is ready to play.`);
+          if (!chronicle.openingSceneDelivered) {
+            await startOpeningScene(chronicle);
+          }
+          return;
+        }
+
+        state.activeView = 'settings';
+        render();
+        setStatus(`${template.label} loaded. Chronicle settings are next before the night begins.`);
+      });
+    });
+
+    container.querySelectorAll('[data-action="goto-creation-step"]').forEach((button) => {
+      button.addEventListener('click', () => {
+        setCharacterCreationUiStep(chronicle.character, button.getAttribute('data-step') || 'identity');
+        persist();
+        render();
+      });
+    });
+
+    container.querySelector('[data-action="prev-creation-step"]')?.addEventListener('click', () => {
+      const currentIndex = getCharacterCreationUiStepIndex(chronicle.character);
+      const previousStep = CREATION_UI_STEPS[Math.max(0, currentIndex - 1)];
+      setCharacterCreationUiStep(chronicle.character, previousStep.id);
+      persist();
+      render();
+    });
+
+    container.querySelector('[data-action="next-creation-step"]')?.addEventListener('click', () => {
+      const currentIndex = getCharacterCreationUiStepIndex(chronicle.character);
+      const nextStep = CREATION_UI_STEPS[Math.min(CREATION_UI_STEPS.length - 1, currentIndex + 1)];
+      setCharacterCreationUiStep(chronicle.character, nextStep.id);
+      persist();
+      render();
+    });
+
     container.querySelector('[data-action="add-discipline"]')?.addEventListener('click', () => {
       chronicle.character.disciplines.push({ id: uid('discipline'), name: disciplinesData[0].name, dots: 1 });
       persist();
@@ -1812,6 +2649,7 @@ export function createApp(root) {
       }
       chronicle.character.creation.allocationSnapshot = captureCharacterCreationSnapshot(chronicle.character);
       chronicle.character.creation.phase = 'freebies';
+      setCharacterCreationUiStep(chronicle.character, 'traits');
       persist();
       setStatus('Allocation phase confirmed. Freebie spending is now unlocked.');
       render();
@@ -1834,6 +2672,7 @@ export function createApp(root) {
       );
       runtime.xpDraft = getDefaultXpDraft(chronicle.character);
       state.activePanel = 'xp';
+      setCharacterCreationUiStep(chronicle.character, 'finishing');
       persist();
       setStatus('Freebie phase confirmed. Starting experience is now available. Any unspent creation XP will be lost once the chronicle begins.');
       render();
@@ -2211,6 +3050,7 @@ export function createApp(root) {
         const fieldId = event.target.getAttribute(attrAttr);
         target.attributes[fieldId] = sanitizeCreationAttributeValue(target, fieldId, Number(event.target.value));
         if (namespace !== 'xp') {
+          syncCharacterDerivedStats(target);
           persist();
           if (!target.created) {
             render();
@@ -2224,6 +3064,7 @@ export function createApp(root) {
         const fieldId = event.target.getAttribute(abilityAttr);
         target.abilities[fieldId] = sanitizeCreationAbilityValue(target, fieldId, Number(event.target.value));
         if (namespace !== 'xp') {
+          syncCreationAutoSpecialties(target);
           persist();
           if (!target.created) {
             render();
@@ -2237,6 +3078,7 @@ export function createApp(root) {
         const fieldId = event.target.getAttribute(virtueAttr);
         target.virtues[fieldId] = sanitizeCreationVirtueValue(target, fieldId, Number(event.target.value));
         if (namespace !== 'xp') {
+          syncCharacterDerivedStats(target);
           persist();
           if (!target.created) {
             render();
@@ -2317,13 +3159,16 @@ export function createApp(root) {
       row.querySelector(`[${abilityAttr}]`).addEventListener('change', (event) => {
         const item = target.specialties.find((entry) => entry.id === id);
         item.ability = event.target.value;
+        item.isAuto = false;
         if (!xpMode) {
           persist();
+          render();
         }
       });
       row.querySelector(`[${nameAttr}]`).addEventListener('input', (event) => {
         const item = target.specialties.find((entry) => entry.id === id);
         item.name = event.target.value;
+        item.isAuto = false;
         if (!xpMode) {
           persist();
         }
@@ -2404,12 +3249,12 @@ export function createApp(root) {
           .map(
             (group) => `
               <div class="stat-card">
-                <h4>${escapeHtml(group.label)}</h4>
+                ${renderCardHeading(group.label)}
                 ${group.fields
                   .map(
                     (field) => `
                       <label>
-                        <span class="helper-text">${escapeHtml(field.label)}</span>
+                        ${renderFieldLabel(field.label, field.id)}
                         <input type="number" min="1" max="5" ${xpMode ? `data-xp-attr="${field.id}"` : `data-attr="${field.id}"`} value="${character.attributes[field.id]}" />
                       </label>
                     `,
@@ -2426,12 +3271,12 @@ export function createApp(root) {
           .map(
             (group) => `
               <div class="stat-card">
-                <h4>${escapeHtml(group.label)}</h4>
+                ${renderCardHeading(group.label)}
                 ${group.fields
                   .map(
                     (field) => `
                       <label>
-                        <span class="helper-text">${escapeHtml(field.label)}</span>
+                        ${renderFieldLabel(field.label, field.id)}
                         <input type="number" min="0" max="5" ${xpMode ? `data-xp-ability="${field.id}"` : `data-ability="${field.id}"`} value="${character.abilities[field.id]}" />
                       </label>
                     `,
@@ -2448,7 +3293,7 @@ export function createApp(root) {
   function renderDisciplineCard(character, xpMode) {
     return `
       <div class="list-card">
-        <h4>Disciplines</h4>
+        ${renderCardHeading('Disciplines', 'disciplines')}
         <div data-role="discipline-list">${renderTraitRows(character.disciplines, disciplinesData.map((item) => item.name), 'discipline', xpMode)}</div>
         <button class="secondary-button" type="button" data-action="add-discipline">Add Discipline</button>
       </div>
@@ -2458,7 +3303,7 @@ export function createApp(root) {
   function renderBackgroundCard(character, xpMode) {
     return `
       <div class="list-card">
-        <h4>Backgrounds</h4>
+        ${renderCardHeading('Backgrounds', 'backgrounds')}
         <div data-role="background-list">${renderTraitRows(character.backgrounds, backgroundsData.map((item) => item.name), 'background', xpMode)}</div>
         <button class="secondary-button" type="button" data-action="add-background">Add Background</button>
       </div>
@@ -2468,7 +3313,7 @@ export function createApp(root) {
   function renderPointTraitCard(kind, title, items, definitions) {
     return `
       <div class="list-card">
-        <h4>${escapeHtml(title)}</h4>
+        ${renderCardHeading(title, kind.includes('flaw') ? 'flaws' : 'merits')}
         ${definitions.length ? '' : '<p class="helper-text">No sourced options are available for this category yet.</p>'}
         <div class="inventory-list">${renderPointRows(kind, items, definitions)}</div>
         ${definitions.length ? `<button class="secondary-button" type="button" data-action="add-${kind}">Add ${escapeHtml(title.slice(0, -1) || title)}</button>` : ''}
@@ -2494,7 +3339,7 @@ export function createApp(root) {
   function renderSpecialtyCard(character, xpMode) {
     return `
       <div class="list-card">
-        <h4>Specialties</h4>
+        ${renderCardHeading('Specialties', 'specialties')}
         <div data-role="specialty-list">${renderSpecialtyRows(character.specialties, xpMode)}</div>
         <button class="secondary-button" type="button" data-action="add-specialty">Add Specialty</button>
       </div>
@@ -2504,7 +3349,7 @@ export function createApp(root) {
   function renderInventoryCard(key, title, items, readOnly) {
     return `
       <div class="list-card">
-        <h4>${escapeHtml(title)}</h4>
+        ${renderCardHeading(title)}
         <div class="inventory-list">${renderInventoryRows(key, items, readOnly)}</div>
         ${readOnly ? '<p class="footer-note">Story events and the Storyteller update this list after creation.</p>' : `<button class="secondary-button" type="button" data-action="add-${key}">Add ${escapeHtml(title.slice(0, -1) || title)}</button>`}
       </div>
@@ -2523,7 +3368,7 @@ export function createApp(root) {
   function renderSimpleCreationTraitCard(title, items, note) {
     return `
       <div class="list-card">
-        <h4>${escapeHtml(title)}</h4>
+        ${renderCardHeading(title, title === 'Disciplines' ? 'disciplines' : title === 'Backgrounds' ? 'backgrounds' : '')}
         ${renderSimpleList(items, note)}
       </div>
     `;
@@ -2532,7 +3377,7 @@ export function createApp(root) {
   function renderPointSummaryCard(title, items, note) {
     return `
       <div class="list-card">
-        <h4>${escapeHtml(title)}</h4>
+        ${renderCardHeading(title, title.includes('Flaw') ? 'flaws' : 'merits')}
         ${renderPointSummary(items, note)}
       </div>
     `;
@@ -2561,31 +3406,34 @@ export function createApp(root) {
     const morality = getMoralityConfig(character.path);
     const generation = syncCharacterDerivedStats(character);
     const maxResources = getBackgroundDotsByName(character, 'Resources');
+    const phase = getCharacterCreationPhase(character);
     return `
       <div class="inline-grid three">
-        <label><span class="helper-text">${escapeHtml(morality.primaryLabel)}</span><input type="number" min="1" max="5" ${xpMode ? 'data-xp-virtue="conscience"' : 'data-virtue="conscience"'} value="${character.virtues.conscience}" /></label>
-        <label><span class="helper-text">${escapeHtml(morality.secondaryLabel)}</span><input type="number" min="1" max="5" ${xpMode ? 'data-xp-virtue="selfControl"' : 'data-virtue="selfControl"'} value="${character.virtues.selfControl}" /></label>
-        <label><span class="helper-text">Courage</span><input type="number" min="1" max="5" ${xpMode ? 'data-xp-virtue="courage"' : 'data-virtue="courage"'} value="${character.virtues.courage}" /></label>
+        <label>${renderFieldLabel(morality.primaryLabel, 'conscience')}<input type="number" min="1" max="5" ${xpMode ? 'data-xp-virtue="conscience"' : 'data-virtue="conscience"'} value="${character.virtues.conscience}" /></label>
+        <label>${renderFieldLabel(morality.secondaryLabel, 'selfControl')}<input type="number" min="1" max="5" ${xpMode ? 'data-xp-virtue="selfControl"' : 'data-virtue="selfControl"'} value="${character.virtues.selfControl}" /></label>
+        <label>${renderFieldLabel('Courage', 'courage')}<input type="number" min="1" max="5" ${xpMode ? 'data-xp-virtue="courage"' : 'data-virtue="courage"'} value="${character.virtues.courage}" /></label>
       </div>
 
       <div class="inline-grid three">
-        <div class="locked-card"><span class="helper-text">Generation</span><strong>${escapeHtml(formatGenerationLabel(generation.generation))}</strong></div>
-        <div class="locked-card"><span class="helper-text">Blood Pool</span><strong>${character.currentBloodPool}/${generation.bloodPool}</strong></div>
-        <label><span class="helper-text">${escapeHtml(morality.ratingLabel)}</span><input type="number" min="0" max="10" ${xpMode ? 'data-xp-field="humanity"' : 'data-field="humanity"'} value="${character.humanity}" /></label>
+        ${renderLockedCard('Generation', formatGenerationLabel(generation.generation), 'generation')}
+        ${renderLockedCard('Blood Pool', `${character.currentBloodPool}/${generation.bloodPool}`, 'bloodPool')}
+        <label>${renderFieldLabel(morality.ratingLabel, 'humanity')}<input type="number" min="0" max="10" ${xpMode ? 'data-xp-field="humanity"' : 'data-field="humanity"'} value="${character.humanity}" /></label>
       </div>
 
       <div class="inline-grid two">
-        <label><span class="helper-text">Willpower</span><input type="number" min="0" max="10" ${xpMode ? 'data-xp-field="willpower"' : 'data-field="willpower"'} value="${character.willpower}" /></label>
-        <div class="locked-card"><span class="helper-text">Current Willpower</span><strong>${character.currentWillpower}/${character.willpower}</strong></div>
+        ${!xpMode && phase === 'allocation'
+          ? renderLockedCard('Willpower', character.willpower, 'willpower', 'During allocation, Willpower stays equal to Courage.')
+          : `<label>${renderFieldLabel('Willpower', 'willpower')}<input type="number" min="0" max="10" ${xpMode ? 'data-xp-field="willpower"' : 'data-field="willpower"'} value="${character.willpower}" /></label>`}
+        ${renderLockedCard('Current Willpower', `${character.currentWillpower}/${character.willpower}`, 'currentWillpower')}
       </div>
 
       <div class="inline-grid two">
-        <div class="locked-card"><span class="helper-text">Generation Background</span><strong>${generation.backgroundDots} dot${generation.backgroundDots === 1 ? '' : 's'}</strong></div>
-        <div class="locked-card"><span class="helper-text">Temporary Resources</span><strong>${character.currentResources}/${maxResources}</strong></div>
+        ${renderLockedCard('Generation Background', `${generation.backgroundDots} dot${generation.backgroundDots === 1 ? '' : 's'}`)}
+        ${renderLockedCard('Temporary Resources', `${character.currentResources}/${maxResources}`, 'temporaryResources')}
       </div>
 
       <div class="list-card">
-        <h4>Health Track</h4>
+        ${renderCardHeading('Health Track', 'health')}
         ${renderHealthTrack(character)}
       </div>
     `;
@@ -2596,29 +3444,43 @@ export function createApp(root) {
     return `
       <div class="inline-grid two">
         <div class="list-card">
-          <h4>Disciplines</h4>
+          ${renderCardHeading('Disciplines', 'disciplines')}
           ${renderSimpleList(character.disciplines.map((item) => `${item.name} ${item.dots}`), 'Raise or learn disciplines through XP purchases only.')}
         </div>
         <div class="list-card">
-          <h4>Specialties</h4>
+          ${renderCardHeading('Specialties', 'specialties')}
           ${renderSimpleList(character.specialties.map((item) => `${startCase(item.ability)}: ${item.name}`), 'New specialties should be confirmed through XP purchases.')}
         </div>
       </div>
 
       <div class="stat-grid compact">
-        ${schema.attributes.map((group) => renderSummaryCard(group.label, group.fields.map((field) => `${field.label} ${character.attributes[field.id]}`))).join('')}
-        ${schema.abilities.map((group) => renderSummaryCard(group.label, group.fields.filter((field) => character.abilities[field.id] > 0).map((field) => `${field.label} ${character.abilities[field.id]}`))).join('')}
+        ${schema.attributes.map((group) => `
+          <div class="stat-card">
+            ${renderCardHeading(group.label)}
+            <div class="summary-list">
+              ${group.fields.map((field) => renderReadonlyFieldSummary(field.label, character.attributes[field.id], field.id)).join('')}
+            </div>
+          </div>
+        `).join('')}
+        ${schema.abilities.map((group) => `
+          <div class="stat-card">
+            ${renderCardHeading(group.label)}
+            <div class="summary-list">
+              ${(group.fields.filter((field) => character.abilities[field.id] > 0).length ? group.fields.filter((field) => character.abilities[field.id] > 0).map((field) => renderReadonlyFieldSummary(field.label, character.abilities[field.id], field.id)).join('') : '<div class="helper-text">No trained dots.</div>')}
+            </div>
+          </div>
+        `).join('')}
       </div>
 
       <div class="inline-grid three">
-        <div class="locked-card"><span class="helper-text">${escapeHtml(morality.ratingLabel)}</span><strong>${character.humanity}</strong></div>
-        <div class="locked-card"><span class="helper-text">Willpower</span><strong>${character.currentWillpower}/${character.willpower}</strong></div>
-        <div class="locked-card"><span class="helper-text">Blood Pool</span><strong>${character.currentBloodPool}/${character.bloodPool}</strong></div>
+        ${renderLockedCard(morality.ratingLabel, character.humanity, 'humanity')}
+        ${renderLockedCard('Willpower', `${character.currentWillpower}/${character.willpower}`, 'willpower')}
+        ${renderLockedCard('Blood Pool', `${character.currentBloodPool}/${character.bloodPool}`, 'bloodPool')}
       </div>
 
       <div class="inline-grid two">
-        <div class="locked-card"><span class="helper-text">Health Status</span><strong>${escapeHtml(character.health[character.currentHealthLevel] || 'Healthy')}</strong></div>
-        <div class="locked-card"><span class="helper-text">Temporary Resources</span><strong>${character.currentResources}/${getBackgroundDotsByName(character, 'Resources')}</strong></div>
+        ${renderLockedCard('Health Status', character.health[character.currentHealthLevel] || 'Healthy', 'health')}
+        ${renderLockedCard('Temporary Resources', `${character.currentResources}/${getBackgroundDotsByName(character, 'Resources')}`, 'temporaryResources')}
       </div>
     `;
   }
@@ -2628,29 +3490,29 @@ export function createApp(root) {
     const generation = syncCharacterDerivedStats(character);
     return `
       <div class="inline-grid three">
-        <div class="locked-card"><span class="helper-text">${escapeHtml(morality.primaryLabel)}</span><strong>${character.virtues.conscience}</strong></div>
-        <div class="locked-card"><span class="helper-text">${escapeHtml(morality.secondaryLabel)}</span><strong>${character.virtues.selfControl}</strong></div>
-        <div class="locked-card"><span class="helper-text">Courage</span><strong>${character.virtues.courage}</strong></div>
+        ${renderLockedCard(morality.primaryLabel, character.virtues.conscience, 'conscience')}
+        ${renderLockedCard(morality.secondaryLabel, character.virtues.selfControl, 'selfControl')}
+        ${renderLockedCard('Courage', character.virtues.courage, 'courage')}
       </div>
 
       <div class="inline-grid three">
-        <div class="locked-card"><span class="helper-text">Generation</span><strong>${escapeHtml(formatGenerationLabel(generation.generation))}</strong></div>
-        <div class="locked-card"><span class="helper-text">Blood Pool</span><strong>${character.currentBloodPool}/${generation.bloodPool}</strong></div>
-        <div class="locked-card"><span class="helper-text">${escapeHtml(morality.ratingLabel)}</span><strong>${character.humanity}</strong></div>
+        ${renderLockedCard('Generation', formatGenerationLabel(generation.generation), 'generation')}
+        ${renderLockedCard('Blood Pool', `${character.currentBloodPool}/${generation.bloodPool}`, 'bloodPool')}
+        ${renderLockedCard(morality.ratingLabel, character.humanity, 'humanity')}
       </div>
 
       <div class="inline-grid two">
-        <div class="locked-card"><span class="helper-text">Willpower</span><strong>${character.currentWillpower}/${character.willpower}</strong></div>
-        <div class="locked-card"><span class="helper-text">Generation Background</span><strong>${generation.backgroundDots} dot${generation.backgroundDots === 1 ? '' : 's'}</strong></div>
+        ${renderLockedCard('Willpower', `${character.currentWillpower}/${character.willpower}`, 'willpower')}
+        ${renderLockedCard('Generation Background', `${generation.backgroundDots} dot${generation.backgroundDots === 1 ? '' : 's'}`)}
       </div>
 
       <div class="inline-grid two">
-        <div class="locked-card"><span class="helper-text">Health Status</span><strong>${escapeHtml(character.health[character.currentHealthLevel] || 'Healthy')}</strong></div>
-        <div class="locked-card"><span class="helper-text">Temporary Resources</span><strong>${character.currentResources}/${getBackgroundDotsByName(character, 'Resources')}</strong></div>
+        ${renderLockedCard('Health Status', character.health[character.currentHealthLevel] || 'Healthy', 'health')}
+        ${renderLockedCard('Temporary Resources', `${character.currentResources}/${getBackgroundDotsByName(character, 'Resources')}`, 'temporaryResources')}
       </div>
 
       <div class="list-card">
-        <h4>Health Track</h4>
+        ${renderCardHeading('Health Track', 'health')}
         ${renderHealthTrack(character)}
       </div>
     `;
@@ -3143,6 +4005,39 @@ export function createApp(root) {
     }
   }
 
+  function getLastStorytellerRequest(chronicle) {
+    return chronicle.lastStorytellerRequest && typeof chronicle.lastStorytellerRequest === 'object'
+      ? chronicle.lastStorytellerRequest
+      : null;
+  }
+
+  function canRegenerateStorytellerResponse(chronicle) {
+    const lastRequest = getLastStorytellerRequest(chronicle);
+    return Boolean(lastRequest && chronicle.messages.at(-1)?.role === 'assistant');
+  }
+
+  async function onRegenerateResponse() {
+    const chronicle = getActiveChronicle();
+    const lastRequest = getLastStorytellerRequest(chronicle);
+    if (!lastRequest) {
+      setStatus('There is no Storyteller response to regenerate yet.', true);
+      return;
+    }
+
+    if (chronicle.messages.at(-1)?.role !== 'assistant') {
+      setStatus('Regeneration is only available after a Storyteller response.', true);
+      return;
+    }
+
+    await requestStorytellerTurn(chronicle, {
+      ...lastRequest,
+      appendUserMessage: Boolean(lastRequest.appendUserMessage),
+      pendingStatus: 'The Storyteller is reconsidering the scene.',
+      reuseTrailingUserMessage: Boolean(lastRequest.appendUserMessage),
+      replaceLastAssistant: true,
+    });
+  }
+
   async function requestStorytellerTurn(chronicle, options) {
     const {
       userMessage,
@@ -3150,6 +4045,8 @@ export function createApp(root) {
       pendingStatus,
       replaceIntroMessage = false,
       openingScene = false,
+      reuseTrailingUserMessage = false,
+      replaceLastAssistant = false,
     } = options;
 
     const selectedModel = state.model || DEFAULT_MODEL;
@@ -3159,16 +4056,16 @@ export function createApp(root) {
     }
 
     if (isModelCoolingDown(selectedModel)) {
-      const fallbackResult = await tryRateLimitFallback({ chronicle, userMessage, appendUserMessage, sourceModel: selectedModel });
+      const fallbackResult = await tryRateLimitFallback({ chronicle, userMessage, appendUserMessage, reuseTrailingUserMessage, sourceModel: selectedModel });
       if (fallbackResult) {
-        return finalizeFallbackResponse(chronicle, fallbackResult, replaceIntroMessage, openingScene);
+        return finalizeFallbackResponse(chronicle, fallbackResult, replaceIntroMessage, openingScene, replaceLastAssistant);
       }
 
       setStatus(getRateLimitStatusMessage(selectedModel, getFallbackModelChain(selectedModel)), true);
       return false;
     }
 
-    if (appendUserMessage) {
+    if (appendUserMessage && !reuseTrailingUserMessage) {
       chronicle.messages.push({
         id: uid('msg'),
         role: 'user',
@@ -3188,10 +4085,16 @@ export function createApp(root) {
     });
 
     try {
+      chronicle.lastStorytellerRequest = {
+        userMessage,
+        appendUserMessage: Boolean(appendUserMessage),
+        replaceIntroMessage: Boolean(replaceIntroMessage),
+        openingScene: Boolean(openingScene),
+      };
       const city = getChronicleCity(chronicle);
       const selectedHooks = getChronicleHookSummaries(chronicle.cityId, chronicle.plotHookIds);
       const pack = getChroniclePack(chronicle.cityId);
-      const history = appendUserMessage ? chronicle.messages.slice(0, -1).slice(-8) : chronicle.messages.slice(-8);
+      const history = appendUserMessage || reuseTrailingUserMessage ? chronicle.messages.slice(0, -1).slice(-8) : chronicle.messages.slice(-8);
       const characterSummaryMode = shouldUseFullCharacterSummary(chronicle, { openingScene, userMessage }) ? 'full' : 'compact';
       const systemPrompt = buildSystemPrompt({
         guardrails,
@@ -3238,6 +4141,9 @@ export function createApp(root) {
       if (replaceIntroMessage && chronicle.messages.length === 1 && chronicle.messages[0].role === 'assistant') {
         chronicle.messages = [];
       }
+      if (replaceLastAssistant && chronicle.messages.at(-1)?.role === 'assistant') {
+        chronicle.messages.pop();
+      }
 
       chronicle.messages.push({
         id: uid('msg'),
@@ -3277,9 +4183,9 @@ export function createApp(root) {
     } catch (error) {
       if (error?.isRateLimit) {
         registerModelRateLimit(selectedModel);
-        const fallbackResult = await tryRateLimitFallback({ chronicle, userMessage, appendUserMessage, sourceModel: selectedModel });
+        const fallbackResult = await tryRateLimitFallback({ chronicle, userMessage, appendUserMessage, reuseTrailingUserMessage, sourceModel: selectedModel });
         if (fallbackResult) {
-          return finalizeFallbackResponse(chronicle, fallbackResult, replaceIntroMessage, openingScene);
+          return finalizeFallbackResponse(chronicle, fallbackResult, replaceIntroMessage, openingScene, replaceLastAssistant);
         }
         error.message = getRateLimitStatusMessage(selectedModel, getFallbackModelChain(selectedModel));
       }
@@ -3297,7 +4203,7 @@ export function createApp(root) {
     }
   }
 
-  async function tryRateLimitFallback({ chronicle, userMessage, appendUserMessage, sourceModel }) {
+  async function tryRateLimitFallback({ chronicle, userMessage, appendUserMessage, reuseTrailingUserMessage = false, sourceModel }) {
     const currentModel = sourceModel || state.model || DEFAULT_MODEL;
     const fallbackModels = isKnownStoryModel(currentModel) ? getFallbackModelChain(currentModel) : [];
     if (!fallbackModels.length) {
@@ -3307,7 +4213,7 @@ export function createApp(root) {
     const city = getChronicleCity(chronicle);
     const selectedHooks = getChronicleHookSummaries(chronicle.cityId, chronicle.plotHookIds);
     const pack = getChroniclePack(chronicle.cityId);
-    const history = appendUserMessage ? chronicle.messages.slice(0, -1).slice(-8) : chronicle.messages.slice(-8);
+    const history = appendUserMessage || reuseTrailingUserMessage ? chronicle.messages.slice(0, -1).slice(-8) : chronicle.messages.slice(-8);
     const characterSummaryMode = shouldUseFullCharacterSummary(chronicle, { userMessage }) ? 'full' : 'compact';
     const systemPrompt = buildSystemPrompt({
       guardrails,
@@ -3357,7 +4263,7 @@ export function createApp(root) {
     return null;
   }
 
-  async function finalizeFallbackResponse(chronicle, result, replaceIntroMessage, openingScene) {
+  async function finalizeFallbackResponse(chronicle, result, replaceIntroMessage, openingScene, replaceLastAssistant = false) {
     const parsed = parseAssistantStatePayload(result.content);
     applyStructuredUpdates(chronicle, parsed.updates);
     debugLog('Received storyteller response via fallback model', {
@@ -3370,6 +4276,9 @@ export function createApp(root) {
 
     if (replaceIntroMessage && chronicle.messages.length === 1 && chronicle.messages[0].role === 'assistant') {
       chronicle.messages = [];
+    }
+    if (replaceLastAssistant && chronicle.messages.at(-1)?.role === 'assistant') {
+      chronicle.messages.pop();
     }
 
     chronicle.messages.push({
@@ -3474,11 +4383,7 @@ export function createApp(root) {
     debugLog('Applying structured updates', { chronicleId: chronicle.id, keys: Object.keys(updates) });
 
     if (Array.isArray(updates.backgrounds)) {
-      chronicle.character.backgrounds = updates.backgrounds.map((item) => ({
-        id: uid('background'),
-        name: item.name || 'Background',
-        dots: Math.max(0, Number(item.dots) || 0),
-      }));
+      chronicle.character.backgrounds = sanitizeStructuredBackgrounds(updates.backgrounds);
       syncCharacterDerivedStats(chronicle.character);
       markCharacterSummaryDirty(chronicle);
     }
@@ -3577,29 +4482,9 @@ export function createApp(root) {
         }
         const existing = chronicle.npcs.find((npc) => npc.name.toLowerCase() === incoming.name.toLowerCase());
         if (existing) {
-          existing.clan = incoming.clan || existing.clan;
-          existing.ageCategory = incoming.ageCategory || existing.ageCategory;
-          existing.role = incoming.role || existing.role;
-          existing.summary = incoming.summary || existing.summary;
-          existing.status = incoming.status || existing.status;
-          existing.ambition = incoming.ambition || existing.ambition;
-          existing.desire = incoming.desire || existing.desire;
-          existing.notes = incoming.notes || existing.notes;
-          existing.secrets = incoming.secrets || existing.secrets;
+          applyStructuredNpcUpdate(existing, incoming);
         } else {
-          chronicle.npcs.push({
-            id: uid('npc'),
-            name: incoming.name,
-            clan: incoming.clan || '',
-            ageCategory: incoming.ageCategory || '',
-            role: incoming.role || '',
-            summary: incoming.summary || '',
-            status: incoming.status || '',
-            ambition: incoming.ambition || '',
-            desire: incoming.desire || '',
-            notes: incoming.notes || '',
-            secrets: incoming.secrets || '',
-          });
+          chronicle.npcs.push(createStructuredNpcRecord(incoming));
         }
       }
     }
@@ -4148,16 +5033,21 @@ function getBackgroundDotsByName(character, backgroundName) {
 }
 
 function syncCharacterDerivedStats(character) {
+  const creation = ensureCharacterCreationState(character);
   const generationDots = Math.max(0, Math.min(5, getBackgroundDotsByName(character, 'Generation')));
   const resourceDots = Math.max(0, getBackgroundDotsByName(character, 'Resources'));
   character.generation = 13 - generationDots;
   character.bloodPool = 10 + generationDots;
+  if (!character.created && creation.phase === 'allocation') {
+    character.willpower = Math.max(0, Math.min(10, Number(character.virtues?.courage) || 0));
+  }
   const maximumWillpower = Math.max(0, Number(character.willpower) || 0);
   if (!character.created) {
     character.currentWillpower = maximumWillpower;
     character.currentBloodPool = character.bloodPool;
     character.currentResources = resourceDots;
     character.currentHealthLevel = 0;
+    syncCreationAutoSpecialties(character);
   } else {
     character.currentWillpower = Math.max(0, Math.min(maximumWillpower, Number(character.currentWillpower ?? maximumWillpower) || 0));
     character.currentBloodPool = Math.max(0, Math.min(character.bloodPool, Number(character.currentBloodPool ?? character.bloodPool) || 0));
@@ -4174,10 +5064,56 @@ function syncCharacterDerivedStats(character) {
 function getDefaultCreationState() {
   return {
     phase: 'allocation',
+    uiStep: 'identity',
     allocationSnapshot: null,
     freebieSnapshot: null,
     startingExperience: 15,
   };
+}
+
+function getSpecialtyDefinitionForAbility(abilityId) {
+  return specialtiesData.find((entry) => entry.ability === abilityId) ?? null;
+}
+
+function getDefaultSpecialtyNameForAbility(abilityId) {
+  const definition = getSpecialtyDefinitionForAbility(abilityId);
+  if (definition?.examples?.length) {
+    return definition.examples[0];
+  }
+  const label = ABILITY_FIELDS.find((field) => field.id === abilityId)?.label ?? startCase(abilityId);
+  return `${label} Expertise`;
+}
+
+function syncCreationAutoSpecialties(character) {
+  if (character.created) {
+    return;
+  }
+
+  const eligibleAbilities = new Set(
+    Object.entries(character.abilities ?? {})
+      .filter(([, value]) => (Number(value) || 0) >= 4)
+      .map(([abilityId]) => abilityId),
+  );
+
+  character.specialties = (Array.isArray(character.specialties) ? character.specialties : []).filter((item) => {
+    if (!item?.isAuto) {
+      return true;
+    }
+    return eligibleAbilities.has(item.ability);
+  });
+
+  eligibleAbilities.forEach((abilityId) => {
+    const existing = character.specialties.find((item) => item.ability === abilityId);
+    if (existing) {
+      return;
+    }
+    character.specialties.push({
+      id: uid('specialty'),
+      ability: abilityId,
+      name: getDefaultSpecialtyNameForAbility(abilityId),
+      isAuto: true,
+    });
+  });
 }
 
 function ensureCharacterCreationState(character) {

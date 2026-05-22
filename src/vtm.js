@@ -37,6 +37,7 @@ function getDefaultCampaignMemory() {
 function getDefaultCreationState() {
   return {
     phase: 'allocation',
+    uiStep: 'identity',
     allocationSnapshot: null,
     freebieSnapshot: null,
     startingExperience: 15,
