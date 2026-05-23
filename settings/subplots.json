@@ -1,0 +1,26 @@
+[
+  {
+    "id": "missing-ghoul-bookkeeper",
+    "title": "Missing Ghoul Bookkeeper",
+    "summary": "A ghoul who tracked petty boons, feeding favors, and minor debts has disappeared with an annotated ledger.",
+    "use": "Use for local leverage, blackmail, or to expose small lies that point toward a larger conspiracy."
+  },
+  {
+    "id": "restless-herd-cell",
+    "title": "Restless Herd Cell",
+    "summary": "A dependable herd circle has begun acting strangely after someone new started screening access and conversations.",
+    "use": "Use for social suspicion, feeding instability, or a subtle enemy move against the character's support base."
+  },
+  {
+    "id": "boon-called-too-early",
+    "title": "Boon Called Too Early",
+    "summary": "A minor boon is invoked at the worst possible moment, forcing the character to choose between pride, safety, and reputation.",
+    "use": "Use to pressure etiquette, status, and competing priorities during a larger scene."
+  },
+  {
+    "id": "street-predator-copycat",
+    "title": "Street Predator Copycat",
+    "summary": "A mortal or thin-blood is imitating a known predator's feeding pattern badly enough to attract attention.",
+    "use": "Use to create Masquerade risk, false blame, or a messy chance to gain leverage over vulnerable actors."
+  }
+]

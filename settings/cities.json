@@ -1,0 +1,62 @@
+[
+  {
+    "id": "chicago-v5",
+    "name": "Chicago",
+    "region": "United States",
+    "mood": "A Camarilla jewel cracking under modern pressure",
+    "powerMap": "Prince Kevin Jackson's court, surviving old-guard interests, Anarch opportunists, and hunter pressure all compete for neighborhoods, influence, and blood.",
+    "summary": "Use Chicago by Night as the primary chronicle frame. Pull from V5 Chicago's courts, coteries, rivalries, and living metaplot, then adjudicate every mechanical question with V20 rules.",
+    "activeThreats": ["Lodin's lingering shadow over succession", "Anarch expansion into contested neighborhoods", "Second Inquisition surveillance and asset loss"],
+    "chronicleBook": "Chicago by Night",
+    "source": "V5 metaplot adapted to V20 mechanics",
+    "metaplotSource": "Chicago by Night (V5)",
+    "supportingBooks": ["Chicago Folio Advance", "Crimson Gutter", "Camarilla", "Anarch", "The Second Inquisition"],
+    "storytellerDirective": "Use Chicago's named NPCs, courts, feeding grounds, and political conflicts from V5, but convert all mechanical references into V20-compatible traits when needed.",
+    "npcConversionGuidance": "When a V5 NPC needs mechanics, preserve their role, clan, apparent generation, signature disciplines, and threat level, then approximate them as V20 dots instead of reproducing V5 math."
+  },
+  {
+    "id": "boston-v5",
+    "name": "Boston",
+    "region": "United States",
+    "mood": "Academia, money, and revolutionary grudges under polished glass",
+    "powerMap": "Blue-blood institutions, entrenched Elysia, insurgent activists, and old harbor influence all overlap in a city that rewards subtle cruelty.",
+    "summary": "Use Boston by Night as the chronicle foundation for domain politics, old grudges, harbor influence, and intellectual prestige, then translate every conflict into V20 mechanics.",
+    "activeThreats": ["Institutional cover-ups around feeding grounds", "Anarch agitation among students and night labor", "Old family money destabilized by digital exposure"],
+    "chronicleBook": "Boston by Night",
+    "source": "V5 chronicle adaptation for V20 mechanics",
+    "metaplotSource": "Boston by Night (V5-compatible chronicle source)",
+    "supportingBooks": ["V5 Core Book", "Camarilla", "Anarch", "The Second Inquisition"],
+    "storytellerDirective": "Lean on Boston's factional pressure, prestige, and local grudges. Use V5-era themes and mood, but adjudicate the city through V20 rules and terminology.",
+    "npcConversionGuidance": "Translate Boston NPCs into V20 by preserving narrative function first: status, signature powers, allies, retainers, and social leverage matter more than one-to-one V5 ratings."
+  },
+  {
+    "id": "london-fall-v5",
+    "name": "London",
+    "region": "United Kingdom",
+    "mood": "Ruins, state violence, and ancient ambition beneath a wounded capital",
+    "powerMap": "The remnants of Mithras's legacy, Banu Haqim ambitions, shattered courts, and national-security scrutiny create a city of paranoid alliances.",
+    "summary": "Use The Fall of London as the chronicle frame for conspiracies, sleeping tyrants, fractured loyalties, and national-scale consequences, but resolve actions and advancement with V20 mechanics.",
+    "activeThreats": ["Mithras-related conspiracies", "State and intelligence scrutiny", "Banu Haqim opportunism inside collapsing institutions"],
+    "chronicleBook": "The Fall of London",
+    "source": "V5 campaign adapted to V20 mechanics",
+    "metaplotSource": "The Fall of London (V5)",
+    "supportingBooks": ["V5 Core Book", "Camarilla", "The Second Inquisition"],
+    "storytellerDirective": "Use London's V5 campaign material for its conspiracies, mortal-state pressure, and iconic NPCs. Keep the tone severe and political while converting all mechanics into V20 form.",
+    "npcConversionGuidance": "For London NPCs, convert V5 character concepts into V20 traits by matching sect role, clan, signature disciplines, and narrative menace rather than literal stat equivalence."
+  },
+  {
+    "id": "custom-us-city",
+    "name": "Custom U.S. City",
+    "region": "United States",
+    "mood": "An original V5-era city with unstable modern predator politics",
+    "powerMap": "The Storyteller should invent the city's sect balance, pressure points, and local predator economy from scratch using V5-era assumptions about surveillance, sect fracture, and modern hunger.",
+    "summary": "Create an original chronicle in any populous U.S. city such as Los Angeles, New Orleans, Houston, Atlanta, or Seattle. Build a fresh power structure, main plot, subplots, factions, and NPCs on V5 foundations, then adjudicate everything with V20 mechanics.",
+    "activeThreats": ["Second Inquisition attention", "Territorial instability", "Opportunistic sect expansion"],
+    "chronicleBook": "Original Chronicle",
+    "source": "Original V5-inspired chronicle foundation adapted to V20 mechanics",
+    "metaplotSource": "Original chronicle using V5 lore foundations",
+    "supportingBooks": ["V5 Core Book", "Camarilla", "Anarch", "The Second Inquisition"],
+    "storytellerDirective": "Invent the city's power structure, main plot, subplot pressure, recurring NPCs, and political landscape from scratch. Ground the city in V5-era sect politics, hunter pressure, and modern Kindred culture while using V20 rules.",
+    "npcConversionGuidance": "Generate original NPCs directly in V20 terms. If you borrow a V5 archetype or concept, convert concept first and numbers second."
+  }
+]

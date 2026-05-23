@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.vscode/
+.env
+.env.local
+resources/
+npc/
+extracted_text.txt
+lore_of_the_clans.txt
+_boston.txt
+_chicago.txt
+_london.txt
+_extract_probe.cjs
+_extract_probe.js
+_freq_probe.cjs

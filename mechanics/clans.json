@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Assamite",
+    "disciplines": ["Celerity", "Obfuscate", "Quietus"],
+    "theme": "Assassins, judges, and blood-bound seekers of deadly purpose.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Brujah",
+    "disciplines": ["Celerity", "Potence", "Presence"],
+    "theme": "Revolutionary idealists, punks, and furious philosophers.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Followers of Set",
+    "disciplines": ["Obfuscate", "Presence", "Serpentis"],
+    "theme": "Corrupters, tempters, and cultic predators serving Set's legacy.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Gangrel",
+    "disciplines": ["Animalism", "Fortitude", "Protean"],
+    "theme": "Ferals, wanderers, and predators with one foot in the wild.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Giovanni",
+    "disciplines": ["Dominate", "Necromancy", "Potence"],
+    "theme": "Necromantic merchant princes who treat blood and death as family business.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Lasombra",
+    "disciplines": ["Dominate", "Obtenebration", "Potence"],
+    "theme": "Shadow-wielding aristocrats obsessed with command, testing, and ruthless hierarchy.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Malkavian",
+    "disciplines": ["Auspex", "Dementation", "Obfuscate"],
+    "theme": "Seers, lunatics, and insight sharpened into a dangerous blade.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Nosferatu",
+    "disciplines": ["Animalism", "Obfuscate", "Potence"],
+    "theme": "Hidden informants, sewer monarchs, and truth hoarders.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Ravnos",
+    "disciplines": ["Animalism", "Chimerstry", "Fortitude"],
+    "theme": "Nomads, tricksters, and illusionists living on appetite and motion.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Toreador",
+    "disciplines": ["Auspex", "Celerity", "Presence"],
+    "theme": "Artists, predators, and social tyrants wrapped in beauty.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Tremere",
+    "disciplines": ["Auspex", "Dominate", "Thaumaturgy"],
+    "theme": "Occult aristocrats bound by blood oaths and dangerous ambition.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Tzimisce",
+    "disciplines": ["Animalism", "Auspex", "Vicissitude"],
+    "theme": "Fiends of flesh, territory, and hospitality twisted into cruelty.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Ventrue",
+    "disciplines": ["Dominate", "Fortitude", "Presence"],
+    "theme": "Blue-blood rulers, financiers, and tyrants of tradition.",
+    "source": "V20 Core"
+  },
+  {
+    "name": "Caitiff",
+    "disciplines": [],
+    "theme": "Clanless outcasts whose vitae never settled into a recognized lineage.",
+    "source": "V20 Core"
+  }
+]

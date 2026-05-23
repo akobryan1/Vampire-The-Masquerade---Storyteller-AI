@@ -1,0 +1,174 @@
+{
+  "Assamite": {
+    "merits": [
+      { "name": "Sectarian Ally", "points": 1, "summary": "You maintain a useful friend in another sect and can navigate its politics through them." },
+      { "name": "Thousand Meter Killer", "points": 1, "summary": "You are a proven sniper, reducing sniping difficulty and extending rifle range." }
+    ],
+    "flaws": [
+      { "name": "Outcast", "points": 2, "summary": "You rejected your caste's role and suffer open disdain from it." },
+      { "name": "Broken Antitribu", "points": 3, "summary": "You joined the Sabbat but still suffer the Tremere Curse and its social cost." },
+      { "name": "Multiple Curses", "points": 3, "summary": "You bear an additional Assamite clan curse on top of your normal weakness." }
+    ]
+  },
+  "Brujah": {
+    "merits": [
+      { "name": "Fury's Focus", "points": 3, "summary": "Path of Entelechy practice lets you delay frenzy briefly and soften degeneration afterward." },
+      { "name": "Dynamic Personality", "points": 5, "summary": "Your charisma draws mortals to you, easing the growth of mortal-focused Backgrounds." }
+    ],
+    "flaws": [
+      { "name": "Obvious Predator", "points": 2, "summary": "Mortals instinctively read your rage as danger and fear you for it." }
+    ]
+  },
+  "Followers of Set": {
+    "merits": [
+      { "name": "Drug Resistance", "points": 2, "summary": "You resist intoxicants and can better feign being impaired." },
+      { "name": "Addictive Blood", "points": 3, "summary": "Those who taste your blood crave it obsessively afterward." },
+      { "name": "Setite Initiate", "points": 5, "summary": "Though Embraced outside the clan, you have been fully accepted into the Setite faith." }
+    ],
+    "flaws": [
+      { "name": "Scales", "points": 2, "summary": "Visible scales mark you with Set's touch and frighten those who see them." },
+      { "name": "Venomous Bite", "points": 2, "summary": "Your bite carries a dangerous neurotoxin that is difficult to hide or control." }
+    ]
+  },
+  "Gangrel": {
+    "merits": [
+      { "name": "Hive-Minded", "points": 1, "summary": "Your Animalism reaches insects and other creepy-crawlies as well as mammals." },
+      { "name": "Skald", "points": 2, "summary": "You recall oral history and vampiric lore with unusual precision." },
+      { "name": "Lesser Mark of the Beast", "points": 4, "summary": "You can sometimes suppress an animal feature when frenzy would mark you." },
+      { "name": "Totemic Change", "points": 5, "summary": "Each use of Beast Form can take a different animal shape." }
+    ],
+    "flaws": [
+      { "name": "Member of the Pack", "points": 2, "summary": "Your Animalism only works on one narrow kind of animal." },
+      { "name": "Rat in a Cage", "points": 2, "summary": "Restraint or confinement sends your anxiety spiking." }
+    ]
+  },
+  "Giovanni": {
+    "merits": [
+      { "name": "Cannibal", "points": 1, "summary": "You can eat human flesh, draw sustenance from it, and even gain blood from the meal." },
+      { "name": "Consanguineous Resistance", "points": 1, "summary": "Relatives from your mortal bloodline cannot blood bind you." },
+      { "name": "Mortuario", "points": 2, "summary": "You were Embraced after true death and bear both necromantic talent and corpse-like scars. This is the 2-point version used for most Giovanni; some bloodlines pay more." },
+      { "name": "Sanguine Incongruity", "points": 5, "summary": "You escaped the Giovanni clan weakness, though you look more corpse-like than ever." }
+    ],
+    "flaws": []
+  },
+  "Lasombra": {
+    "merits": [
+      { "name": "Court Favorite", "points": 3, "summary": "You know how to sway Courts of Blood and steer their decisions." },
+      { "name": "Eyes of Shadow", "points": 2, "summary": "Your gaze chills others and strengthens Intimidation." },
+      { "name": "Bigger Boys Came", "points": 2, "summary": "You can sometimes use your contacts to cancel someone else's support network." },
+      { "name": "Call of the Sea", "points": 2, "summary": "Water and travel by sea grant you calm focus and a small edge." },
+      { "name": "Controllable Night Sight", "points": 2, "summary": "You switch extraordinary night vision on and off instead of suffering it constantly." },
+      { "name": "Secret Stash", "points": 3, "summary": "You have hidden Background resources you can reveal when the moment is right." },
+      { "name": "Aura of Command", "points": 3, "summary": "Leadership-based orders come naturally and land harder." },
+      { "name": "King or Queen of Shadow", "points": 4, "summary": "Your empathy on Humanity helps you resist degeneration more easily." }
+    ],
+    "flaws": []
+  },
+  "Malkavian": {
+    "merits": [
+      { "name": "Distracting Aura", "points": 2, "summary": "Your aura is unusually hard to read even with Auspex." },
+      { "name": "Prophetic Dreams", "points": 2, "summary": "You can trade routine rest for lucid dreams that foreshadow coming events." },
+      { "name": "Cold Read", "points": 3, "summary": "Meeting someone new lets you spend Willpower to ask the Storyteller direct questions about them." }
+    ],
+    "flaws": [
+      { "name": "Paper Trail", "points": 2, "summary": "Institutional records from your mortal life can be found and exploited." },
+      { "name": "Stigmata", "points": 2, "summary": "Phantom wounds seep blood from your body every day." },
+      { "name": "Infectious", "points": 3, "summary": "Your bite leaves mortal victims temporarily deranged." },
+      { "name": "Overstimulated", "points": 3, "summary": "Your hyperawareness makes focused perception harder, not easier." },
+      { "name": "Dead Inside", "points": 4, "summary": "Numbness robs you of some Willpower rewards from roleplay." }
+    ]
+  },
+  "Nosferatu": {
+    "merits": [
+      { "name": "Foul Blood", "points": 1, "summary": "Your blood is so repulsive it resists ghouling and diablerie." },
+      { "name": "Lizard Limbs", "points": 1, "summary": "You can shed an appendage to escape and regrow it later." },
+      { "name": "Long Fingers", "points": 1, "summary": "Fine manipulation and grappling come more easily to you." },
+      { "name": "Monstrous Maw", "points": 1, "summary": "Your bite is truly bestial and deals extra damage." },
+      { "name": "Piscine", "points": 1, "summary": "Water movement feels natural and becomes easier." },
+      { "name": "Slimy", "points": 1, "summary": "A slick ooze makes you hard to hold and slightly more fire-resistant." },
+      { "name": "Spawning Pool", "points": 2, "summary": "A blood-tainted vermin pool strengthens your Animalism in your home city." },
+      { "name": "Tunnel Rat", "points": 3, "summary": "You navigate known tunnels and sewers with unusual ease." },
+      { "name": "Sleep Unseen", "points": 2, "summary": "You can keep Obfuscate active through day sleep to hide your haven." },
+      { "name": "Tough Hide", "points": 2, "summary": "Your skin is unnaturally resilient against most ordinary harm." }
+    ],
+    "flaws": [
+      { "name": "Parasitic Infestation", "points": 2, "summary": "Ticks, lice, and leeches cling to you and drain blood nightly." },
+      { "name": "Bestial", "points": 3, "summary": "Each frenzy risks additional animal features like a Gangrel's." },
+      { "name": "Enemy Brood", "points": 3, "summary": "Another Nosferatu brood hunts you even through the sewers." }
+    ]
+  },
+  "Ravnos": {
+    "merits": [
+      { "name": "Antitoxin Blood", "points": 1, "summary": "You are immune to poisons and drugs, even supernatural ones." },
+      { "name": "Brahmin", "points": 1, "summary": "As one of the clan's keepers of lore or art, you can reroll key learning or expression failures." },
+      { "name": "Kshatriya", "points": 1, "summary": "Your warrior caste training restores Willpower when combat maneuvers land." },
+      { "name": "Legerdemain", "points": 1, "summary": "Physical trickery and sleight of hand are much easier for you." },
+      { "name": "Mute Devotion", "points": 1, "summary": "Animals you've influenced resist later commands from others." },
+      { "name": "Vaishya", "points": 1, "summary": "Once per session you can lean on a Background as though it were one dot higher." },
+      { "name": "Critters", "points": 2, "summary": "Animals adore you and occasionally bring you useful information or trinkets." },
+      { "name": "Heart of Needles", "points": 3, "summary": "Illusion and manipulation have hardened you against emotional control." }
+    ],
+    "flaws": [
+      { "name": "Chandala", "points": 1, "summary": "Your low-caste standing within the Ravnos marks you as socially diminished." }
+    ]
+  },
+  "Toreador": {
+    "merits": [
+      { "name": "Indelible", "points": 1, "summary": "Body modifications after the Embrace remain until you consciously undo them." },
+      { "name": "Impressive Restraint", "points": 2, "summary": "Hunger is easier to resist around living vessels." },
+      { "name": "Master of the Masquerade", "points": 2, "summary": "You never forget the little mortal habits that make Kindred seem alive." },
+      { "name": "Slowed Degeneration", "points": 5, "summary": "Your Humanity resists the Beast better than most vampires' does." }
+    ],
+    "flaws": [
+      { "name": "Tortured Artist", "points": 1, "summary": "Praise cannot quiet your dissatisfaction with your own art or work." },
+      { "name": "Private Life", "points": 3, "summary": "You maintain a deep secret life that could provoke major political suspicion if exposed." }
+    ]
+  },
+  "Tremere": {
+    "merits": [
+      { "name": "Embraced without the Cup", "points": 1, "summary": "You somehow missed or resisted the elders' blood at your induction into clan Tremere." },
+      { "name": "Secret Society Member", "points": 1, "summary": "You belong to one of the clan's hidden inner societies and can rely on its backing." },
+      { "name": "Keys to the Library", "points": 1, "summary": "You control access to a chantry library and can research its lore freely. In Lore of the Clans this merit scales with the chantry's Library rating; this app uses the 1-point floor as the selectable baseline." },
+      { "name": "Outside Haven", "points": 2, "summary": "You maintain a private haven outside chantry oversight." },
+      { "name": "Unmarked Antitribu", "points": 5, "summary": "You defected without bearing the obvious curse of a Tremere antitribu." },
+      { "name": "Quartermaster", "points": 3, "summary": "You can draw on the chantry's mundane stores when you need them." }
+    ],
+    "flaws": [
+      { "name": "Arcane Curse", "points": 3, "summary": "A magical curse or occult aberration complicates your existence. Lore of the Clans treats this as a variable-severity flaw; this app models a mid-strength 3-point curse." }
+    ]
+  },
+  "Tzimisce": {
+    "merits": [
+      { "name": "Bioluminescence", "points": 1, "summary": "Vicissitude lets you create living illumination in flesh." },
+      { "name": "Pain Tolerance", "points": 2, "summary": "You shrug off lighter wound penalties through training or obsession." },
+      { "name": "Dracon's Temperament", "points": 3, "summary": "You can shift the Nature that defines you from story to story." },
+      { "name": "Haven Affinity", "points": 3, "summary": "Your primary haven strengthens you and calls you home across great distance." },
+      { "name": "Revenant Disciplines", "points": 3, "summary": "Your revenant heritage replaces normal in-clan Disciplines with your family's set." },
+      { "name": "Promethean Clay", "points": 5, "summary": "Vicissitude works on your own flesh with frightening speed and ease." }
+    ],
+    "flaws": [
+      { "name": "Unblinking", "points": 1, "summary": "Your eyes never close, making mortal social interaction more unsettling." },
+      { "name": "Ancestral Soil Dependence", "points": 2, "summary": "Your day sleep suffers unless you rest with soil tied to your homeland." }
+    ]
+  },
+  "Ventrue": {
+    "merits": [
+      { "name": "Connoisseur", "points": 2, "summary": "Tasting blood reveals surprising truths about the one who shed it." },
+      { "name": "Blessed by St. Gustav", "points": 4, "summary": "As a Ventrue antitribu you add Auspex as a fourth in-clan Discipline." }
+    ],
+    "flaws": [
+      { "name": "Uncommon Vitae Preference", "points": 2, "summary": "Your feeding preference is even narrower than most Ventrue restrictions." }
+    ]
+  },
+  "Caitiff": {
+    "merits": [
+      { "name": "Personal Masquerade", "points": 3, "summary": "You have convinced other vampires that you belong to a real clan instead of standing revealed as Caitiff." }
+    ],
+    "flaws": [
+      { "name": "Clan Weakness", "points": 2, "summary": "You inherited a sire's clan weakness even though the rest of the blood did not settle." },
+      { "name": "Fangless", "points": 2, "summary": "You never developed fangs and must feed from already-open wounds." },
+      { "name": "Ignorance", "points": 2, "summary": "You began unlife without anyone teaching you the basic truths of vampiric existence." },
+      { "name": "Bulimia", "points": 4, "summary": "Feeding often ends with you vomiting up the blood before it nourishes you." }
+    ]
+  }
+}
