@@ -1,5 +1,8 @@
 import meritsFlawsData from '../mechanics/merits-flaws.json';
 import clanMeritsFlawsData from '../mechanics/clan-merits-flaws.json';
+import disciplinesData from '../mechanics/disciplines.json';
+import disciplineMechanicsData from '../mechanics/discipline-mechanics.json';
+import disciplineCertificationReport from '../mechanics/discipline-certification-report.json';
 import { summarizeCharacter, summarizeCompactCharacter } from './vtm.js';
 
 const PROMPT_FIELD_LIMITS = Object.freeze({
@@ -9,6 +12,8 @@ const PROMPT_FIELD_LIMITS = Object.freeze({
   notes: 900,
   backstory: 1400,
 });
+
+const POLICY_VIOLATION_PATTERN = /moderation|policy|flagged|violence\/graphic|sexual|unsafe|safety/i;
 
 function sanitizePromptFieldValue(value, fallback = 'None provided.', maxLength = 0) {
   if (typeof value !== 'string') {
@@ -97,6 +102,170 @@ function summarizeSelectedMeritFlawMechanics(character) {
   return lines.length ? lines.join('\n') : '- No selected merits or flaws.';
 }
 
+const DISCIPLINE_LOOKUP = new Map((disciplinesData ?? []).map((entry) => [entry.name, entry]));
+const DISCIPLINE_MECHANICS_LOOKUP = new Map((disciplineMechanicsData ?? []).map((entry) => [entry.name, entry]));
+const DISCIPLINE_CERTIFICATION_LOOKUP = (() => {
+  const lookup = new Map();
+
+  for (const entry of disciplineCertificationReport?.verified ?? []) {
+    if (!entry?.name) {
+      continue;
+    }
+    lookup.set(entry.name, {
+      status: 'verified',
+      basis: entry?.basis || '',
+      source: entry?.source || '',
+    });
+  }
+
+  for (const entry of disciplineCertificationReport?.provisional ?? []) {
+    if (!entry?.name) {
+      continue;
+    }
+    lookup.set(entry.name, {
+      status: 'provisional',
+      basis: entry?.basis || '',
+      source: entry?.source || '',
+    });
+  }
+
+  return lookup;
+})();
+
+function getDisciplineCertificationSnapshot(name, mechanicsEntry) {
+  const reportEntry = DISCIPLINE_CERTIFICATION_LOOKUP.get(name);
+  if (reportEntry) {
+    return {
+      status: String(reportEntry.status || 'provisional').toLowerCase(),
+      basis: reportEntry.basis || 'No certification basis recorded.',
+    };
+  }
+
+  return {
+    status: String(mechanicsEntry?.certification?.status || 'provisional').toLowerCase(),
+    basis: mechanicsEntry?.certification?.basis || 'No certification basis recorded.',
+  };
+}
+
+function summarizeCharacterDisciplinePowerGuidance(character) {
+  const disciplineEntries = Array.isArray(character?.disciplines)
+    ? character.disciplines.filter((item) => Number(item?.dots) > 0)
+    : [];
+
+  if (!disciplineEntries.length) {
+    return '- No discipline dots on the current sheet.';
+  }
+
+  const lines = [];
+  for (const item of disciplineEntries) {
+    const name = item?.name || 'Unknown Discipline';
+    const dots = Math.max(0, Math.min(5, Number(item?.dots) || 0));
+    const entry = DISCIPLINE_LOOKUP.get(name);
+    const knownLevels = Array.isArray(entry?.levels) ? entry.levels.slice(0, dots) : [];
+
+    if (knownLevels.length) {
+      lines.push(`- ${name} ${dots}: ${knownLevels.map((levelName, idx) => `${idx + 1}) ${levelName}`).join('; ')}`);
+      continue;
+    }
+
+    lines.push(`- ${name} ${dots}: Use only effects that fit dots ${dots} or lower. If uncertain, say so and offer the closest valid non-Discipline alternative.`);
+  }
+
+  return lines.join('\n');
+}
+
+function summarizeCharacterDisciplineMechanicsGuidance(character) {
+  const disciplineEntries = Array.isArray(character?.disciplines)
+    ? character.disciplines.filter((item) => Number(item?.dots) > 0)
+    : [];
+
+  if (!disciplineEntries.length) {
+    return '- No discipline mechanics available because the sheet has no discipline dots.';
+  }
+
+  const lines = [];
+  for (const item of disciplineEntries) {
+    const name = item?.name || 'Unknown Discipline';
+    const dots = Math.max(0, Math.min(5, Number(item?.dots) || 0));
+    const entry = DISCIPLINE_MECHANICS_LOOKUP.get(name);
+    const certification = getDisciplineCertificationSnapshot(name, entry);
+    const certificationStatus = certification.status;
+    const isVerified = certificationStatus === 'verified';
+    const certificationBasis = certification.basis;
+
+    if (!isVerified) {
+      lines.push(`- ${name} ${dots}: Certification status PROVISIONAL. This discipline is unavailable for Storyteller mechanics adjudication. Do not output pools, difficulties, or resistance lines for it. ${certificationBasis}`);
+      continue;
+    }
+
+    const isPathBased = Boolean(entry?.pathBased && Array.isArray(entry?.paths) && entry.paths.length);
+
+    if (isPathBased) {
+      lines.push(`- ${name} ${dots}: Path-based discipline. Ask for path first, then level.`);
+      for (const path of entry.paths) {
+        const pathLevels = Array.isArray(path?.levels)
+          ? path.levels
+              .filter((level) => Number(level?.dot) >= 1 && Number(level?.dot) <= dots)
+              .sort((a, b) => Number(a.dot) - Number(b.dot))
+          : [];
+
+        if (!pathLevels.length) {
+          continue;
+        }
+
+        lines.push(`  - Path: ${path.name}`);
+        for (const level of pathLevels) {
+          const resistance = level.resistancePool
+            ? ` | Resistance Pool: ${level.resistancePool}${level.resistanceDifficulty ? ` | Resistance Difficulty: ${level.resistanceDifficulty}` : ''}`
+            : '';
+          lines.push(`    - Dot ${level.dot} ${level.power}: Roll Type: ${level.rollType || 'Varies'} | Pool: ${level.pool || 'Varies'} | Difficulty: ${level.difficulty || 'Varies'}${resistance}`);
+        }
+      }
+      continue;
+    }
+
+    const levelMechanics = Array.isArray(entry?.levelMechanics) ? entry.levelMechanics : [];
+    const known = levelMechanics
+      .filter((level) => Number(level?.dot) >= 1 && Number(level?.dot) <= dots)
+      .sort((a, b) => Number(a.dot) - Number(b.dot));
+
+    if (!known.length) {
+      lines.push(`- ${name} ${dots}: No structured mechanics entry found. Use strict V20 sourcebook adjudication and ask for level clarification before final pool output.`);
+      continue;
+    }
+
+    lines.push(`- ${name} ${dots}:`);
+    for (const level of known) {
+      const resistance = level.resistancePool
+        ? ` | Resistance Pool: ${level.resistancePool}${level.resistanceDifficulty ? ` | Resistance Difficulty: ${level.resistanceDifficulty}` : ''}`
+        : '';
+      lines.push(`  - Dot ${level.dot} ${level.power}: Roll Type: ${level.rollType || 'Varies'} | Pool: ${level.pool || 'Varies'} | Difficulty: ${level.difficulty || 'Varies'}${resistance}`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
+function summarizeArchiveRecall(chronicle) {
+  const archives = Array.isArray(chronicle?.messageArchives) ? chronicle.messageArchives : [];
+  const recentArchives = archives
+    .filter((entry) => typeof entry?.summary === 'string' && entry.summary.trim())
+    .slice(-3);
+
+  if (!recentArchives.length) {
+    return '- No archived chat summaries yet.';
+  }
+
+  return recentArchives
+    .map((entry, index) => {
+      const rangeBits = [entry.startedAt, entry.endedAt].filter(Boolean);
+      const rangeLabel = rangeBits.length ? ` (${rangeBits.join(' -> ')})` : '';
+      const messageCount = Math.max(0, Number(entry.messageCount) || 0);
+      return `- Archive ${archives.length - recentArchives.length + index + 1}${rangeLabel}: ${messageCount} messages summarized. ${sanitizePromptFieldValue(entry.summary, 'No summary.', 500)}`;
+    })
+    .join('\n');
+}
+
 function formatOpenRouterError(response, data) {
   const providerMessage = data?.error?.metadata?.raw || data?.error?.metadata?.provider_name || '';
   const baseMessage = data?.error?.message || data?.message || response.statusText || 'OpenRouter request failed.';
@@ -120,6 +289,8 @@ function createOpenRouterError(response, data) {
   error.code = data?.error?.code || '';
   error.providerMessage = data?.error?.metadata?.raw || data?.error?.metadata?.provider_name || '';
   error.isRateLimit = response.status === 429;
+  const combinedMessage = `${data?.error?.message || ''} ${error.providerMessage || ''}`.trim();
+  error.isPolicyViolation = response.status === 403 || POLICY_VIOLATION_PATTERN.test(combinedMessage);
   return error;
 }
 
@@ -167,6 +338,7 @@ export function buildSystemPrompt({ guardrails, city, hooks, subplotSeeds, mainP
   return [
     'You are a Vampire: The Masquerade Storyteller running a contemporary chronicle that uses V5 metaplot and V20 mechanics.',
     'Prioritize V20 mechanics for all adjudication, sheet changes, disciplines, backgrounds, and progression. Use the selected V5 chronicle material for lore, NPC agendas, city politics, and story pressure. If a rule is uncertain, say so plainly instead of inventing canon.',
+    'Maintain a dark, threatening, adult-gothic tone without leaning on graphic gore or explicit bodily detail. When violence or feeding would become graphic, imply it through aftermath, sensation, or consequence rather than explicit description.',
     '',
     '=== REQUIRED SOURCEBOOK KNOWLEDGE ===',
     `Chronicle Setting: ${city.name} (${chronicleBook})`,
@@ -192,8 +364,18 @@ export function buildSystemPrompt({ guardrails, city, hooks, subplotSeeds, mainP
     'Actively consider the full character sheet when framing scenes and adjudicating consequences, especially clan, morality path, virtues, merits, flaws, clan merits, clan flaws, disciplines, backgrounds, specialties, willpower, blood pool, Desire, Ambition, and backstory.',
     'The PC character sheet is authoritative. Never invent PC traits, dots, disciplines, backgrounds, merits, flaws, specialties, or ratings that are not present on the sheet summary. Clan identity does not grant automatic dots; only listed dots count.',
     'For V20 dice pools, derive the pool from the actual sheet and the described action. Use Attribute + Ability as the default structure, then add or subtract situational modifiers. Only include a Discipline when the sheet actually lists it and the fiction supports using it.',
+    'Discipline adjudication must be power-specific, not discipline-generic. If a Discipline is used, name the exact power and level being invoked, and ensure that level is at or below the PC\'s dots in that Discipline.',
+    'When a power-specific mechanics reference is present in the discipline mechanics guidance, use that reference exactly for Pool and Difficulty. Do not substitute another trait pair unless you explicitly explain why the listed reference cannot apply in the current scene.',
+    'Do not build Pool as "Discipline + Ability" unless the referenced power explicitly uses that formula.',
+    'If a discipline mechanics entry is marked PROVISIONAL in the guidance, do not adjudicate from it. State that it is unavailable pending verification and provide the closest valid verified alternative from the sheet.',
+    'For path-based disciplines (such as Thaumaturgy, Necromancy, Koldunic Sorcery, Abyss Mysticism), require path selection first, then level selection. Do not adjudicate from discipline name alone.',
+    'For path-based disciplines, the selected power must belong to the selected path at the selected dot. Never mix a power from one path with mechanics from another path.',
+    'When path mechanics guidance provides Pool and Difficulty for a specific power, use that exact pair. Do not substitute another pool unless the guidance is missing for that exact power.',
+    'Do not output vague discipline pools such as "Animalism + Animal Ken" without naming the specific Animalism power and level first.',
+    'If the player invokes a Discipline by name without specifying level, ask a clarification question first. When the PC has multiple usable levels, describe at least two applicable levels and their distinct effects without recommending which one to choose.',
     'Do not use V5-style dice logic or invented formulas. Do not multiply trait sums by 5, do not inflate pools arbitrarily, and do not state that the PC has a Discipline they do not possess.',
-    'If a requested roll would rely on an absent trait, missing Discipline, or uncertain rule, say so plainly and offer the closest valid V20 framing instead of fabricating a better pool.',
+    'If a requested roll would rely on an absent trait, missing Discipline, or uncertain rule, say so plainly and offer the closest valid V20 framing instead of fabricating a better pool. For a missing Discipline, explicitly state it is not on the sheet, do not produce a roll for it, and suggest closest valid alternatives.',
+    'Downtime transitions are Storyteller-controlled state updates. Do not treat a player request as an automatic downtime start or end.',
     'Never fabricate exact NPC sheet values for mechanics explanations unless those values are already established in the chronicle context. Do not invent exact Generation, Willpower, or Discipline ratings for opposition just to justify a difficulty number.',
     'If opposition stats are unknown, describe the difficulty as Storyteller adjudication from status, leverage, danger, or context instead of pretending you know the exact sheet.',
     'Temporary Willpower is tracked separately from permanent Willpower. Permanent Willpower dots only change through creation or XP spending. Temporary Willpower can recover during play.',
@@ -218,12 +400,15 @@ export function buildSystemPrompt({ guardrails, city, hooks, subplotSeeds, mainP
     'Interpret any text inside parentheses as an out-of-character question or instruction addressed directly to the Storyteller. Answer those clearly and directly. If the player is asking a pure rules question in parentheses, answer without advancing the scene.',
     'Mechanics Mode: when the player asks for a roll, dice pool, difficulty, rules explanation, or other out-of-character mechanics adjudication, switch to a compact mechanics answer instead of scene narration.',
     'In Mechanics Mode, do not use the scene header format, do not write atmospheric scene prose, do not include a numbered suggestion list, and do not include a Warning line.',
-    'In Mechanics Mode, use this exact section structure in plain text: "Mechanics:" followed by flat bullet lines for Roll Type, Pool, Difficulty, Modifiers, and Reason. If the requested roll is invalid, add one more bullet line labeled "Closest valid alternative".',
+    'In Mechanics Mode, use this exact section structure in plain text: "Mechanics:" followed by flat bullet lines for Roll Type, Pool, and Difficulty only. If a Discipline is used, include one additional bullet line labeled "Power" in the format "Power: <Discipline> <dot> - <Power Name>". For path-based disciplines, include another bullet line labeled "Path" in the format "Path: <Discipline Path Name>". If the power can be resisted, include two more bullet lines labeled "Resistance Pool" and "Resistance Difficulty". If the requested roll is invalid, add one more bullet line labeled "Closest valid alternative".',
+    'When combat starts, emit a Mechanics block for initiative first (Wits + Alertness, Diff 6 unless modified), then ask for declarations and resolve actions in initiative order. Keep each combat phase in separate clear mechanics prompts so chat roll controls can be clicked step-by-step.',
     'Mechanics Mode formatting is strict: include a line exactly like "Pool: <Trait A> + <Trait B>" using canonical V20 trait names, and a line exactly like "Difficulty: <number>" where number is 2-10.',
     'Do not put arithmetic totals into the Pool line. The app computes trait dots client-side. Example valid line: "Pool: Dexterity + Stealth".',
     'In Mechanics Mode, Pool must show the actual additive V20 pool from the sheet and modifiers only. Never use multiplicative notation such as "x 5". Never state or imply a Discipline dot that is not on the sheet.',
     'Never roll dice, compute random outcomes, or narrate resolved success/failure on the player\'s behalf in Mechanics Mode unless the player explicitly provides a roll result.',
     'If the player names an invalid trait or Discipline for the attempted action, explicitly say it is not on the sheet, do not build the requested pool from it, and restate the nearest valid V20 roll if one exists.',
+    'When a Discipline request is ambiguous on level, do not output a final Pool line yet. Ask the level clarification first, then provide the final mechanics block only after the player confirms.',
+    'For path-based disciplines, when path is unspecified, do not output a final Pool line yet. Ask path clarification first, then level clarification if needed, then provide final mechanics block only after confirmations.',
     'Interpret any text inside double quotes as spoken dialogue. Interpret text outside quotation marks and outside parentheses as actions, intentions, movement, narration requests, or other in-world non-dialogue context.',
     'Every in-world Storyteller scene reply must begin with a single header line in this exact format: | Evening | 7:45 PM | Monday, January 6, 2025 | Rainy | General Location, Specific Location | Short atmosphere cue |. Then place a line containing exactly --- on the next line. Then write the actual scene beneath it.',
     'The first field should be a time-of-day label such as Morning, Afternoon, Evening, Midnight, or Dawn. The date field must use a modern Gregorian real-world date in 2025 format, such as Monday, January 6, 2025. Do not use fictional calendars, DR dates, or alternative era labels. The weather field should be a short plain descriptor such as Rainy, Clear, Windy, Humid, Foggy, or Snowing. The location field must go from broad location to precise location.',
@@ -263,10 +448,18 @@ export function buildSystemPrompt({ guardrails, city, hooks, subplotSeeds, mainP
     characterSummaryMode === 'compact' ? 'Player character snapshot:' : 'Player character:',
     characterSummary,
     '',
+    'Discipline power guidance for this PC (only powers at or below current dots are valid):',
+    summarizeCharacterDisciplinePowerGuidance(character),
+    '',
+    'Discipline mechanics reference for this PC (data-driven V20 guidance; include resistance lines when listed):',
+    summarizeCharacterDisciplineMechanicsGuidance(character),
+    '',
     ...(characterSummaryMode === 'full'
       ? ['Selected PC merit and flaw mechanics:', summarizeSelectedMeritFlawMechanics(character), '']
       : ['PC merits/flaws mechanics remain as last full-sheet sync unless newly changed in current context.', '']),
     formatPromptDataField('CHRONICLE_SUMMARY', chronicle.summary, 'No chronicle summary yet.', PROMPT_FIELD_LIMITS.chronicleSummary),
+    'Archived chat recall summaries:',
+    summarizeArchiveRecall(chronicle),
     formatPromptDataField('ESTABLISHED_FACTS', campaignMemory.establishedFacts, 'No established-facts memory yet.', PROMPT_FIELD_LIMITS.memorySection),
     formatPromptDataField('UNRESOLVED_THREADS', campaignMemory.unresolvedThreads, 'No unresolved-thread memory yet.', PROMPT_FIELD_LIMITS.memorySection),
     formatPromptDataField('FACTION_POSITIONS', campaignMemory.factionPositions, 'No faction-position memory yet.', PROMPT_FIELD_LIMITS.memorySection),
@@ -291,16 +484,17 @@ export function buildSystemPrompt({ guardrails, city, hooks, subplotSeeds, mainP
     'Default XP reward pacing: subplot completed = 3 XP, main plot completed = 5 XP, meaningful Desire progress = 2 XP, meaningful Ambition progress = 3 XP. Use these as defaults unless the situation strongly justifies withholding or combining rewards.',
     '',
     '=== STATE UPDATES ===',
-    'If there are persistent state changes, append exactly one fenced ```vtm_state JSON block after the narrative. Allowed keys: backgrounds, equipment, items, notesAppend, plotPoint, npcs, summaryReplace, campaignMemory, xpAwards, downtime, willpowerRecovery, currentBloodPool, healthStatus, temporaryResources, temporaryEffects.',
+    'If there are persistent state changes, append exactly one fenced ```vtm_state JSON block after the narrative. Allowed keys: backgrounds, disciplines, equipment, items, notesAppend, plotPoint, npcs, summaryReplace, campaignMemory, xpAwards, downtime, willpowerRecovery, currentBloodPool, healthStatus, temporaryResources, temporaryEffects.',
     'backgrounds: Full replacement array. Each entry needs {name: string, dots: number}. Only use canonical V20 background names already supported by the mechanics data, such as Allies, Contacts, Domain, Generation, Herd, Influence, Mentor, Resources, Retainers, and Status. Use this when backgrounds change through story events (gaining allies, losing contacts, acquiring retainers/ghouls, gaining domain, etc.).',
-    'equipment: Full replacement array for carried gear. Each entry: {name: string, details: string}.',
+    'disciplines: Full replacement array. Each entry: {name: string, dots: number, primaryPath?: string, secondaryPath?: string, tertiaryPath?: string, secondaryPathDots?: number, tertiaryPathDots?: number, rituals?: [{name: string}]}. Do not include provisional disciplines in this array.',
+    'equipment: Full replacement array for carried gear. Each entry: {category: "Modern Gear" | "Dark Ages Weapons", name: string, details: string}. Restrict category to those two source lists only.',
     'items: Full replacement array for owned possessions. Each entry: {name: string, details: string}.',
     'notesAppend: String to append to chronicle notes.',
     'plotPoint: String to append to plot points tracker.',
     'summaryReplace: String. Use this only to replace the chronicle summary with a better compact recap after major developments.',
     'campaignMemory: Object. Any of these string keys may be included to replace that memory section: establishedFacts, unresolvedThreads, factionPositions, boonsAndDebts, relationshipShifts, timeline.',
     'xpAwards: Array of XP rewards to grant immediately. Each entry should include {amount: number, reason: string, category: string}. Use categories such as subplot, mainPlot, desire, ambition, or bonus.',
-    'downtime: Object. Use {active: true, reason: string} to begin downtime and {active: false, reason: string} to end downtime and begin the next active session.',
+    'downtime: Object. Use {active: true, reason: string} to begin downtime and {active: false, reason: string} to end downtime and begin the next active session. You may also include activity as {type: string, status: "idle"|"active"|"completed", progressSuccesses: number, targetSuccesses: number, rollPool: string, rollDifficulty: number}. Only one completed downtime activity is allowed per downtime session.',
     'willpowerRecovery: Object. Use {amount: number, reason: string} to restore temporary Willpower. Keep the total at or below the character\'s permanent Willpower rating. Use this for Nature or Demeanor-aligned roleplay rewards, not for routine scene beats.',
     'currentBloodPool: Object. Use {current: number, reason: string} to set the tracked current blood pool after feeding, blood expenditure, or blood loss. Do not change permanent blood pool capacity here.',
     'healthStatus: Object. Use {level: number, reason: string} to set the current wound level on the health track. 0 means Healthy, higher numbers are deeper injury states, and the track should only change when the fiction justifies it.',
@@ -358,7 +552,7 @@ export function buildCreationAssistantPrompt({ clans = [], natures = [], demeano
   ].join('\n');
 }
 
-export async function sendChatCompletion({ apiKey, model, systemPrompt, history, userMessage }) {
+export async function sendChatCompletion({ apiKey, model, systemPrompt, history, userMessage, temperature = 0.3, maxTokens = 700, signal = null }) {
   if (!apiKey) {
     throw new Error('Add an OpenRouter API key in the sidebar before sending chat messages.');
   }
@@ -371,6 +565,7 @@ export async function sendChatCompletion({ apiKey, model, systemPrompt, history,
 
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
+    signal,
     headers: {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
@@ -379,8 +574,8 @@ export async function sendChatCompletion({ apiKey, model, systemPrompt, history,
     body: JSON.stringify({
       model,
       messages,
-      temperature: 0.35,
-      max_tokens: 700,
+      temperature,
+      max_tokens: maxTokens,
     }),
   });
 

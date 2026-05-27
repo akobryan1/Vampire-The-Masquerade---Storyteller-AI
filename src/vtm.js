@@ -49,6 +49,15 @@ function getDefaultProgressionState() {
     phase: 'scene',
     sessionNumber: 1,
     downtimeReason: '',
+    downtimeActivity: {
+      type: '',
+      status: 'idle',
+      completed: false,
+      progressSuccesses: 0,
+      targetSuccesses: 0,
+      rollPool: '',
+      rollDifficulty: 6,
+    },
     rewardCaps: {
       desireGranted: false,
       ambitionGranted: false,
@@ -61,6 +70,26 @@ function getDefaultPromptSyncState() {
     forceFullSheetRefresh: true,
     turnsSinceFullSheet: 0,
   };
+}
+
+function normalizeMessageArchives(items) {
+  if (!Array.isArray(items)) {
+    return [];
+  }
+
+  return items.map((item) => ({
+    id: item?.id || uid('archive'),
+    createdAt: typeof item?.createdAt === 'string' && item.createdAt.trim() ? item.createdAt : new Date().toISOString(),
+    startedAt: typeof item?.startedAt === 'string' ? item.startedAt : '',
+    endedAt: typeof item?.endedAt === 'string' ? item.endedAt : '',
+    messageCount: Math.max(0, Number(item?.messageCount) || 0),
+    summary: typeof item?.summary === 'string' ? item.summary : '',
+    text: typeof item?.text === 'string' ? item.text : '',
+    title: typeof item?.title === 'string' ? item.title : '',
+    originalMessageIds: Array.isArray(item?.originalMessageIds)
+      ? item.originalMessageIds.filter((entry) => typeof entry === 'string' && entry.trim())
+      : [],
+  }));
 }
 
 export function getDefaultCharacter(schema) {
@@ -100,9 +129,9 @@ export function getDefaultCharacter(schema) {
     attributes,
     abilities,
     disciplines: [
-      { id: uid('discipline'), name: 'Celerity', dots: 1 },
-      { id: uid('discipline'), name: 'Obfuscate', dots: 1 },
-      { id: uid('discipline'), name: 'Auspex', dots: 1 },
+      { id: uid('discipline'), name: 'Celerity', dots: 1, rituals: [] },
+      { id: uid('discipline'), name: 'Obfuscate', dots: 1, rituals: [] },
+      { id: uid('discipline'), name: 'Auspex', dots: 1, rituals: [] },
     ],
     additionalClanDisciplines: [],
     backgrounds: [
@@ -165,6 +194,7 @@ export function getDefaultChronicle(schema, cities, hooks) {
     plotPoints: '',
     plotHookIds: randomHook ? [randomHook.id] : [],
     temporaryEffects: [],
+    messageArchives: [],
     messages: [
       {
         id: uid('msg'),
@@ -233,6 +263,12 @@ function hydrateCharacter(schema, rawCharacter) {
     disciplines: normalizeList(character.disciplines ?? defaults.disciplines, 'discipline', () => ({
       name: 'Celerity',
       dots: 1,
+      primaryPath: '',
+      secondaryPath: '',
+      tertiaryPath: '',
+      secondaryPathDots: 0,
+      tertiaryPathDots: 0,
+      rituals: [],
     })),
     additionalClanDisciplines: Array.isArray(character.additionalClanDisciplines)
       ? [...new Set(character.additionalClanDisciplines.filter((entry) => typeof entry === 'string' && entry.trim()).map((entry) => entry.trim()))]
@@ -263,6 +299,7 @@ function hydrateCharacter(schema, rawCharacter) {
       details: '',
     })),
     equipment: normalizeList(character.equipment, 'equipment', () => ({
+      category: 'Modern Gear',
       name: 'Unlisted item',
       details: '',
     })),
@@ -306,6 +343,10 @@ function hydrateChronicle(schema, cities, hooks, rawChronicle) {
     progression: {
       ...defaults.progression,
       ...(chronicle.progression ?? {}),
+      downtimeActivity: {
+        ...defaults.progression.downtimeActivity,
+        ...(chronicle.progression?.downtimeActivity ?? {}),
+      },
       rewardCaps: {
         ...defaults.progression.rewardCaps,
         ...(chronicle.progression?.rewardCaps ?? {}),
@@ -326,6 +367,7 @@ function hydrateChronicle(schema, cities, hooks, rawChronicle) {
             )
           : defaults.openingSceneDelivered,
     plotHookIds: Array.isArray(chronicle.plotHookIds) && chronicle.plotHookIds.length ? chronicle.plotHookIds : defaults.plotHookIds,
+    messageArchives: normalizeMessageArchives(chronicle.messageArchives),
     messages: Array.isArray(chronicle.messages) && chronicle.messages.length ? chronicle.messages : defaults.messages,
     diceLog: Array.isArray(chronicle.diceLog) ? chronicle.diceLog : defaults.diceLog,
     npcs: normalizeList(chronicle.npcs, 'npc', () => ({
@@ -359,6 +401,7 @@ export function loadState(schema, cities, hooks) {
         activeChronicleId: null,
         activePanel: null,
         activeView: 'creation',
+        sidebarCollapsed: true,
       };
     }
 
@@ -372,8 +415,9 @@ export function loadState(schema, cities, hooks) {
       model: parsed.model || DEFAULT_MODEL,
       chronicles,
       activeChronicleId: parsed.activeChronicleId ?? chronicles[0]?.id ?? null,
-      activePanel: ['notes', 'sheet', 'npcs', 'xp', 'downtime', 'creation-assistant'].includes(parsed.activePanel) ? parsed.activePanel : null,
+      activePanel: ['notes', 'sheet', 'npcs', 'xp', 'downtime', 'archives', 'creation-assistant'].includes(parsed.activePanel) ? parsed.activePanel : null,
       activeView: ['creation', 'settings', 'play'].includes(parsed.activeView) ? parsed.activeView : 'creation',
+      sidebarCollapsed: typeof parsed.sidebarCollapsed === 'boolean' ? parsed.sidebarCollapsed : true,
     };
   } catch {
     return {
@@ -383,6 +427,7 @@ export function loadState(schema, cities, hooks) {
       activeChronicleId: null,
       activePanel: null,
       activeView: 'creation',
+      sidebarCollapsed: true,
     };
   }
 }

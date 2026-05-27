@@ -1,0 +1,3416 @@
+[
+  {
+    "name": "Animalism",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Feral Whispers",
+        "rollType": "Communication / command",
+        "pool": "Manipulation + Animal Ken (commands only; no roll required to talk)",
+        "difficulty": "Predatory mammals 6; other mammals and predatory birds (rats, owls) 7; other birds and reptiles 8",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Eye contact required. Difficulty can be reduced by one when speaking in the animal's native mode and adjusted by circumstances."
+      },
+      {
+        "dot": 2,
+        "power": "Beckoning",
+        "rollType": "Summoning",
+        "pool": "Manipulation + Survival",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Call specific classes of animals across distance."
+      },
+      {
+        "dot": 3,
+        "power": "Quell the Beast",
+        "rollType": "Control",
+        "pool": "Manipulation + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Suppress frenzy and violent impulses in vampires or mortals."
+      },
+      {
+        "dot": 4,
+        "power": "Subsume the Spirit",
+        "rollType": "Possession",
+        "pool": "Manipulation + Animal Ken",
+        "difficulty": "8",
+        "resistancePool": "Willpower (for exceptional targets)",
+        "resistanceDifficulty": "6",
+        "notes": "Possess and control an animal body."
+      },
+      {
+        "dot": 5,
+        "power": "Drawing Out the Beast",
+        "rollType": "Compulsion",
+        "pool": "Manipulation + Self-Control",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Move frenzy triggers from one target to another."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T09:17:50.062Z",
+      "basis": "Manually verified Feral Whispers command rule and rat difficulty from V20 excerpt supplied in-session."
+    }
+  },
+  {
+    "name": "Auspex",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Heightened Senses",
+        "rollType": "Perception enhancement",
+        "pool": "Perception + Alertness",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Amplifies sensory detail; can impose overload risks."
+      },
+      {
+        "dot": 2,
+        "power": "Aura Perception",
+        "rollType": "Reading",
+        "pool": "Perception + Empathy",
+        "difficulty": "6",
+        "resistancePool": "Subterfuge + Manipulation (to mask emotional state)",
+        "resistanceDifficulty": "6",
+        "notes": "Read emotional and supernatural aura cues."
+      },
+      {
+        "dot": 3,
+        "power": "The Spirit's Touch",
+        "rollType": "Psychometry",
+        "pool": "Perception + Empathy",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Read residual impressions from touched objects."
+      },
+      {
+        "dot": 4,
+        "power": "Telepathy",
+        "rollType": "Mental probe",
+        "pool": "Perception + Subterfuge",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Read or communicate thoughts directly."
+      },
+      {
+        "dot": 5,
+        "power": "Psychic Projection",
+        "rollType": "Astral travel",
+        "pool": "Perception + Occult",
+        "difficulty": "8",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Project consciousness beyond the body."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Celerity",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Celerity 1",
+        "rollType": "Passive speed",
+        "pool": "None (system modifier)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Adds speed/reaction benefits per V20 turn economy."
+      },
+      {
+        "dot": 2,
+        "power": "Celerity 2",
+        "rollType": "Passive speed",
+        "pool": "None (system modifier)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Increases extra-action potential."
+      },
+      {
+        "dot": 3,
+        "power": "Celerity 3",
+        "rollType": "Passive speed",
+        "pool": "None (system modifier)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Sustained supernatural tempo edge."
+      },
+      {
+        "dot": 4,
+        "power": "Celerity 4",
+        "rollType": "Passive speed",
+        "pool": "None (system modifier)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Dominant initiative and action pacing."
+      },
+      {
+        "dot": 5,
+        "power": "Celerity 5",
+        "rollType": "Passive speed",
+        "pool": "None (system modifier)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Extreme action-economy superiority."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T09:31:00.000Z",
+      "basis": "Verified against V20 Core extracted text: Celerity System states dot-based Dexterity dice bonus plus optional blood-spend extra actions (extracted_text lines ~11409-11429); no standalone power-roll pool/difficulty block."
+    }
+  },
+  {
+    "name": "Chimerstry",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Ignis Fatuus",
+        "rollType": "Illusion creation",
+        "pool": "Manipulation + Subterfuge",
+        "difficulty": "6",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Create simple sensory illusions."
+      },
+      {
+        "dot": 2,
+        "power": "Fata Morgana",
+        "rollType": "Illusion enhancement",
+        "pool": "Manipulation + Subterfuge",
+        "difficulty": "6",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Expand illusion complexity and sensory channels."
+      },
+      {
+        "dot": 3,
+        "power": "Apparition",
+        "rollType": "Sustained scene",
+        "pool": "Manipulation + Subterfuge",
+        "difficulty": "7",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Generate convincing moving illusionary scenes."
+      },
+      {
+        "dot": 4,
+        "power": "Permanency",
+        "rollType": "Long-duration effect",
+        "pool": "Manipulation + Subterfuge",
+        "difficulty": "7",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Maintain illusions without constant focus."
+      },
+      {
+        "dot": 5,
+        "power": "Horrid Reality",
+        "rollType": "Psychosomatic attack",
+        "pool": "Manipulation + Subterfuge",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Illusions inflict quasi-real harm through belief."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Dementation",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Passion",
+        "rollType": "Emotion manipulation",
+        "pool": "Charisma + Empathy",
+        "difficulty": "Target Humanity or Path rating",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Amplify or suppress a target's emotional state."
+      },
+      {
+        "dot": 2,
+        "power": "The Haunting",
+        "rollType": "Psychic harassment",
+        "pool": "Manipulation + Subterfuge",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Inflict distraction and sensory disturbance."
+      },
+      {
+        "dot": 3,
+        "power": "Eyes of Chaos",
+        "rollType": "Pattern reading",
+        "pool": "Perception + Occult",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Discern hidden patterns and instability."
+      },
+      {
+        "dot": 4,
+        "power": "Voice of Madness",
+        "rollType": "Area derangement",
+        "pool": "Manipulation + Empathy",
+        "difficulty": "7",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Project temporary madness into nearby minds."
+      },
+      {
+        "dot": 5,
+        "power": "Total Insanity",
+        "rollType": "Mind break",
+        "pool": "Manipulation + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Shatter a target's mental stability for an extended period."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Dominate",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Command",
+        "rollType": "Single-order control",
+        "pool": "Manipulation + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Eye contact and a clear one-word command are required."
+      },
+      {
+        "dot": 2,
+        "power": "Mesmerize",
+        "rollType": "Complex command",
+        "pool": "Manipulation + Leadership",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Implant a fuller directive with constraints."
+      },
+      {
+        "dot": 3,
+        "power": "The Forgetful Mind",
+        "rollType": "Memory rewrite",
+        "pool": "Wits + Subterfuge",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Alter or erase selected memories."
+      },
+      {
+        "dot": 4,
+        "power": "Conditioning",
+        "rollType": "Long-term reprogramming",
+        "pool": "Charisma + Leadership",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Repeated sessions build hardened obedience."
+      },
+      {
+        "dot": 5,
+        "power": "Possession",
+        "rollType": "Body takeover",
+        "pool": "Manipulation + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Directly pilot a host body under strict limits."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Fortitude",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Fortitude 1",
+        "rollType": "Passive soak",
+        "pool": "None (adds soak capability)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Adds supernatural resilience dice as applicable."
+      },
+      {
+        "dot": 2,
+        "power": "Fortitude 2",
+        "rollType": "Passive soak",
+        "pool": "None (adds soak capability)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Improves durability against severe damage."
+      },
+      {
+        "dot": 3,
+        "power": "Fortitude 3",
+        "rollType": "Passive soak",
+        "pool": "None (adds soak capability)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Sustains major punishment."
+      },
+      {
+        "dot": 4,
+        "power": "Fortitude 4",
+        "rollType": "Passive soak",
+        "pool": "None (adds soak capability)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Approaches elder-grade durability."
+      },
+      {
+        "dot": 5,
+        "power": "Fortitude 5",
+        "rollType": "Passive soak",
+        "pool": "None (adds soak capability)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Extreme survivability."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T09:31:00.000Z",
+      "basis": "Verified against V20 Core extracted text: Fortitude System adds Fortitude dots to soak and allows aggravated soak (extracted_text lines ~12784-12788); represented as passive/system-modifier discipline mechanics."
+    }
+  },
+  {
+    "name": "Necromancy",
+    "source": "V20 Core / Rites of the Blood",
+    "pathBased": true,
+    "paths": [
+      {
+        "name": "The Sepulchre Path",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Witness of Death",
+            "pool": "Perception + Awareness",
+            "difficulty": "5",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Perceive ghosts for the rest of the scene; a botch leaves the necromancer nearly blind to the living world."
+          },
+          {
+            "dot": 2,
+            "power": "Summon Soul",
+            "pool": "Manipulation + Occult",
+            "difficulty": "7 or ghost Willpower, whichever is higher",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Calls a named ghost tied to an item it handled in life; botches often bring a hostile Spectre instead."
+          },
+          {
+            "dot": 3,
+            "power": "Compel Soul",
+            "pool": "Manipulation + Occult",
+            "difficulty": "6 (opposed)",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "6",
+            "notes": "Opposed roll against the ghost's Willpower; net successes determine how dangerous or long-lasting a command can be."
+          },
+          {
+            "dot": 4,
+            "power": "Haunting",
+            "pool": "Manipulation + Occult",
+            "difficulty": "Target Willpower (min 4), +1 if bound into an object",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "Current Willpower",
+            "notes": "Binds a ghost to a place or object for nights, weeks, or longer depending on successes and Willpower spent."
+          },
+          {
+            "dot": 5,
+            "power": "Torment",
+            "pool": "Stamina + Empathy",
+            "difficulty": "Ghost current Willpower",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Directly wounds a wraith from the Skinlands, inflicting one level of lethal damage per success."
+          }
+        ]
+      },
+      {
+        "name": "The Ash Path",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Shroudsight",
+            "pool": "Perception + Awareness",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "See through the Shroud into the Shadowlands for one scene."
+          },
+          {
+            "dot": 2,
+            "power": "Lifeless Tongues",
+            "pool": "Perception + Occult",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend a Willpower point to converse normally with ghosts."
+          },
+          {
+            "dot": 3,
+            "power": "Dead Hand",
+            "pool": "Wits + Occult",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend a Willpower point to physically affect ghostly beings and objects for one scene."
+          },
+          {
+            "dot": 4,
+            "power": "Ex Nihilo",
+            "pool": "Stamina + Occult",
+            "difficulty": "8",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Open a chalk-marked doorway and physically step into the Underworld."
+          },
+          {
+            "dot": 5,
+            "power": "Shroud Mastery",
+            "pool": "Willpower",
+            "difficulty": "9",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend two Willpower to locally raise or lower the Shroud, changing nearby cross-shroud difficulties by your successes."
+          }
+        ]
+      },
+      {
+        "name": "The Bone Path",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Tremens",
+            "pool": "Dexterity + Occult",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend one blood to make a corpse twitch, sit up, or move once in a brief predetermined motion."
+          },
+          {
+            "dot": 2,
+            "power": "Apprentice's Brooms",
+            "pool": "Wits + Occult",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend one blood and one Willpower to animate corpses as mindless laborers until destroyed or finished."
+          },
+          {
+            "dot": 3,
+            "power": "Shambling Hordes",
+            "pool": "Wits + Occult",
+            "difficulty": "8",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend one Willpower and one blood per corpse to create zombies that can attack and guard indefinitely."
+          },
+          {
+            "dot": 4,
+            "power": "Soul Stealing",
+            "pool": "Willpower",
+            "difficulty": "6 (opposed)",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "6",
+            "notes": "Temporarily rips a mortal or ghoul soul from its living body, leaving the body catatonic."
+          },
+          {
+            "dot": 5,
+            "power": "Daemonic Possession",
+            "pool": "Willpower",
+            "difficulty": "6 (opposed only for a vampiric corpse)",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "6",
+            "notes": "Lets a willing ghost or projected soul inhabit a freshly dead body for up to a week before it decays away."
+          }
+        ]
+      },
+      {
+        "name": "The Cenotaph Path",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "A Touch of Death",
+            "pool": "Perception + Awareness",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "By touching a person or object, sense whether a ghost recently influenced it and how recently that happened."
+          },
+          {
+            "dot": 2,
+            "power": "Reveal the Catene",
+            "pool": "Perception + Occult",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Study an object or person to discover whether it is a wraith's fetter and, with enough successes, whose fetter it is."
+          },
+          {
+            "dot": 3,
+            "power": "Tread Upon the Grave",
+            "pool": "Willpower",
+            "difficulty": "8",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Sense whether the local Shroud is weak, strong, or has been artificially altered."
+          },
+          {
+            "dot": 4,
+            "power": "Death Knell",
+            "pool": "Perception + Occult",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend a Willpower point to sense the distance and direction of a newly formed ghost within roughly half a mile."
+          },
+          {
+            "dot": 5,
+            "power": "Ephemeral Binding",
+            "pool": "Manipulation + Occult",
+            "difficulty": "8",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend blood and Willpower to create an artificial fetter that anchors a chosen ghost to an object or person."
+          }
+        ]
+      },
+      {
+        "name": "The Corpse in the Monster",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Masque of Death",
+            "pool": "Stamina + Medicine (to inflict on another)",
+            "difficulty": "Target Stamina + 3",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend one blood to assume a convincing corpse-like form, or touch another Kindred to afflict them with it until sunset."
+          },
+          {
+            "dot": 2,
+            "power": "Cold of the Grave",
+            "pool": "None",
+            "difficulty": "",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend one Willpower to ignore wound penalties and gain resistance to emotional influence, at the cost of blunted social warmth."
+          },
+          {
+            "dot": 3,
+            "power": "Curse of Life",
+            "pool": "Intelligence + Medicine",
+            "difficulty": "8",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Afflicts a nearby Kindred with the worst distractions of mortal life until the next sunset."
+          },
+          {
+            "dot": 4,
+            "power": "Gift of the Corpse",
+            "pool": "Stamina + Occult",
+            "difficulty": "8",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend a Willpower point to briefly become corpse-like enough to ignore frenzy, holy effects, staking, and most fire or sunlight penalties."
+          },
+          {
+            "dot": 5,
+            "power": "Gift of Life",
+            "pool": "Stamina + Occult",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "After spending 12 blood continuously, temporarily experience an uncanny half-life until midnight, followed by six nights of severe Beast backlash."
+          }
+        ]
+      },
+      {
+        "name": "The Grave's Decay",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Destroy the Husk",
+            "pool": "Intelligence + Medicine",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend one blood to reduce a human corpse to dust over a few turns."
+          },
+          {
+            "dot": 2,
+            "power": "Rigor Mortis",
+            "pool": "Intelligence + Medicine",
+            "difficulty": "7",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "7",
+            "notes": "Spend one Willpower to freeze a visible target in place for one turn per success."
+          },
+          {
+            "dot": 3,
+            "power": "Wither",
+            "pool": "Dexterity + Brawl (to touch)",
+            "difficulty": "Standard attack",
+            "resistancePool": "Fortitude",
+            "resistanceDifficulty": "Standard soak",
+            "notes": "Spend one Willpower and touch a limb or sensory organ to inflict two aggravated wounds and cripple it until healed."
+          },
+          {
+            "dot": 4,
+            "power": "Corrupt the Undead Flesh",
+            "pool": "Intelligence + Medicine",
+            "difficulty": "6",
+            "resistancePool": "Stamina + Fortitude",
+            "resistanceDifficulty": "Attacker Willpower",
+            "notes": "Infects a visible Kindred with a wasting disease that weakens Attributes, increases waking cost, and spreads through blood."
+          },
+          {
+            "dot": 5,
+            "power": "Dissolve the Flesh",
+            "pool": "Willpower",
+            "difficulty": "Target Stamina + 3",
+            "resistancePool": "Fortitude",
+            "resistanceDifficulty": "Standard soak",
+            "notes": "Spend two blood and one Willpower to turn chunks of a Kindred's body to ash, inflicting aggravated wounds per success."
+          }
+        ]
+      },
+      {
+        "name": "Path of the Four Humors",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Whispers to the Soul",
+            "pool": "None (whisper the target's name)",
+            "difficulty": "",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "8",
+            "notes": "Plagues the victim with nightmares and distracting whispers for days equal to the necromancer's Manipulation."
+          },
+          {
+            "dot": 2,
+            "power": "Kiss of the Dark Mother",
+            "pool": "None",
+            "difficulty": "",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend one blood to coat the next bite with black bile and double that bite's aggravated damage before soak."
+          },
+          {
+            "dot": 3,
+            "power": "Dark Humors",
+            "pool": "None",
+            "difficulty": "",
+            "resistancePool": "Stamina",
+            "resistanceDifficulty": "8",
+            "notes": "Spend two blood to exude a chosen humor that weakens, bleeds, injures, or emotionally crushes anyone who touches or ingests it."
+          },
+          {
+            "dot": 4,
+            "power": "Clutching the Shroud",
+            "pool": "Manipulation + Occult (to speak with ghosts while active)",
+            "difficulty": "Locale-based, usually 5-7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "After drinking and spending five blood points from an older corpse, gain universal soak dice and sharpened death-sense for the scene."
+          },
+          {
+            "dot": 5,
+            "power": "Black Breath",
+            "pool": "Stamina + Athletics",
+            "difficulty": "7",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "8 for mortals, 7 for supernatural beings",
+            "notes": "Exhale despairing black vapor; mortals may attempt suicide, while failed Kindred victims instead collapse into torpor."
+          }
+        ]
+      },
+      {
+        "name": "Vitreous Path",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Eyes of the Dead",
+            "pool": "Perception + Occult",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Read the signs of injury, curses, and even probable death in a target's aura for one scene."
+          },
+          {
+            "dot": 2,
+            "power": "Aura of Decay",
+            "pool": "None",
+            "difficulty": "",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend blood to radiate entropy that ruins nearby inanimate objects over a timescale from a week to a single turn."
+          },
+          {
+            "dot": 3,
+            "power": "Soul Feast",
+            "pool": "Willpower",
+            "difficulty": "6 (feeding contest against a ghost)",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "6",
+            "notes": "Spend one Willpower to draw necrotic energy from a death-tainted site or directly feed on a ghost for power."
+          },
+          {
+            "dot": 4,
+            "power": "Breath of Thanatos",
+            "pool": "Willpower",
+            "difficulty": "8",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Exhale invisible entropy to lure Spectres across an area or infect a target with decay and social revulsion until sunrise."
+          },
+          {
+            "dot": 5,
+            "power": "Night Cry",
+            "pool": "Manipulation + Occult",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend Willpower and optional blood to scream entropy across multiple targets, either helping them or inflicting aggravated wounds."
+          }
+        ]
+      }
+    ],
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Necromancy 1",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if directly contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Select path effect first; each path has different powers."
+      },
+      {
+        "dot": 2,
+        "power": "Necromancy 2",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if directly contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Mid-tier path effects and spirit control."
+      },
+      {
+        "dot": 3,
+        "power": "Necromancy 3",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if directly contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Major interaction with dead and underworld forces."
+      },
+      {
+        "dot": 4,
+        "power": "Necromancy 4",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if directly contested)",
+        "resistanceDifficulty": "6",
+        "notes": "High-tier path manifestations."
+      },
+      {
+        "dot": 5,
+        "power": "Necromancy 5",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if directly contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Peak path expression; often ritual or scene-defining."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Obfuscate",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Cloak of Shadows",
+        "rollType": "Stealth veil",
+        "pool": "Dexterity + Stealth",
+        "difficulty": "6",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Remain unseen while still and hidden."
+      },
+      {
+        "dot": 2,
+        "power": "Unseen Presence",
+        "rollType": "Active concealment",
+        "pool": "Dexterity + Stealth",
+        "difficulty": "7",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Move while remaining obscured."
+      },
+      {
+        "dot": 3,
+        "power": "Mask of a Thousand Faces",
+        "rollType": "Identity mask",
+        "pool": "Manipulation + Performance",
+        "difficulty": "7",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Impersonate a different appearance."
+      },
+      {
+        "dot": 4,
+        "power": "Vanish from the Mind's Eye",
+        "rollType": "Perceptual erasure",
+        "pool": "Charisma + Subterfuge",
+        "difficulty": "7",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Observers fail to register the vampire."
+      },
+      {
+        "dot": 5,
+        "power": "Cloak the Gathering",
+        "rollType": "Group concealment",
+        "pool": "Charisma + Stealth",
+        "difficulty": "7",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Extend concealment to companions."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Obtenebration",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Shadow Play",
+        "rollType": "Shadow shaping",
+        "pool": "Manipulation + Occult",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Create sensory-affecting shadow effects."
+      },
+      {
+        "dot": 2,
+        "power": "Shroud of Night",
+        "rollType": "Area darkness",
+        "pool": "Manipulation + Occult",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Blanket area in supernatural darkness."
+      },
+      {
+        "dot": 3,
+        "power": "Arms of the Abyss",
+        "rollType": "Combat manifestation",
+        "pool": "Manipulation + Occult",
+        "difficulty": "7",
+        "resistancePool": "Dexterity + Dodge or Strength + Brawl",
+        "resistanceDifficulty": "6",
+        "notes": "Conjure shadow tendrils for attack and control."
+      },
+      {
+        "dot": 4,
+        "power": "Black Metamorphosis",
+        "rollType": "Transformation",
+        "pool": "Stamina + Occult",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Assume a predatory abyssal battle form."
+      },
+      {
+        "dot": 5,
+        "power": "Tenebrous Form",
+        "rollType": "Abyssal embodiment",
+        "pool": "Stamina + Occult",
+        "difficulty": "8",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Become and move as near-incorporeal darkness."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Potence",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Potence 1",
+        "rollType": "Passive strength",
+        "pool": "None (adds automatic strength successes)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Apply automatic successes to Strength-based feats/attacks."
+      },
+      {
+        "dot": 2,
+        "power": "Potence 2",
+        "rollType": "Passive strength",
+        "pool": "None (adds automatic strength successes)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Increases force and damage pressure."
+      },
+      {
+        "dot": 3,
+        "power": "Potence 3",
+        "rollType": "Passive strength",
+        "pool": "None (adds automatic strength successes)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Breaks most mortal physical limits."
+      },
+      {
+        "dot": 4,
+        "power": "Potence 4",
+        "rollType": "Passive strength",
+        "pool": "None (adds automatic strength successes)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Crushing strength in combat and feats."
+      },
+      {
+        "dot": 5,
+        "power": "Potence 5",
+        "rollType": "Passive strength",
+        "pool": "None (adds automatic strength successes)",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Legendary force output."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T09:31:00.000Z",
+      "basis": "Verified against V20 Core extracted text: Potence System adds dice to Strength rolls with optional blood-spend conversion to automatic successes (extracted_text lines ~15822-15827); represented as passive/system-modifier discipline mechanics."
+    }
+  },
+  {
+    "name": "Presence",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Awe",
+        "rollType": "Emotional influence",
+        "pool": "Charisma + Empathy",
+        "difficulty": "6",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Sway impressions and social receptiveness."
+      },
+      {
+        "dot": 2,
+        "power": "Dread Gaze",
+        "rollType": "Fear induction",
+        "pool": "Charisma + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Courage",
+        "resistanceDifficulty": "6",
+        "notes": "Instill panic and retreat impulses."
+      },
+      {
+        "dot": 3,
+        "power": "Entrancement",
+        "rollType": "Attachment induction",
+        "pool": "Charisma + Empathy",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Create temporary obsession with the vampire."
+      },
+      {
+        "dot": 4,
+        "power": "Summon",
+        "rollType": "Compelling call",
+        "pool": "Charisma + Leadership",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Compel target to approach across distance."
+      },
+      {
+        "dot": 5,
+        "power": "Majesty",
+        "rollType": "Overwhelming aura",
+        "pool": "Charisma + Intimidation",
+        "difficulty": "7",
+        "resistancePool": "Courage",
+        "resistanceDifficulty": "6",
+        "notes": "Paralyze hostility and command immediate social dominance."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Protean",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Eyes of the Beast",
+        "rollType": "Sensory mutation",
+        "pool": "None",
+        "difficulty": "",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "See in darkness; intimidating eye effect."
+      },
+      {
+        "dot": 2,
+        "power": "Feral Claws",
+        "rollType": "Combat enhancement",
+        "pool": "Dexterity + Brawl",
+        "difficulty": "6",
+        "resistancePool": "Stamina (soak)",
+        "resistanceDifficulty": "6",
+        "notes": "Manifest claws with aggravated threat."
+      },
+      {
+        "dot": 3,
+        "power": "Earth Meld",
+        "rollType": "Defensive utility",
+        "pool": "Stamina + Survival",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Sink into earth for concealment/rest."
+      },
+      {
+        "dot": 4,
+        "power": "Shape of the Beast",
+        "rollType": "Transformation",
+        "pool": "Stamina + Survival",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Assume beast form with movement/combat changes."
+      },
+      {
+        "dot": 5,
+        "power": "Mist Form",
+        "rollType": "Transformation",
+        "pool": "Stamina + Survival",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Become mist-like and highly resistant to harm."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Quietus",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Silence of Death",
+        "rollType": "Stealth utility",
+        "pool": "Wits + Stealth",
+        "difficulty": "6",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Muffle sound around actions."
+      },
+      {
+        "dot": 2,
+        "power": "Scorpion's Touch",
+        "rollType": "Blood poison",
+        "pool": "Stamina + Occult",
+        "difficulty": "6",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Coat blood as poison for weaponized delivery."
+      },
+      {
+        "dot": 3,
+        "power": "Dagon's Call",
+        "rollType": "Blood rupture",
+        "pool": "Manipulation + Medicine",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Cause internal blood trauma at range."
+      },
+      {
+        "dot": 4,
+        "power": "Baal's Caress",
+        "rollType": "Lethal blood toxin",
+        "pool": "Dexterity + Melee",
+        "difficulty": "6",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Apply potent venom through blooded weapon strike."
+      },
+      {
+        "dot": 5,
+        "power": "Taste of Death",
+        "rollType": "Projectile blood attack",
+        "pool": "Stamina + Athletics",
+        "difficulty": "6",
+        "resistancePool": "Dexterity + Dodge / Stamina soak",
+        "resistanceDifficulty": "6",
+        "notes": "Expel blood as damaging ranged projectile."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Serpentis",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Eyes of the Serpent",
+        "rollType": "Hypnosis",
+        "pool": "Manipulation + Subterfuge",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Immobilize/entrance target with gaze."
+      },
+      {
+        "dot": 2,
+        "power": "Tongue of the Asp",
+        "rollType": "Predatory strike",
+        "pool": "Dexterity + Brawl",
+        "difficulty": "6",
+        "resistancePool": "Dexterity + Dodge / Stamina soak",
+        "resistanceDifficulty": "6",
+        "notes": "Extend tongue for stealth attack and feeding utility."
+      },
+      {
+        "dot": 3,
+        "power": "Skin of the Adder",
+        "rollType": "Defensive transformation",
+        "pool": "Stamina + Survival",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Shed skin and reduce harm impact."
+      },
+      {
+        "dot": 4,
+        "power": "Form of the Cobra",
+        "rollType": "Transformation",
+        "pool": "Stamina + Survival",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Assume giant serpent form."
+      },
+      {
+        "dot": 5,
+        "power": "Heart of Darkness",
+        "rollType": "Ritualized protection",
+        "pool": "Intelligence + Occult",
+        "difficulty": "8",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Remove and safeguard heart from staking vulnerability."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Thaumaturgy",
+    "source": "V20 Core / Rites of the Blood",
+    "pathBased": true,
+    "paths": [
+      {
+        "name": "Path of Blood",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "A Taste for Blood",
+            "pool": "Perception + Occult",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Read key blood information from a sample."
+          },
+          {
+            "dot": 2,
+            "power": "Blood Rage",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Force a touched Kindred to spend blood in whatever legal fashion the caster chooses; each success also raises frenzy difficulty by 1."
+          },
+          {
+            "dot": 3,
+            "power": "Blood of Potency",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "May be used once per night to temporarily lower the caster's effective Generation for one hour per success spent."
+          },
+          {
+            "dot": 4,
+            "power": "Theft of Vitae",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Draws blood from a visible target within about 50 feet; each success transfers one blood point to the caster."
+          },
+          {
+            "dot": 5,
+            "power": "Cauldron of Blood",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Fortitude",
+            "resistanceDifficulty": "Standard soak",
+            "notes": "A touched victim's blood boils; each success inflicts one level of aggravated damage."
+          }
+        ]
+      },
+      {
+        "name": "Elemental Mastery",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Elemental Strength",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Allocate three temporary dots among Strength and Stamina for turns equal to successes."
+          },
+          {
+            "dot": 2,
+            "power": "Wooden Tongues",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Commune with an inanimate object and learn what it has experienced."
+          },
+          {
+            "dot": 3,
+            "power": "Animate the Unmoving",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend a Willpower point with low successes to animate one inanimate human-sized object and direct it for up to an hour."
+          },
+          {
+            "dot": 4,
+            "power": "Elemental Form",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Transform into an inanimate object of roughly your own mass for the rest of the night."
+          },
+          {
+            "dot": 5,
+            "power": "Summon Elemental",
+            "pool": "Willpower, then Manipulation + Occult to command",
+            "difficulty": "Standard path difficulty / successes + 4 to command",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Calls an elemental spirit from nearby matter; commanding it is a separate and often dangerous roll."
+          }
+        ]
+      },
+      {
+        "name": "The Green Path",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Herbal Wisdom",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Touch a plant and commune with its spirit; successes determine how clear and useful the answers are."
+          },
+          {
+            "dot": 2,
+            "power": "Speed the Season's Passing",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Rapidly grow or wither a plant, even ruining wooden weapons with enough successes."
+          },
+          {
+            "dot": 3,
+            "power": "Dance of Vines",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Animate a mass of vegetation no heavier than the caster for utility or combat."
+          },
+          {
+            "dot": 4,
+            "power": "Verdant Haven",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Wits + Survival",
+            "resistanceDifficulty": "Caster Willpower",
+            "notes": "Grow a sealed living shelter that lasts until the next sunset and can even block sunlight with enough successes."
+          },
+          {
+            "dot": 5,
+            "power": "Awaken the Forest Giants",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend blood to animate a tree into a powerful temporary servant that later roots wherever it stands."
+          }
+        ]
+      },
+      {
+        "name": "Hands of Destruction",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Decay",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Age an inanimate object by years for each minute the caster keeps contact with it."
+          },
+          {
+            "dot": 2,
+            "power": "Gnarl Wood",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Warp visible wood at a glance, spending blood to affect larger amounts or multiple items."
+          },
+          {
+            "dot": 3,
+            "power": "Acidic Touch",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Fortitude",
+            "resistanceDifficulty": "Standard soak",
+            "notes": "Spend blood to secrete corrosive acid that burns metal, wood, and flesh for aggravated damage."
+          },
+          {
+            "dot": 4,
+            "power": "Atrophy",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Stamina + Athletics",
+            "resistanceDifficulty": "8",
+            "notes": "Withers a limb unless the victim resists well enough, permanently crippling mortals and troubling even vampires."
+          },
+          {
+            "dot": 5,
+            "power": "Turn to Dust",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Stamina + Courage",
+            "resistanceDifficulty": "8",
+            "notes": "Each success ages a victim by 10 years; mortals may die while Kindred merely wither cosmetically for a night."
+          }
+        ]
+      },
+      {
+        "name": "The Lure of Flames",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Candle",
+            "pool": "Willpower",
+            "difficulty": "3",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Create and shape a candle-sized flame."
+          },
+          {
+            "dot": 2,
+            "power": "Palm of Flame",
+            "pool": "Willpower",
+            "difficulty": "4",
+            "resistancePool": "Fortitude",
+            "resistanceDifficulty": "4 to soak",
+            "notes": "Conjure a palm-sized flame that inflicts one aggravated level per turn when released."
+          },
+          {
+            "dot": 3,
+            "power": "Campfire",
+            "pool": "Willpower",
+            "difficulty": "5",
+            "resistancePool": "Fortitude",
+            "resistanceDifficulty": "5 to soak",
+            "notes": "Conjure a campfire-sized blaze that deals two aggravated health levels per turn."
+          },
+          {
+            "dot": 4,
+            "power": "Bonfire",
+            "pool": "Willpower",
+            "difficulty": "7",
+            "resistancePool": "Fortitude",
+            "resistanceDifficulty": "7 to soak",
+            "notes": "Create a bonfire-sized inferno dealing two aggravated health levels per turn."
+          },
+          {
+            "dot": 5,
+            "power": "Inferno",
+            "pool": "Willpower",
+            "difficulty": "9",
+            "resistancePool": "Fortitude",
+            "resistanceDifficulty": "9 to soak",
+            "notes": "Unleash an inferno that inflicts three aggravated health levels per turn."
+          }
+        ]
+      },
+      {
+        "name": "Neptune's Might",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Eyes of the Sea",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Look into standing water to witness past events from its point of view, from one day to ten years back."
+          },
+          {
+            "dot": 2,
+            "power": "Prison of Water",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty (+1 without ample water)",
+            "resistancePool": "Strength",
+            "resistanceDifficulty": "8",
+            "notes": "Animate water to restrain a subject; breaking free requires more Strength successes than the caster rolled."
+          },
+          {
+            "dot": 3,
+            "power": "Blood to Water",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "By touch, convert a victim's blood points to water; mortals usually die after even one success."
+          },
+          {
+            "dot": 4,
+            "power": "Flowing Wall",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "9",
+            "notes": "Spend three Willpower to raise a broad wall of water that most supernatural beings cannot cross."
+          },
+          {
+            "dot": 5,
+            "power": "Dehydrate",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Stamina + Fortitude",
+            "resistanceDifficulty": "9",
+            "notes": "Strip water from a visible target; each net success causes one level of lethal damage or one blood point loss."
+          }
+        ]
+      },
+      {
+        "name": "Movement of the Mind",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "One pound / one-half kilogram",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Willpower (if used on a living being)",
+            "resistanceDifficulty": "Opposed each turn",
+            "notes": "Telekinetically manipulate up to one pound for turns equal to successes."
+          },
+          {
+            "dot": 2,
+            "power": "20 pounds / 10 kilograms",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Willpower (if used on a living being)",
+            "resistanceDifficulty": "Opposed each turn",
+            "notes": "Control up to 20 pounds telekinetically."
+          },
+          {
+            "dot": 3,
+            "power": "200 pounds / 100 kilograms",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Willpower (if used on a living being)",
+            "resistanceDifficulty": "Opposed each turn",
+            "notes": "Control up to 200 pounds and levitate yourself at roughly running speed."
+          },
+          {
+            "dot": 4,
+            "power": "500 pounds / 250 kilograms",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Willpower (if used on a living being)",
+            "resistanceDifficulty": "Opposed each turn",
+            "notes": "Control up to 500 pounds and hurl objects with Strength equal to path rating."
+          },
+          {
+            "dot": 5,
+            "power": "1000 pounds / 500 kilograms",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Willpower (if used on a living being)",
+            "resistanceDifficulty": "Opposed each turn",
+            "notes": "Control up to 1000 pounds with the same duration and self-flight rules."
+          }
+        ]
+      },
+      {
+        "name": "The Path of Conjuring",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Summon the Simple Form",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Conjure a simple single-material object; keeping it present costs one Willpower per turn."
+          },
+          {
+            "dot": 2,
+            "power": "Permanency",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Invest three blood points to make a simple conjured object permanent."
+          },
+          {
+            "dot": 3,
+            "power": "Magic of the Smith",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Knowledge roll for especially complex items",
+            "resistanceDifficulty": "Storyteller set",
+            "notes": "Create complex multi-part objects such as firearms, chainsaws, or electronics for five blood points."
+          },
+          {
+            "dot": 4,
+            "power": "Reverse Conjuration",
+            "pool": "Willpower (extended)",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Accumulate as many successes as the original caster used to unmake a conjured object."
+          },
+          {
+            "dot": 5,
+            "power": "Power Over Life",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend 10 blood to create an obedient living simulacrum that lasts up to a week."
+          }
+        ]
+      },
+      {
+        "name": "The Path of Corruption",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Contradict",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Perception + Subterfuge",
+            "resistanceDifficulty": "Caster successes + 2",
+            "notes": "Briefly twists a target into taking the darker inverse of a non-reflexive intended action."
+          },
+          {
+            "dot": 2,
+            "power": "Subvert",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Perception + Subterfuge",
+            "resistanceDifficulty": "Target Manipulation + Subterfuge",
+            "notes": "With eye contact, pushes the target toward a repressed shameful desire for minutes, nights, or longer."
+          },
+          {
+            "dot": 3,
+            "power": "Dissociate",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "Caster Manipulation + Empathy",
+            "notes": "Touch a target to erode trust, lowering all Social dice pools and weakening bonds such as the Vinculum."
+          },
+          {
+            "dot": 4,
+            "power": "Addiction",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Self-Control / Instinct",
+            "resistanceDifficulty": "Caster successes + 3",
+            "notes": "After exposure and touch, create an instant addiction that worsens every night it goes unsatisfied."
+          },
+          {
+            "dot": 5,
+            "power": "Dependence",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Self-Control / Instinct",
+            "resistanceDifficulty": "Caster successes + 3",
+            "notes": "During conversation, tie the target's psyche to the caster, weakening resistance and Willpower recovery away from her."
+          }
+        ]
+      },
+      {
+        "name": "The Path of Mars",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "War Cry",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "For one scene, increase Courage by 1 and treat Willpower as 1 higher against hostile effects."
+          },
+          {
+            "dot": 2,
+            "power": "Strike True",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Dodge, block, or parry",
+            "resistanceDifficulty": "Standard defense",
+            "notes": "Guarantees a single melee or brawl attack hits with one success before defenses."
+          },
+          {
+            "dot": 3,
+            "power": "Wind Dance",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "For one scene, dodge any number of attacks with the full dice pool."
+          },
+          {
+            "dot": 4,
+            "power": "Fearless Heart",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "For one scene, gain +1 Strength, Dexterity, and Stamina, but must later spend two hours resting or bleed vitae."
+          },
+          {
+            "dot": 5,
+            "power": "Comrades at Arms",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "After invoking a lower Mars power, touch allies to extend that same benefit to the whole group."
+          }
+        ]
+      },
+      {
+        "name": "The Path of Technomancy",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Analyze",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Touch a device to gain a temporary intuitive understanding of its operation."
+          },
+          {
+            "dot": 2,
+            "power": "Burnout",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty (+1 if not touching)",
+            "resistancePool": "Special system resistance",
+            "resistanceDifficulty": "6",
+            "notes": "Overload electronics at range, from a brief interruption to total destruction depending on successes."
+          },
+          {
+            "dot": 3,
+            "power": "Encrypt / Decrypt",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Opposed by another thaumaturge at +1 difficulty",
+            "resistanceDifficulty": "Standard path difficulty",
+            "notes": "Scramble a device or data store so others suffer a difficulty penalty equal to your successes."
+          },
+          {
+            "dot": 4,
+            "power": "Remote Access",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Operate a visible device mentally for turns equal to successes, limited by successes on relevant Ability use."
+          },
+          {
+            "dot": 5,
+            "power": "Telecommute",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Project consciousness into the Internet for minutes per success and use other Technomancy powers remotely."
+          }
+        ]
+      },
+      {
+        "name": "Weather Control",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Fog / Light Breeze / Minor Temperature Change",
+            "pool": "Willpower",
+            "difficulty": "Weather-dependent",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Create fog, a light breeze, or shift temperature by about 10F / 5C over a small area."
+          },
+          {
+            "dot": 2,
+            "power": "Rain or Snow",
+            "pool": "Willpower",
+            "difficulty": "Weather-dependent",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Call precipitation heavy enough to impair vision and driving."
+          },
+          {
+            "dot": 3,
+            "power": "High Winds / Moderate Temperature Change",
+            "pool": "Willpower",
+            "difficulty": "Weather-dependent",
+            "resistancePool": "Dexterity",
+            "resistanceDifficulty": "6 in fierce gusts",
+            "notes": "Create strong winds or shift temperature by about 20F / 10C."
+          },
+          {
+            "dot": 4,
+            "power": "Storm",
+            "pool": "Willpower",
+            "difficulty": "Weather-dependent",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Combine heavy precipitation and high winds into a full storm."
+          },
+          {
+            "dot": 5,
+            "power": "Lightning Strike",
+            "pool": "Willpower, plus Perception + Occult to hit a chosen target",
+            "difficulty": "Weather-dependent / 6 to 10 to target",
+            "resistancePool": "Stamina + Fortitude",
+            "resistanceDifficulty": "Standard soak",
+            "notes": "Call down a lightning bolt that deals 10 dice of lethal damage."
+          }
+        ]
+      },
+      {
+        "name": "The Path of the Father's Vengeance",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Zillah's Litany",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Reveal a vampire's blood bonds and Vinculi by name and rough psychic impression."
+          },
+          {
+            "dot": 2,
+            "power": "The Crone's Pride",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Reduce a vampire's Appearance to 0 for one night."
+          },
+          {
+            "dot": 3,
+            "power": "Feast of Ashes",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "For one week, the target can no longer drink blood and can only sustain herself with ashes."
+          },
+          {
+            "dot": 4,
+            "power": "Uriel's Disfavor",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "For one week, bright light inflicts aggravated damage and even ordinary light is painful."
+          },
+          {
+            "dot": 5,
+            "power": "Valediction",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "For one week, the target reverts to her original Generation, losing any diablerie-gained advantage."
+          }
+        ]
+      },
+      {
+        "name": "Mastery of the Mortal Shell",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Vertigo",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "A touch makes the victim physically disoriented; all physical actions are at +1 difficulty for turns equal to successes."
+          },
+          {
+            "dot": 2,
+            "power": "Contortion",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "A touched limb or body part spasms uselessly for the duration."
+          },
+          {
+            "dot": 3,
+            "power": "Seizure",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Standard soak (armor does not help)",
+            "resistanceDifficulty": "Standard soak",
+            "notes": "A touch drives the victim into convulsions, causing +2 difficulty on physical actions and one bashing damage each turn."
+          },
+          {
+            "dot": 4,
+            "power": "Body Failure",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Stamina + Fortitude",
+            "resistanceDifficulty": "Caster current Willpower",
+            "notes": "At line of sight, inflicts a lethal version of Seizure while visual contact is maintained."
+          },
+          {
+            "dot": 5,
+            "power": "Marionette",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Stamina + Fortitude",
+            "resistanceDifficulty": "Caster current Willpower",
+            "notes": "Take complete physical control of a visible victim while she remains mentally aware of the violation."
+          }
+        ]
+      },
+      {
+        "name": "Path of the Focused Mind",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Readiness",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Use on yourself to gain bonus dice for Wits-based actions this turn or convert them into initiative."
+          },
+          {
+            "dot": 2,
+            "power": "Centering",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Calm a subject so penalties that reduce dice pools no longer apply, and frenzy resistance improves."
+          },
+          {
+            "dot": 3,
+            "power": "One-Tracked Mind",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "1 per scene or per turn to break focus",
+            "notes": "Fixates a target on one chosen action, preventing dice splitting and tactical changes while lowering that action's difficulty by 1."
+          },
+          {
+            "dot": 4,
+            "power": "Dual Thought",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Gives the thaumaturge one extra mental action without multiple-action penalties."
+          },
+          {
+            "dot": 5,
+            "power": "Perfect Clarity",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "For a scene, reduce all action difficulties by 2, gain immunity to frenzy and Rotschreck, and become harder to mentally influence."
+          }
+        ]
+      },
+      {
+        "name": "Path of the Levinbolt",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Flicker",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Glance at an electrical device to shut it down for ten minutes per success."
+          },
+          {
+            "dot": 2,
+            "power": "Spark",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Stamina + Fortitude",
+            "resistanceDifficulty": "7 to soak",
+            "notes": "A touch releases a sharp discharge that inflicts four dice of lethal electrical damage and shorts electronics."
+          },
+          {
+            "dot": 3,
+            "power": "Illuminate",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "Stamina + Fortitude",
+            "resistanceDifficulty": "8 to soak",
+            "notes": "Generate enough power to run small electronics or inflict eight dice of lethal electrical damage by touch."
+          },
+          {
+            "dot": 4,
+            "power": "Thor's Fury",
+            "pool": "Perception + Science",
+            "difficulty": "6 plus range in yards or meters, max 10",
+            "resistancePool": "Stamina + Fortitude",
+            "resistanceDifficulty": "8 to soak",
+            "notes": "Hurl lightning at nearby targets, inflicting one lethal health level per success."
+          },
+          {
+            "dot": 5,
+            "power": "Eye of the Storm",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Spend a Willpower point to become wreathed in power, immune to ranged attacks and deadly to anyone who touches you."
+          }
+        ]
+      },
+      {
+        "name": "Path of Spirit Manipulation",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Hermetic Sight",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Perceive the spirit world overlaid on the material world for about an hour, longer with extra successes."
+          },
+          {
+            "dot": 2,
+            "power": "Astral Cant",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Speak and understand nearby spirits for fifteen minutes, extended by extra successes."
+          },
+          {
+            "dot": 3,
+            "power": "Voice of Command",
+            "pool": "Willpower",
+            "difficulty": "Opposed",
+            "resistancePool": "Spirit Willpower",
+            "resistanceDifficulty": "Caster Manipulation + Occult",
+            "notes": "Opposed contest that compels a spirit to obey commands, from simple favors to suicidal tasks on five successes."
+          },
+          {
+            "dot": 4,
+            "power": "Entrap Ephemera",
+            "pool": "Willpower",
+            "difficulty": "Opposed",
+            "resistancePool": "Spirit Willpower",
+            "resistanceDifficulty": "Caster Manipulation + Occult",
+            "notes": "Bind a spirit into a symbolic object to imprison it or create a fetish."
+          },
+          {
+            "dot": 5,
+            "power": "Duality",
+            "pool": "Willpower",
+            "difficulty": "Standard path difficulty",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Exist in both the physical and spirit worlds at once for fifteen minutes per success, interacting with both."
+          }
+        ]
+      }
+    ],
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Thaumaturgy 1",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Select path effect first; path rules govern outcome."
+      },
+      {
+        "dot": 2,
+        "power": "Thaumaturgy 2",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Access stronger path techniques."
+      },
+      {
+        "dot": 3,
+        "power": "Thaumaturgy 3",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Mid-tier blood sorcery effects."
+      },
+      {
+        "dot": 4,
+        "power": "Thaumaturgy 4",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Advanced path expressions and stronger rituals."
+      },
+      {
+        "dot": 5,
+        "power": "Thaumaturgy 5",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "High-circle sorcery; often scene-defining."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Vicissitude",
+    "source": "V20 Core",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Malleable Visage",
+        "rollType": "Flesh shaping",
+        "pool": "Dexterity + Medicine",
+        "difficulty": "6",
+        "resistancePool": "Stamina (for unwilling target)",
+        "resistanceDifficulty": "6",
+        "notes": "Resculpt facial and superficial features."
+      },
+      {
+        "dot": 2,
+        "power": "Fleshcraft",
+        "rollType": "Body restructuring",
+        "pool": "Dexterity + Medicine",
+        "difficulty": "7",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Alter flesh and organs more significantly."
+      },
+      {
+        "dot": 3,
+        "power": "Bonecraft",
+        "rollType": "Skeletal alteration",
+        "pool": "Dexterity + Medicine",
+        "difficulty": "7",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Reshape bone and create natural weapons/armor."
+      },
+      {
+        "dot": 4,
+        "power": "Horrid Form",
+        "rollType": "Combat transformation",
+        "pool": "Stamina + Survival",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Assume monstrous war form."
+      },
+      {
+        "dot": 5,
+        "power": "Bloodform",
+        "rollType": "Liquefaction",
+        "pool": "Stamina + Survival",
+        "difficulty": "8",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Transform body into blood-like state for mobility and resilience."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Abombwe",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Predator's Communion",
+        "rollType": "Predatory attunement",
+        "pool": "Perception + Animal Ken",
+        "difficulty": "6",
+        "resistancePool": "Willpower (if directed at a resisting sentient target)",
+        "resistanceDifficulty": "6",
+        "notes": "Establish instinctive predatory rapport."
+      },
+      {
+        "dot": 2,
+        "power": "Feral Whispers of the Jungle",
+        "rollType": "Intimidation aura",
+        "pool": "Manipulation + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Project supernatural hunting dread."
+      },
+      {
+        "dot": 3,
+        "power": "Conquer the Beast",
+        "rollType": "Beast domination",
+        "pool": "Charisma + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Subdue or redirect predatory impulses."
+      },
+      {
+        "dot": 4,
+        "power": "Summon Predatory Terror",
+        "rollType": "Assaultive fear",
+        "pool": "Manipulation + Empathy",
+        "difficulty": "7",
+        "resistancePool": "Courage",
+        "resistanceDifficulty": "6",
+        "notes": "Force panic and collapse through primal terror."
+      },
+      {
+        "dot": 5,
+        "power": "Apex of the Hunter",
+        "rollType": "Dominance manifestation",
+        "pool": "Charisma + Survival",
+        "difficulty": "8",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Impose absolute predator hierarchy in the scene."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Daimoinon",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Sense the Sin",
+        "rollType": "Moral perception",
+        "pool": "Perception + Empathy",
+        "difficulty": "6",
+        "resistancePool": "Subterfuge + Manipulation",
+        "resistanceDifficulty": "6",
+        "notes": "Discern guilt, vice, and spiritual fracture."
+      },
+      {
+        "dot": 2,
+        "power": "Fear the Void",
+        "rollType": "Terror induction",
+        "pool": "Manipulation + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Courage",
+        "resistanceDifficulty": "6",
+        "notes": "Inflict existential dread."
+      },
+      {
+        "dot": 3,
+        "power": "Corrupting Touch",
+        "rollType": "Spiritual taint",
+        "pool": "Manipulation + Occult",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Spread infernal corruption or blasphemous stain."
+      },
+      {
+        "dot": 4,
+        "power": "Unleash the Beast of Damnation",
+        "rollType": "Compulsion",
+        "pool": "Charisma + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Self-Control",
+        "resistanceDifficulty": "6",
+        "notes": "Drive frenzy-like collapse through infernal pressure."
+      },
+      {
+        "dot": 5,
+        "power": "Manifest Infernal Majesty",
+        "rollType": "Dominion aura",
+        "pool": "Charisma + Leadership",
+        "difficulty": "8",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Overawe scene participants with infernal authority."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Flight",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Glide and Controlled Descent",
+        "rollType": "Mobility",
+        "pool": "Dexterity + Athletics",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Short glides and safe vertical movement."
+      },
+      {
+        "dot": 2,
+        "power": "Short-Range Powered Flight",
+        "rollType": "Mobility",
+        "pool": "Dexterity + Athletics",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Sustain deliberate short flight paths."
+      },
+      {
+        "dot": 3,
+        "power": "Reliable Tactical Flight",
+        "rollType": "Aerial maneuver",
+        "pool": "Dexterity + Athletics",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Engage/escape with meaningful tactical altitude."
+      },
+      {
+        "dot": 4,
+        "power": "High-Speed Aerial Control",
+        "rollType": "Aerial chase",
+        "pool": "Dexterity + Athletics",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "High-speed precision flight."
+      },
+      {
+        "dot": 5,
+        "power": "Masterful Predatory Flight",
+        "rollType": "Aerial supremacy",
+        "pool": "Dexterity + Athletics",
+        "difficulty": "8",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Near-total aerial dominance in most scenes."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Koldunic Sorcery",
+    "source": "Lore of the Clans",
+    "pathBased": true,
+    "paths": [
+      {
+        "name": "Way of Earth",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Soil's Sense",
+            "pool": "Perception + Occult",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Read resonance and disturbances through earth."
+          },
+          {
+            "dot": 2,
+            "power": "Root of Vitality",
+            "pool": "Stamina + Occult",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Draw sustaining force from soil and stone."
+          },
+          {
+            "dot": 3,
+            "power": "Hungry Earth",
+            "pool": "Manipulation + Occult",
+            "difficulty": "Target Dexterity",
+            "resistancePool": "Strength + Athletics",
+            "resistanceDifficulty": "6",
+            "notes": "Entrap or hamper targets with shifting ground."
+          },
+          {
+            "dot": 4,
+            "power": "Cup of Earth",
+            "pool": "Willpower + Occult",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Raise protective or enclosing earthen structures."
+          },
+          {
+            "dot": 5,
+            "power": "Earth's Wrath",
+            "pool": "Willpower + Occult",
+            "difficulty": "8",
+            "resistancePool": "Dexterity + Athletics",
+            "resistanceDifficulty": "6",
+            "notes": "Command major tremor and rupture effects."
+          }
+        ]
+      },
+      {
+        "name": "Way of Wind",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Breath of Whispers",
+            "pool": "Perception + Occult",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Sense air currents and carried voices."
+          },
+          {
+            "dot": 2,
+            "power": "Biting Gale",
+            "pool": "Manipulation + Occult",
+            "difficulty": "7",
+            "resistancePool": "Stamina",
+            "resistanceDifficulty": "6",
+            "notes": "Buffet targets with punishing wind."
+          },
+          {
+            "dot": 3,
+            "power": "Wall of Wind",
+            "pool": "Willpower + Occult",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Create strong wind barriers and lanes."
+          },
+          {
+            "dot": 4,
+            "power": "Ride the Tempest",
+            "pool": "Stamina + Survival",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Move with storm-force mobility advantages."
+          },
+          {
+            "dot": 5,
+            "power": "Storm Dominion",
+            "pool": "Willpower + Occult",
+            "difficulty": "8",
+            "resistancePool": "Stamina",
+            "resistanceDifficulty": "6",
+            "notes": "Impose scene-scale weather dominance."
+          }
+        ]
+      }
+    ],
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Initiate Path Control",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Choose elemental path first."
+      },
+      {
+        "dot": 2,
+        "power": "Command Local Elemental Resonance",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Mid-tier elemental influence."
+      },
+      {
+        "dot": 3,
+        "power": "Shape Hostile Terrain and Weather",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Major environmental control."
+      },
+      {
+        "dot": 4,
+        "power": "Invoke Major Elemental Manifestations",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "High-impact elemental effect."
+      },
+      {
+        "dot": 5,
+        "power": "Dominate the Land Through Ancient Rites",
+        "rollType": "Path-based casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by path",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Peak local-domain elemental authority."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Melpominee",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Haunting Whisper",
+        "rollType": "Sonic influence",
+        "pool": "Charisma + Performance",
+        "difficulty": "6",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Subtle emotional and auditory manipulation."
+      },
+      {
+        "dot": 2,
+        "power": "Shattering Voice",
+        "rollType": "Sonic attack",
+        "pool": "Stamina + Performance",
+        "difficulty": "7",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Damage or disorientation via focused sound."
+      },
+      {
+        "dot": 3,
+        "power": "Compelling Aria",
+        "rollType": "Audience enthrallment",
+        "pool": "Charisma + Performance",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Compel behavior through song."
+      },
+      {
+        "dot": 4,
+        "power": "Voice of Torment",
+        "rollType": "Pain projection",
+        "pool": "Manipulation + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Inflict intense psychosomatic agony."
+      },
+      {
+        "dot": 5,
+        "power": "Cataclysmic Chorus",
+        "rollType": "Area devastation",
+        "pool": "Stamina + Performance",
+        "difficulty": "8",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Massive sonic and emotional disruption."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Mortis",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Cadaverous Stillness",
+        "rollType": "Death-state mimicry",
+        "pool": "Stamina + Occult",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Suspend bodily signs and mask undeath."
+      },
+      {
+        "dot": 2,
+        "power": "Grasp of the Grave",
+        "rollType": "Paralyzing touch",
+        "pool": "Dexterity + Brawl",
+        "difficulty": "Target Stamina",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Inflict corpse-like rigidity."
+      },
+      {
+        "dot": 3,
+        "power": "Rotting Curse",
+        "rollType": "Decay affliction",
+        "pool": "Manipulation + Medicine",
+        "difficulty": "Target Stamina",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Accelerate wasting and tissue failure."
+      },
+      {
+        "dot": 4,
+        "power": "Deepened Dominion Over Deathly Flesh",
+        "rollType": "Corpse command",
+        "pool": "Intelligence + Occult",
+        "difficulty": "7",
+        "resistancePool": "Willpower (if animated subject resists)",
+        "resistanceDifficulty": "6",
+        "notes": "Control dead matter or deathly state."
+      },
+      {
+        "dot": 5,
+        "power": "Catastrophic Sepulchral Power",
+        "rollType": "Major death effect",
+        "pool": "Intelligence + Occult",
+        "difficulty": "8",
+        "resistancePool": "Willpower or Stamina depending on effect",
+        "resistanceDifficulty": "6",
+        "notes": "High-tier death sorcery expression."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Mytherceria",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Sense Glamour and Oddity",
+        "rollType": "Fae perception",
+        "pool": "Perception + Occult",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Detect supernatural/fae distortion."
+      },
+      {
+        "dot": 2,
+        "power": "Twist Simple Perception",
+        "rollType": "Perception warping",
+        "pool": "Manipulation + Subterfuge",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Perception + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Introduce bizarre sensory contradiction."
+      },
+      {
+        "dot": 3,
+        "power": "Bind Targets in Uncanny Logic",
+        "rollType": "Cognitive trap",
+        "pool": "Manipulation + Empathy",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Force target into paradoxical behavior constraints."
+      },
+      {
+        "dot": 4,
+        "power": "Warp Probabilities and Certainty",
+        "rollType": "Reality skew",
+        "pool": "Wits + Occult",
+        "difficulty": "8",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Shift odds and expected outcomes."
+      },
+      {
+        "dot": 5,
+        "power": "Enforce Impossible Fae Mandates",
+        "rollType": "Mandate imposition",
+        "pool": "Charisma + Subterfuge",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Compel target to obey uncanny geas-like constraints."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Obeah",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Sense Suffering and Imbalance",
+        "rollType": "Empathic diagnosis",
+        "pool": "Perception + Empathy",
+        "difficulty": "6",
+        "resistancePool": "Subterfuge + Manipulation (to conceal)",
+        "resistanceDifficulty": "6",
+        "notes": "Read pain, trauma, and soul-state imbalance."
+      },
+      {
+        "dot": 2,
+        "power": "Soothe Pain and Turmoil",
+        "rollType": "Calming touch",
+        "pool": "Charisma + Empathy",
+        "difficulty": "6",
+        "resistancePool": "Willpower (if resisting influence)",
+        "resistanceDifficulty": "6",
+        "notes": "Ease emotional or physical distress."
+      },
+      {
+        "dot": 3,
+        "power": "Mend Wounds with Vitae",
+        "rollType": "Healing",
+        "pool": "Intelligence + Medicine",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Accelerate recovery and close injuries."
+      },
+      {
+        "dot": 4,
+        "power": "Restore Deep Afflictions",
+        "rollType": "Major restoration",
+        "pool": "Intelligence + Empathy",
+        "difficulty": "8",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Treat severe spiritual/psychic harm."
+      },
+      {
+        "dot": 5,
+        "power": "Profound Miracle of Renewal",
+        "rollType": "Miraculous restoration",
+        "pool": "Intelligence + Occult",
+        "difficulty": "8",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Powerful healing effect with major narrative impact."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Sanguinus",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Shared Pulse",
+        "rollType": "Pack vitae synchronization",
+        "pool": "Stamina + Empathy",
+        "difficulty": "6",
+        "resistancePool": "Willpower (outside pack)",
+        "resistanceDifficulty": "6",
+        "notes": "Basic sharing of blood-state across bonded members."
+      },
+      {
+        "dot": 2,
+        "power": "Synchronized Vitality",
+        "rollType": "Pack reinforcement",
+        "pool": "Stamina + Survival",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Redistribute resilience among blood-linked pack."
+      },
+      {
+        "dot": 3,
+        "power": "Collective Reinforcement",
+        "rollType": "Group buff",
+        "pool": "Charisma + Leadership",
+        "difficulty": "7",
+        "resistancePool": "Willpower (if unwilling recipient)",
+        "resistanceDifficulty": "6",
+        "notes": "Improve coordinated offensive/defensive output."
+      },
+      {
+        "dot": 4,
+        "power": "Pack-Level Blood Command",
+        "rollType": "Pack command",
+        "pool": "Manipulation + Leadership",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Assert strict blood-authority over bonded members."
+      },
+      {
+        "dot": 5,
+        "power": "Perfectly Unified Blood Lattice",
+        "rollType": "Collective state mastery",
+        "pool": "Stamina + Occult",
+        "difficulty": "8",
+        "resistancePool": "Willpower (if contesting unity)",
+        "resistanceDifficulty": "6",
+        "notes": "Near-total cohesion of the blood-bonded collective."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Spiritus",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Call Lesser Spirit-Animals",
+        "rollType": "Spirit summoning",
+        "pool": "Charisma + Animal Ken",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Invite minor spirit entities for scouting/help."
+      },
+      {
+        "dot": 2,
+        "power": "Guide and Communicate Through Spirits",
+        "rollType": "Spirit direction",
+        "pool": "Manipulation + Empathy",
+        "difficulty": "6",
+        "resistancePool": "Willpower (hostile spirit)",
+        "resistanceDifficulty": "6",
+        "notes": "Direct spirit messengers and observers."
+      },
+      {
+        "dot": 3,
+        "power": "Bind Stronger Spirit Allies",
+        "rollType": "Binding",
+        "pool": "Manipulation + Occult",
+        "difficulty": "7",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Create temporary service pacts with stronger spirits."
+      },
+      {
+        "dot": 4,
+        "power": "Unleash Dangerous Spirit Hunters",
+        "rollType": "Assaultive summoning",
+        "pool": "Charisma + Intimidation",
+        "difficulty": "7",
+        "resistancePool": "Willpower or Stamina (target dependent)",
+        "resistanceDifficulty": "6",
+        "notes": "Command predatory spirits against targets."
+      },
+      {
+        "dot": 5,
+        "power": "Rule the Spirit-Pack as Alpha",
+        "rollType": "Dominion",
+        "pool": "Charisma + Leadership",
+        "difficulty": "8",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Assert sweeping command over assembled beast-spirits."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Temporis",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Momentary Temporal Slip",
+        "rollType": "Timing control",
+        "pool": "Wits + Alertness",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Briefly alter initiative timing windows."
+      },
+      {
+        "dot": 2,
+        "power": "Alter Reaction Timing",
+        "rollType": "Reaction interference",
+        "pool": "Manipulation + Subterfuge",
+        "difficulty": "Target Wits",
+        "resistancePool": "Wits + Alertness",
+        "resistanceDifficulty": "6",
+        "notes": "Delay or accelerate another's reactions."
+      },
+      {
+        "dot": 3,
+        "power": "Suspend Local Sequence",
+        "rollType": "Temporal stutter",
+        "pool": "Intelligence + Occult",
+        "difficulty": "7",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Briefly suspend action continuity in local area."
+      },
+      {
+        "dot": 4,
+        "power": "Rewrite Short-Span Causality",
+        "rollType": "Temporal rewrite",
+        "pool": "Intelligence + Subterfuge",
+        "difficulty": "8",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Alter immediate event ordering within strict scope."
+      },
+      {
+        "dot": 5,
+        "power": "Near-Sovereignty Over Local Time",
+        "rollType": "Temporal domination",
+        "pool": "Intelligence + Occult",
+        "difficulty": "8",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Scene-defining control over local time flow."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Thanatosis",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Corpse-Like Numbness",
+        "rollType": "Numbing touch",
+        "pool": "Dexterity + Medicine",
+        "difficulty": "Target Stamina",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Impose deadened sensation and stiffness."
+      },
+      {
+        "dot": 2,
+        "power": "Wasting Rot",
+        "rollType": "Decay affliction",
+        "pool": "Manipulation + Medicine",
+        "difficulty": "Target Stamina",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Spread wasting tissue corruption."
+      },
+      {
+        "dot": 3,
+        "power": "Paralyzing Death-Touch",
+        "rollType": "Paralysis",
+        "pool": "Dexterity + Brawl",
+        "difficulty": "Target Stamina",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Inflict temporary immobilization."
+      },
+      {
+        "dot": 4,
+        "power": "Accelerate Decomposition",
+        "rollType": "Rapid decay",
+        "pool": "Manipulation + Occult",
+        "difficulty": "7",
+        "resistancePool": "Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Cause severe decomposition in target matter/body."
+      },
+      {
+        "dot": 5,
+        "power": "Avatar of Corruption",
+        "rollType": "Death aura",
+        "pool": "Stamina + Occult",
+        "difficulty": "8",
+        "resistancePool": "Stamina or Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Radiate overwhelming rot and deathly collapse."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Valeren",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Read Combat Intent",
+        "rollType": "Combat insight",
+        "pool": "Perception + Empathy",
+        "difficulty": "6",
+        "resistancePool": "Subterfuge + Manipulation",
+        "resistanceDifficulty": "6",
+        "notes": "Anticipate hostile action and openings."
+      },
+      {
+        "dot": 2,
+        "power": "Soul-Aimed Precision",
+        "rollType": "Focused strike",
+        "pool": "Dexterity + Melee",
+        "difficulty": "6",
+        "resistancePool": "Dexterity + Dodge / Stamina soak",
+        "resistanceDifficulty": "6",
+        "notes": "Deliver spiritually focused weapon attacks."
+      },
+      {
+        "dot": 3,
+        "power": "Disrupt Will and Posture",
+        "rollType": "Combat disruption",
+        "pool": "Manipulation + Intimidation",
+        "difficulty": "Target Willpower",
+        "resistancePool": "Willpower",
+        "resistanceDifficulty": "6",
+        "notes": "Undermine enemy composure and precision."
+      },
+      {
+        "dot": 4,
+        "power": "Transcendent Focus",
+        "rollType": "Battle trance",
+        "pool": "Wits + Melee",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Stack decisive combat advantages."
+      },
+      {
+        "dot": 5,
+        "power": "Spirit-and-Blade Mastery",
+        "rollType": "Legendary combat expression",
+        "pool": "Dexterity + Melee",
+        "difficulty": "8",
+        "resistancePool": "Willpower or Stamina",
+        "resistanceDifficulty": "6",
+        "notes": "Scene-dominating warrior-soul assault."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Visceratika",
+    "source": "Lore of the Clans",
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Feel the Stone",
+        "rollType": "Structural sense",
+        "pool": "Perception + Survival",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Detect vibrations and structure through stone."
+      },
+      {
+        "dot": 2,
+        "power": "Living Masonry",
+        "rollType": "Defensive hardening",
+        "pool": "Stamina + Survival",
+        "difficulty": "6",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Harden body toward stone-like resilience."
+      },
+      {
+        "dot": 3,
+        "power": "Merge with Structures",
+        "rollType": "Architectural melding",
+        "pool": "Stamina + Stealth",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Blend into stone surfaces and architecture."
+      },
+      {
+        "dot": 4,
+        "power": "Reshape Stone-Adjacent Form",
+        "rollType": "Form adaptation",
+        "pool": "Stamina + Survival",
+        "difficulty": "7",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Morph body for built-environment movement and defense."
+      },
+      {
+        "dot": 5,
+        "power": "Indomitable Living Monument",
+        "rollType": "Monumental form",
+        "pool": "Stamina + Survival",
+        "difficulty": "8",
+        "resistancePool": "None",
+        "resistanceDifficulty": "",
+        "notes": "Become near-immovable stone-like juggernaut."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  },
+  {
+    "name": "Abyss Mysticism",
+    "source": "Lore of the Clans",
+    "pathBased": true,
+    "paths": [
+      {
+        "name": "Abyssal Sight",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Pierce the Gloom",
+            "pool": "Perception + Occult",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Discern hidden abyssal traces and veils."
+          },
+          {
+            "dot": 2,
+            "power": "Unquiet Silhouette",
+            "pool": "Manipulation + Occult",
+            "difficulty": "7",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "6",
+            "notes": "Project unsettling abyssal impressions."
+          },
+          {
+            "dot": 3,
+            "power": "Eyes Beyond Shadow",
+            "pool": "Wits + Occult",
+            "difficulty": "7",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Perceive through supernatural darkness reliably."
+          },
+          {
+            "dot": 4,
+            "power": "Abyssal Mark",
+            "pool": "Manipulation + Occult",
+            "difficulty": "Target Willpower",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "6",
+            "notes": "Brand target with abyss-tainted perceptual curse."
+          },
+          {
+            "dot": 5,
+            "power": "Witness the Void",
+            "pool": "Willpower + Occult",
+            "difficulty": "8",
+            "resistancePool": "Courage",
+            "resistanceDifficulty": "6",
+            "notes": "Force direct existential confrontation with the abyss."
+          }
+        ]
+      },
+      {
+        "name": "Abyssal Summoning",
+        "levels": [
+          {
+            "dot": 1,
+            "power": "Shade Spark",
+            "pool": "Willpower + Occult",
+            "difficulty": "6",
+            "resistancePool": "None",
+            "resistanceDifficulty": "",
+            "notes": "Conjure minor abyssal motes."
+          },
+          {
+            "dot": 2,
+            "power": "Crawling Shade",
+            "pool": "Willpower + Occult",
+            "difficulty": "7",
+            "resistancePool": "Dexterity + Dodge",
+            "resistanceDifficulty": "6",
+            "notes": "Manifest simple grasping shadow entity."
+          },
+          {
+            "dot": 3,
+            "power": "Abyssal Servitor",
+            "pool": "Willpower + Occult",
+            "difficulty": "7",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "6",
+            "notes": "Summon and command an intermediate abyssal servant."
+          },
+          {
+            "dot": 4,
+            "power": "Night's Maw",
+            "pool": "Willpower + Occult",
+            "difficulty": "8",
+            "resistancePool": "Dexterity + Dodge / Stamina soak",
+            "resistanceDifficulty": "6",
+            "notes": "Open devouring shadow aperture attack."
+          },
+          {
+            "dot": 5,
+            "power": "Void Herald",
+            "pool": "Willpower + Occult",
+            "difficulty": "8",
+            "resistancePool": "Willpower",
+            "resistanceDifficulty": "6",
+            "notes": "Call a major abyssal emissary for scene-defining effect."
+          }
+        ]
+      }
+    ],
+    "levelMechanics": [
+      {
+        "dot": 1,
+        "power": "Abyss Mysticism 1",
+        "rollType": "Ritualized casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by ritual",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Select ritual first; outcome is ritual-specific."
+      },
+      {
+        "dot": 2,
+        "power": "Abyss Mysticism 2",
+        "rollType": "Ritualized casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by ritual",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Mid-tier abyss rituals."
+      },
+      {
+        "dot": 3,
+        "power": "Abyss Mysticism 3",
+        "rollType": "Ritualized casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by ritual",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Deepening abyss invocation."
+      },
+      {
+        "dot": 4,
+        "power": "Abyss Mysticism 4",
+        "rollType": "Ritualized casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by ritual",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "Advanced abyss rites."
+      },
+      {
+        "dot": 5,
+        "power": "Abyss Mysticism 5",
+        "rollType": "Ritualized casting",
+        "pool": "Intelligence + Occult",
+        "difficulty": "Varies by ritual",
+        "resistancePool": "Willpower (if contested)",
+        "resistanceDifficulty": "6",
+        "notes": "High-tier abyss ritual dominance."
+      }
+    ],
+    "certification": {
+      "status": "verified",
+      "updatedAt": "2026-05-23T10:05:00.000Z",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings."
+    }
+  }
+]

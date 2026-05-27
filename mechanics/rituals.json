@@ -1,0 +1,470 @@
+[
+  {
+    "name": "Bind the Accusing Tongue",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Prevents the target from speaking ill of the caster until the effect is broken."
+  },
+  {
+    "name": "Blood Rush",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Suppresses hunger-based frenzy for up to one hour without actual feeding."
+  },
+  {
+    "name": "Communicate with Kindred Sire",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Creates a temporary telepathic link with the caster's sire."
+  },
+  {
+    "name": "Defense of the Sacred Haven",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Prevents sunlight from entering a protected area around the caster."
+  },
+  {
+    "name": "Deflection of Wooden Doom",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "The first stake that would pierce the caster's heart disintegrates."
+  },
+  {
+    "name": "Devil's Touch",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Curses a mortal target so others react to them with hostility and disgust."
+  },
+  {
+    "name": "Domino of Life",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Lets the caster convincingly emulate one human trait for a night."
+  },
+  {
+    "name": "Engaging the Vessel of Transference",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Enchants a vessel to exchange blood with anyone touching it bare-handed."
+  },
+  {
+    "name": "Blood Walk",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Traces lineage and blood bond information from a vampire's blood sample."
+  },
+  {
+    "name": "Burning Blade",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Temporarily enchants a melee weapon to inflict aggravated damage on supernatural creatures."
+  },
+  {
+    "name": "Donning the Mask of Shadows",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Makes the subject smoky, muted, and difficult to detect by normal senses."
+  },
+  {
+    "name": "Eyes of the Night Hawk",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Allows the caster to see and hear through a predatory bird."
+  },
+  {
+    "name": "Machine Blitz",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Causes complex machines to malfunction while the caster concentrates."
+  },
+  {
+    "name": "Clinging of the Insect",
+    "discipline": "Thaumaturgy",
+    "level": 3,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 6,
+    "notes": "Allows the caster to cling to vertical surfaces and ceilings."
+  },
+  {
+    "name": "Flesh of Fiery Touch",
+    "discipline": "Thaumaturgy",
+    "level": 3,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 6,
+    "notes": "Makes the caster's flesh burn attackers who touch them."
+  },
+  {
+    "name": "Incorporeal Passage",
+    "discipline": "Thaumaturgy",
+    "level": 3,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 6,
+    "notes": "Lets the caster pass through solid barriers while insubstantial."
+  },
+  {
+    "name": "Bone of Lies",
+    "discipline": "Thaumaturgy",
+    "level": 4,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 7,
+    "notes": "Enchants a bone so its holder cannot knowingly speak a lie."
+  },
+  {
+    "name": "Firewalker",
+    "discipline": "Thaumaturgy",
+    "level": 4,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 7,
+    "notes": "Protects the caster from fire for the ritual's duration."
+  },
+  {
+    "name": "Blood Contract",
+    "discipline": "Thaumaturgy",
+    "level": 5,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 8,
+    "notes": "Creates a binding mystic contract between willing participants."
+  },
+  {
+    "name": "Enchant Talisman",
+    "discipline": "Thaumaturgy",
+    "level": 5,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 8,
+    "notes": "Permanently enchants a carried item with Thaumaturgical resonance."
+  },
+  {
+    "name": "Call of the Hungry Dead",
+    "discipline": "Necromancy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Lets the target hear voices and conversation from across the Shroud."
+  },
+  {
+    "name": "Eldritch Beacon",
+    "discipline": "Necromancy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Marks the bearer as a bright, vulnerable target in the Shadowlands."
+  },
+  {
+    "name": "Insight",
+    "discipline": "Necromancy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Shows the last moments witnessed by a corpse through its eyes."
+  },
+  {
+    "name": "Knowing Stone",
+    "discipline": "Necromancy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Marks a target's spirit so the necromancer can later learn its location."
+  },
+  {
+    "name": "Minestra di Morte",
+    "discipline": "Necromancy",
+    "level": 1,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Brews a death-tainted soup that lets mortals perceive nearby ghosts."
+  },
+  {
+    "name": "Eyes of the Grave",
+    "discipline": "Necromancy",
+    "level": 2,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Subjects the target to involuntary visions of their own death."
+  },
+  {
+    "name": "The Hand of Glory",
+    "discipline": "Necromancy",
+    "level": 2,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Creates a mummified hand that puts mortal occupants of a home to sleep."
+  },
+  {
+    "name": "Occhio d'Uomo Morto",
+    "discipline": "Necromancy",
+    "level": 2,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Grafts a dead eye to permanently grant Shroudsight with serious drawbacks."
+  },
+  {
+    "name": "Puppet",
+    "discipline": "Necromancy",
+    "level": 2,
+    "source": "V20 Core",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Prepares a living or unwilling subject as a vessel for ghostly possession."
+  },
+  {
+    "name": "Brand",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Turns a recently created tattoo or body modification into a permanent mark on the vampire's flesh."
+  },
+  {
+    "name": "Chime of Unseen Spirits",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Enchants a metal chime to ring when unseen spirits, ghosts, or devils draw near."
+  },
+  {
+    "name": "Sigil of Authority",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Cuts a sigil into a bearer that projects the weight of a granted office's authority."
+  },
+  {
+    "name": "Blood into Water",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Transmutes spilled blood within the ritual's radius into water."
+  },
+  {
+    "name": "Blood Mastery",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Burns a victim's blood sympathetically to guarantee a narrow success in the next challenge against them."
+  },
+  {
+    "name": "Encrypt Missive",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Magically encodes a written document so only named recipients can read it."
+  },
+  {
+    "name": "Impressive Visage",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Heightens the caster's apparent beauty and allure for several hours."
+  },
+  {
+    "name": "Purify Blood",
+    "discipline": "Thaumaturgy",
+    "level": 1,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Cleanses poison and disease from a point of blood decanted into a vessel."
+  },
+  {
+    "name": "Eyes of Babel",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Lets the caster read, write, and speak an otherwise unknown language for a limited time."
+  },
+  {
+    "name": "Preserve",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Mystically preserves a small object against age and ordinary wear for decades."
+  },
+  {
+    "name": "Seal Egress",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Seals a room closed against entry or escape until the passphrase is spoken."
+  },
+  {
+    "name": "Craft Bloodstone",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Creates a mystic pebble whose direction and general distance are always known to its maker."
+  },
+  {
+    "name": "Extinguish",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Allows the caster to snuff out fires up to bonfire size with a spoken syllable."
+  },
+  {
+    "name": "Illusion of Peaceful Death",
+    "discipline": "Thaumaturgy",
+    "level": 2,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Makes a corpse appear to have died naturally instead of from violence."
+  },
+  {
+    "name": "Preservation of the Sanguine Heart",
+    "discipline": "Thaumaturgy",
+    "level": 4,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 7,
+    "notes": "Temporarily protects the target against blood bonds and the Vaulderie."
+  },
+  {
+    "name": "Summon the Blood Imp",
+    "discipline": "Thaumaturgy",
+    "level": 4,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 7,
+    "notes": "Creates a malicious but loyal blood-fed servitor from stitched corpses and vitae."
+  },
+  {
+    "name": "Vigil of the Stone Guardian",
+    "discipline": "Thaumaturgy",
+    "level": 4,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 7,
+    "notes": "Enchants a stone door-knocker into a sentry that warns and can be remotely possessed."
+  },
+  {
+    "name": "Mirror Prison",
+    "discipline": "Thaumaturgy",
+    "level": 5,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 8,
+    "notes": "Creates an astral prison cell inside a specially prepared silver mirror."
+  },
+  {
+    "name": "Preserve Corpse",
+    "discipline": "Necromancy",
+    "level": 1,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 4,
+    "notes": "Creates an elixir that indefinitely preserves dead flesh from rot."
+  },
+  {
+    "name": "Haunting Breeze",
+    "discipline": "Necromancy",
+    "level": 2,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 5,
+    "notes": "Summons a supernatural wind of whispers that frightens mortals and hampers perception."
+  },
+  {
+    "name": "Death's Head",
+    "discipline": "Necromancy",
+    "level": 3,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 6,
+    "notes": "Enchants a mask that makes the wearer appear ghostlike, even in the Shadowlands."
+  },
+  {
+    "name": "Impregnable Soul",
+    "discipline": "Necromancy",
+    "level": 4,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 7,
+    "notes": "Shields the subject against possession and spiritual displacement."
+  },
+  {
+    "name": "Enochian Passage",
+    "discipline": "Necromancy",
+    "level": 5,
+    "source": "Rites of the Blood",
+    "pool": "Intelligence + Occult",
+    "difficulty": 8,
+    "notes": "Allows the vampire to physically pass into the Shadowlands and emerge near Enoch."
+  }
+]

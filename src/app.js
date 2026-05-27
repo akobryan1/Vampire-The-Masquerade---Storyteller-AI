@@ -1,5 +1,7 @@
 import schema from '../mechanics/character-sheet-schema.json';
 import disciplinesData from '../mechanics/disciplines.json';
+import disciplineMechanicsData from '../mechanics/discipline-mechanics.json';
+import ritualsData from '../mechanics/rituals.json';
 import backgroundsData from '../mechanics/backgrounds.json';
 import specialtiesData from '../mechanics/specialties.json';
 import natureDemeanorData from '../mechanics/nature-demeanor.json';
@@ -53,7 +55,38 @@ const NPC_MUTABLE_FIELDS = ['summary', 'status', 'ambition', 'desire', 'notes', 
 const TEMPORARY_WILLPOWER_RECOVERY = 1;
 const TEMPORARY_RESOURCES_RECOVERY = 1;
 const AGE_CATEGORY_OPTIONS = ['Fledgling', 'Neonate', 'Ancilla'];
+const ARCHIVE_PANEL_ID = 'archives';
+const ARCHIVE_MESSAGE_BATCH_SIZE = 10;
 const CREATION_ASSISTANT_PANEL_ID = 'creation-assistant';
+const WALLPAPER_INTERVAL_MS = 10 * 60 * 1000;
+const WALLPAPER_FADE_MS = 1800;
+const WALLPAPER_URLS = Object.freeze([
+  new URL('../resources/wallpapers/johannes-bohm-bh-scr-act2-batch3-action04-4k.jpg', import.meta.url).href,
+  new URL('../resources/wallpapers/johannes-bohm-bh-scr-annouce-batch1-environment03-3840x2160px-copy.jpg', import.meta.url).href,
+  new URL('../resources/wallpapers/johannes-bohm-bh-scr-annouce-batch1-environment04-3840x2160px-copy.jpg', import.meta.url).href,
+  new URL('../resources/wallpapers/johannes-bohm-bh-scr-annouce-batch1-redlight-3840x2160px-copy.jpg', import.meta.url).href,
+  new URL('../resources/wallpapers/johannes-bohm-bh-scr-batch2-brujahareas02-3840x2160px-copy.jpg', import.meta.url).href,
+  new URL('../resources/wallpapers/johannes-bohm-bh-scr-batch2-brujahareas03-3840x2160px-copy.jpg', import.meta.url).href,
+  new URL('../resources/wallpapers/johannes-bohm-bh-scr-batch2-nosferatuareas03-3840x2160px-copy.jpg', import.meta.url).href,
+  new URL('../resources/wallpapers/johannes-bohm-bh-scr-batch2-toreadorareas01-3840x2160px-copy.jpg', import.meta.url).href,
+  new URL('../resources/wallpapers/johannes-bohm-bh-scr-batch2-toreadorareas08-3840x2160px.jpg', import.meta.url).href,
+]);
+const CLAN_SYMBOLS = Object.freeze({
+  'Banu Haqim': { src: new URL('../resources/Symbols/Banu Haqim/BanuHaqim_Geometric.png', import.meta.url).href, invert: true },
+  Brujah: { src: new URL('../resources/Symbols/Brujah/VTM_Brujah_icon_white.png', import.meta.url).href, invert: false },
+  Caitiff: { src: new URL('../resources/Symbols/Caitiff/Caitiff_Symbol.png', import.meta.url).href, invert: true },
+  Gangrel: { src: new URL('../resources/Symbols/Gangrel/Gangrel_New1_white.png', import.meta.url).href, invert: false },
+  Hecata: { src: new URL('../resources/Symbols/Hecata/Hecata_Symbol_Modern.png', import.meta.url).href, invert: true },
+  Lasombra: { src: new URL('../resources/Symbols/Lasombra/Lasombra_symbol.png', import.meta.url).href, invert: true },
+  Malkavian: { src: new URL('../resources/Symbols/Malkavian/VTM_Malkavian_icon_black.png', import.meta.url).href, invert: true },
+  Nosferatu: { src: new URL('../resources/Symbols/Nosferatu/Nosferatu.png', import.meta.url).href, invert: true },
+  'The Ministry': { src: new URL('../resources/Symbols/The Ministry/MinistrySymbol.png', import.meta.url).href, invert: true },
+  Thinblood: { src: new URL('../resources/Symbols/Thinblood/Thinblood1.png', import.meta.url).href, invert: true },
+  Toreador: { src: new URL('../resources/Symbols/Toreador/Toreador_New1.png', import.meta.url).href, invert: true },
+  Tremere: { src: new URL('../resources/Symbols/Tremere/VTM_Tremere_icon_black.jpg', import.meta.url).href, invert: true },
+  Tzimisce: { src: new URL('../resources/Symbols/Tzimisce/Tzimisce_Symbol.png', import.meta.url).href, invert: true },
+  Ventrue: { src: new URL('../resources/Symbols/Ventrue/Ventrue.png', import.meta.url).href, invert: true },
+});
 const CREATION_ASSISTANT_QUESTION_FLOW = Object.freeze([
   {
     id: 'identity',
@@ -149,6 +182,13 @@ function normalizeTraitToken(value) {
     .trim();
 }
 
+function normalizeDisciplineKey(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
 function buildRollTraitLookup() {
   const lookup = new Map();
 
@@ -183,14 +223,276 @@ function buildRollTraitLookup() {
   register('animal ken', 'animalKen', 'Animal Ken');
   register('willpower', 'willpower', 'Willpower');
 
+  for (const discipline of disciplinesData ?? []) {
+    const name = String(discipline?.name || '').trim();
+    if (!name) {
+      continue;
+    }
+
+    const traitId = `discipline:${normalizeDisciplineKey(name)}`;
+    register(name, traitId, name);
+  }
+
   return lookup;
 }
 
 const ROLL_TRAIT_LOOKUP = buildRollTraitLookup();
 const ROLL_TRAIT_LABELS = new Map(Array.from(ROLL_TRAIT_LOOKUP.values()).map((entry) => [entry.id, entry.label]));
+const DISCIPLINE_MECHANICS_LOOKUP = new Map(
+  (Array.isArray(disciplineMechanicsData) ? disciplineMechanicsData : []).map((item) => [normalizeDisciplineKey(item?.name), item]),
+);
+const DISCIPLINE_CATALOG_LOOKUP = new Map(
+  (Array.isArray(disciplinesData) ? disciplinesData : []).map((item) => [normalizeDisciplineKey(item?.name), item]),
+);
+const RITUALS_CATALOG = Object.freeze(Array.isArray(ritualsData) ? ritualsData : []);
+const RITUALS_LOOKUP = new Map(
+  RITUALS_CATALOG.map((item) => [`${normalizeDisciplineKey(item?.discipline)}::${normalizeDisciplineKey(item?.name)}`, item]),
+);
+const BLOOD_MAGIC_DISCIPLINES = new Set(['thaumaturgy', 'necromancy']);
+const RITUAL_MAX_PER_DISCIPLINE = 3;
+const EQUIPMENT_CATEGORIES = ['Modern Gear', 'Dark Ages Weapons'];
+const EQUIPMENT_CATALOG = Object.freeze([
+  { category: 'Modern Gear', name: '9mm Pistol', details: 'Diff 6, Damage 4, Rate 3, Clip 15, Concealable' },
+  { category: 'Modern Gear', name: 'Revolver', details: 'Diff 6, Damage 4, Rate 2, Cylinder 6' },
+  { category: 'Modern Gear', name: 'Shotgun', details: 'Diff 7, Damage 8, Close range spread' },
+  { category: 'Modern Gear', name: 'Hunting Rifle', details: 'Diff 8, Damage 8, long range' },
+  { category: 'Modern Gear', name: 'Knife', details: 'Diff 6, Damage Strength +1, concealable' },
+  { category: 'Modern Gear', name: 'Crowbar', details: 'Diff 6, Damage Strength +2' },
+  { category: 'Modern Gear', name: 'Bat', details: 'Diff 6, Damage Strength +2' },
+  { category: 'Modern Gear', name: 'Kevlar Vest', details: 'Armor 2 vs bullets, 1 vs bashing/lethal' },
+  { category: 'Modern Gear', name: 'Tactical Vest', details: 'Armor 3 vs bullets, 2 vs bashing/lethal' },
+  { category: 'Dark Ages Weapons', name: 'Arming Sword', details: 'Diff 6, Damage Strength +3' },
+  { category: 'Dark Ages Weapons', name: 'Longsword', details: 'Diff 6, Damage Strength +3' },
+  { category: 'Dark Ages Weapons', name: 'Dagger', details: 'Diff 5, Damage Strength +1, concealable' },
+  { category: 'Dark Ages Weapons', name: 'Spear', details: 'Diff 6, Damage Strength +2, can set vs charge' },
+  { category: 'Dark Ages Weapons', name: 'Axe', details: 'Diff 7, Damage Strength +3' },
+  { category: 'Dark Ages Weapons', name: 'Mace', details: 'Diff 6, Damage Strength +3' },
+  { category: 'Dark Ages Weapons', name: 'Crossbow', details: 'Diff 7, Damage 5, reload each shot' },
+  { category: 'Dark Ages Weapons', name: 'Longbow', details: 'Diff 7, Damage 4, two-handed' },
+  { category: 'Dark Ages Weapons', name: 'Chain Shirt', details: 'Armor 3 vs bashing/lethal, heavy' },
+  { category: 'Dark Ages Weapons', name: 'Plate Armor', details: 'Armor 5 vs bashing/lethal, restrictive' },
+]);
+const DOWNTIME_ACTIVITY_DEFINITIONS = Object.freeze([
+  { id: 'training', label: 'Training', pool: 'Intelligence + Academics', difficulty: 7, target: 5 },
+  { id: 'investigation', label: 'Investigation', pool: 'Perception + Investigation', difficulty: 6, target: 5 },
+  { id: 'influence', label: 'Influence Work', pool: 'Manipulation + Subterfuge', difficulty: 7, target: 5 },
+  { id: 'feeding', label: 'Feeding Circuit', pool: 'Wits + Streetwise', difficulty: 6, target: 3 },
+  { id: 'learn-ritual', label: 'Learn Ritual', pool: 'Intelligence + Occult', difficulty: 7, target: 5 },
+]);
 
 function parseDifficultyValue(value, fallback = 6) {
   return Math.min(10, Math.max(2, Number(value) || fallback));
+}
+
+function getDisciplineMechanicsEntry(disciplineName) {
+  return DISCIPLINE_MECHANICS_LOOKUP.get(normalizeDisciplineKey(disciplineName)) || null;
+}
+
+function getDisciplineCatalogEntry(disciplineName) {
+  return DISCIPLINE_CATALOG_LOOKUP.get(normalizeDisciplineKey(disciplineName)) || null;
+}
+
+function getDisciplinePathOptions(disciplineName) {
+  const entry = getDisciplineMechanicsEntry(disciplineName);
+  if (!entry || !entry.pathBased || !Array.isArray(entry.paths)) {
+    return [];
+  }
+  return entry.paths
+    .map((item) => String(item?.name || '').trim())
+    .filter(Boolean);
+}
+
+function isBloodMagicDisciplineName(disciplineName) {
+  const key = normalizeDisciplineKey(disciplineName);
+  return BLOOD_MAGIC_DISCIPLINES.has(key);
+}
+
+function getPathCapForDisciplineDots(dots) {
+  const rating = Math.max(1, Math.min(5, Number(dots) || 1));
+  if (rating >= 5) {
+    return 5;
+  }
+  if (rating >= 4) {
+    return 4;
+  }
+  if (rating >= 3) {
+    return 3;
+  }
+  return 2;
+}
+
+function ensureDisciplinePathState(item) {
+  if (!item || !item.name) {
+    return;
+  }
+
+  const options = getDisciplinePathOptions(item.name);
+  if (!options.length) {
+    delete item.primaryPath;
+    delete item.secondaryPath;
+    delete item.tertiaryPath;
+    delete item.secondaryPathDots;
+    delete item.tertiaryPathDots;
+    return;
+  }
+
+  const dots = Math.max(1, Math.min(5, Number(item.dots) || 1));
+  const cap = getPathCapForDisciplineDots(dots);
+  const selected = [];
+
+  function normalizePath(pathName) {
+    const normalized = String(pathName || '').trim();
+    if (!normalized || !options.includes(normalized) || selected.includes(normalized)) {
+      return '';
+    }
+    selected.push(normalized);
+    return normalized;
+  }
+
+  item.primaryPath = normalizePath(item.primaryPath) || options[0];
+  item.secondaryPath = normalizePath(item.secondaryPath);
+  item.tertiaryPath = normalizePath(item.tertiaryPath);
+  item.secondaryPathDots = Math.max(0, Math.min(cap, Number(item.secondaryPathDots) || 0));
+  item.tertiaryPathDots = Math.max(0, Math.min(cap, Number(item.tertiaryPathDots) || 0));
+}
+
+function getSelectedDisciplinePaths(item) {
+  return [item?.primaryPath, item?.secondaryPath, item?.tertiaryPath].map((name) => String(name || '').trim()).filter(Boolean);
+}
+
+function getPrimaryPathLevel(item) {
+  const totalDots = Math.max(1, Math.min(5, Number(item?.dots) || 1));
+  const secondaryDots = Math.max(0, Number(item?.secondaryPathDots) || 0);
+  const tertiaryDots = Math.max(0, Number(item?.tertiaryPathDots) || 0);
+  return Math.max(1, Math.min(5, totalDots - secondaryDots - tertiaryDots));
+}
+
+function getRitualOptionsForDiscipline(item) {
+  if (!isBloodMagicDisciplineName(item?.name)) {
+    return [];
+  }
+  const disciplineKey = normalizeDisciplineKey(item?.name);
+  const maxLevel = getPrimaryPathLevel(item);
+  const tracked = new Set((Array.isArray(item?.rituals) ? item.rituals : []).map((ritual) => ritual?.name).filter(Boolean));
+  return RITUALS_CATALOG
+    .filter((ritual) => normalizeDisciplineKey(ritual?.discipline) === disciplineKey)
+    .filter((ritual) => Math.max(1, Math.min(5, Number(ritual?.level) || 1)) <= maxLevel)
+    .filter((ritual) => !tracked.has(ritual.name))
+    .map((ritual) => ritual.name);
+}
+
+function getRitualCatalogEntry(ritualName, disciplineName = '') {
+  if (disciplineName) {
+    const directMatch = RITUALS_LOOKUP.get(`${normalizeDisciplineKey(disciplineName)}::${normalizeDisciplineKey(ritualName)}`);
+    if (directMatch) {
+      return directMatch;
+    }
+  }
+  return RITUALS_CATALOG.find((ritual) => normalizeDisciplineKey(ritual?.name) === normalizeDisciplineKey(ritualName)) || null;
+}
+
+function renderDisciplineReferenceContent(disciplineName, characterDiscipline) {
+  const summaryEntry = getDisciplineCatalogEntry(disciplineName);
+  const mechanics = getDisciplineMechanicsEntry(disciplineName);
+  const pathNames = getDisciplinePathOptions(disciplineName);
+  const levelSummaries = Array.isArray(summaryEntry?.levels) ? summaryEntry.levels : [];
+  const levelMechanics = Array.isArray(mechanics?.levelMechanics) ? mechanics.levelMechanics : [];
+  return `
+    <h2>${escapeHtml(disciplineName || 'Discipline Reference')}</h2>
+    <p class="helper-text">Reference window for sourced discipline mechanics and path constraints.</p>
+    ${summaryEntry
+      ? `<div class="summary-list">
+          <div><strong>Source:</strong> ${escapeHtml(summaryEntry.source || 'Unknown')}</div>
+          <div><strong>Summary:</strong> ${escapeHtml(summaryEntry.summary || 'No summary recorded.')}</div>
+          ${Array.isArray(summaryEntry.commonClans) && summaryEntry.commonClans.length ? `<div><strong>Common Clans:</strong> ${escapeHtml(summaryEntry.commonClans.join(', '))}</div>` : ''}
+        </div>`
+      : ''}
+    ${mechanics
+      ? `<div class="summary-list">
+          ${mechanics.certification?.status ? `<div><strong>Certification:</strong> ${escapeHtml(mechanics.certification.status)}</div>` : ''}
+          ${mechanics.contested ? '<div><strong>Contested:</strong> Yes</div>' : ''}
+          <div><strong>Path-based:</strong> ${mechanics.pathBased ? 'Yes' : 'No'}</div>
+        </div>`
+      : '<p class="helper-text">No discipline mechanics record was found for this entry.</p>'}
+    ${levelSummaries.length
+      ? `<div class="list-card">
+          <h4>Discipline Levels</h4>
+          <div class="summary-list">${levelSummaries.map((item, index) => `<div><strong>${index + 1}:</strong> ${escapeHtml(item)}</div>`).join('')}</div>
+        </div>`
+      : ''}
+    ${levelMechanics.length
+      ? `<div class="list-card">
+          <h4>Core Mechanics</h4>
+          <div class="summary-list">${levelMechanics.map((item) => `<div><strong>${item.dot}:</strong> ${escapeHtml(item.power || 'Unnamed power')} · ${escapeHtml(item.pool || 'No pool')} · Diff ${escapeHtml(String(item.difficulty || 'Varies'))}</div>`).join('')}</div>
+        </div>`
+      : ''}
+    ${pathNames.length
+      ? `<div class="list-card">
+          <h4>Available Paths</h4>
+          <div class="summary-list">${pathNames.map((name) => `<div>${escapeHtml(name)}</div>`).join('')}</div>
+        </div>`
+      : ''}
+    ${characterDiscipline && Array.isArray(characterDiscipline.rituals)
+      ? `<div class="list-card">
+          <h4>Tracked Rituals</h4>
+          <div class="summary-list">${characterDiscipline.rituals.length
+            ? characterDiscipline.rituals.map((item) => `<div class="entry-row inventory"><span>${escapeHtml(item.name)}</span><button class="secondary-button" type="button" data-action="open-ritual-reference" data-ritual-name="${escapeHtml(item.name)}" data-ritual-discipline="${escapeHtml(disciplineName)}">Details</button></div>`).join('')
+            : '<div>None recorded.</div>'}</div>
+        </div>`
+      : ''}
+  `;
+}
+
+function renderRitualReferenceContent(ritualName, disciplineName) {
+  const ritual = getRitualCatalogEntry(ritualName, disciplineName);
+  const parentDiscipline = ritual?.discipline || disciplineName || '';
+  const disciplineSummary = getDisciplineCatalogEntry(parentDiscipline);
+  return `
+    <h2>${escapeHtml(ritualName || 'Ritual Reference')}</h2>
+    <p class="helper-text">Reference window for sourced ritual rules and blood magic progression notes.</p>
+    ${ritual
+      ? `<div class="summary-list">
+          <div><strong>Discipline:</strong> ${escapeHtml(ritual.discipline || 'Unknown')}</div>
+          <div><strong>Ritual Level:</strong> ${ritual.level ?? 'Unknown'}</div>
+          <div><strong>Source:</strong> ${escapeHtml(ritual.source || 'Unknown')}</div>
+          <div><strong>Pool:</strong> ${escapeHtml(ritual.pool || 'Intelligence + Occult')}</div>
+          <div><strong>Difficulty:</strong> ${escapeHtml(String(ritual.difficulty || 'Varies'))}</div>
+          <div><strong>Notes:</strong> ${escapeHtml(ritual.notes || 'No ritual notes recorded.')}</div>
+        </div>`
+      : '<p class="helper-text">No ritual mechanics record was found for this entry.</p>'}
+    ${disciplineSummary
+      ? `<div class="list-card">
+          <h4>Parent Discipline</h4>
+          <div class="summary-list">
+            <div><strong>${escapeHtml(disciplineSummary.name)}</strong></div>
+            <div>${escapeHtml(disciplineSummary.summary || 'No summary recorded.')}</div>
+          </div>
+        </div>`
+      : ''}
+    <div class="footer-note">Rituals are gated by primary path level only. When the primary path reaches a new level, the character may choose one ritual of the same level for free.</div>
+  `;
+}
+
+function renderTrackedRitualRows(character) {
+  const rituals = (character.disciplines || [])
+    .filter((item) => Array.isArray(item.rituals) && item.rituals.length)
+    .flatMap((item) => item.rituals.map((ritual) => ({ ritualName: ritual.name, disciplineName: item.name, level: getRitualCatalogEntry(ritual.name, item.name)?.level ?? '' })));
+
+  if (!rituals.length) {
+    return '<div class="helper-text">None recorded.</div>';
+  }
+
+  return rituals
+    .map((item) => `<div class="entry-row inventory"><span>${escapeHtml(`${item.disciplineName}: ${item.ritualName}${item.level ? ` (Lv ${item.level})` : ''}`)}</span><button class="secondary-button" type="button" data-action="open-ritual-reference" data-ritual-name="${escapeHtml(item.ritualName)}" data-ritual-discipline="${escapeHtml(item.disciplineName)}">Details</button></div>`)
+    .join('');
+}
+
+function getEquipmentCategoryEntries(category) {
+  return EQUIPMENT_CATALOG.filter((item) => item.category === category);
+}
+
+function getDowntimeActivityDefinition(activityType) {
+  return DOWNTIME_ACTIVITY_DEFINITIONS.find((item) => item.id === activityType) || null;
 }
 
 function extractTraitExpressionFromPoolText(poolText) {
@@ -251,6 +553,9 @@ function parseMechanicsRollDirectives(content) {
   const directives = [];
   let inMechanicsSection = false;
   let currentDifficulty = null;
+  let currentResistance = null;
+  let currentResistanceDifficulty = null;
+  let currentPath = '';
 
   for (let index = 0; index < lines.length; index += 1) {
     const rawLine = lines[index];
@@ -272,6 +577,27 @@ function parseMechanicsRollDirectives(content) {
       currentDifficulty = parseDifficultyValue(diffMatch[1]);
     }
 
+    const resistanceDiffMatch = trimmed.match(/\*?\*?(?:resistance|resist)\s+difficulty\*?\*?\s*:?\s*(\d{1,2})/i);
+    if (resistanceDiffMatch) {
+      currentResistanceDifficulty = parseDifficultyValue(resistanceDiffMatch[1]);
+    }
+
+    const resistancePoolMatch = trimmed.match(/^(?:[-*]\s*)?(?:\*\*)?(?:resistance|resist)\s+pool\*?\*?\s*:?\s*(.+)$/i);
+    if (resistancePoolMatch) {
+      const resistanceExpression = extractTraitExpressionFromPoolText(resistancePoolMatch[1]);
+      currentResistance = resistanceExpression
+        ? {
+            traitIds: resistanceExpression.traitIds,
+            traitLabels: resistanceExpression.traitLabels,
+          }
+        : null;
+    }
+
+    const pathMatch = trimmed.match(/^(?:[-*]\s*)?(?:\*\*)?path\*?\*?\s*:?\s*(.+)$/i);
+    if (pathMatch) {
+      currentPath = String(pathMatch[1] || '').trim();
+    }
+
     const poolMatch = trimmed.match(/^(?:[-*]\s*)?(?:\*\*)?pool\*?\*?\s*:?\s*(.+)$/i);
     if (!poolMatch) {
       continue;
@@ -287,6 +613,10 @@ function parseMechanicsRollDirectives(content) {
       traitIds: expression.traitIds,
       traitLabels: expression.traitLabels,
       difficulty: currentDifficulty ?? 6,
+      resistanceTraitIds: currentResistance?.traitIds ?? null,
+      resistanceTraitLabels: currentResistance?.traitLabels ?? null,
+      resistanceDifficulty: currentResistanceDifficulty ?? 6,
+      path: currentPath,
     });
   }
 
@@ -653,11 +983,18 @@ function debugLog(event, payload = null) {
 }
 
 function createTemplateTraitEntries(items, prefix) {
-  return items.map((item) => ({
-    id: uid(prefix),
-    name: item.name,
-    dots: item.dots,
-  }));
+  return items.map((item) => {
+    const next = {
+      id: uid(prefix),
+      name: item.name,
+      dots: item.dots,
+      rituals: [],
+    };
+    if (prefix === 'discipline') {
+      ensureDisciplinePathState(next);
+    }
+    return next;
+  });
 }
 
 function createTemplatePointEntries(kind, names, clanName) {
@@ -675,6 +1012,7 @@ function createTemplatePointEntries(kind, names, clanName) {
 function createTemplateInventoryEntries(items, prefix) {
   return items.map((item) => ({
     id: uid(prefix),
+    category: prefix === 'equipment' ? EQUIPMENT_CATEGORIES[0] : undefined,
     name: item.name,
     details: item.details,
   }));
@@ -859,13 +1197,16 @@ function renderHelpTrigger(label, helpKey) {
   }
 
   return `
-    <button class="info-chip" type="button" aria-label="Explain ${escapeHtml(label)}">
-      <span aria-hidden="true">?</span>
+    <span class="info-chip-wrap">
+      <button class="info-chip" type="button" data-action="toggle-help" aria-label="Explain ${escapeHtml(label)}" aria-expanded="false">
+        <span aria-hidden="true">?</span>
+      </button>
       <span class="tooltip-bubble" role="tooltip">
+        <button class="tooltip-close" type="button" data-action="close-tooltip" aria-label="Close help">Close</button>
         <strong>${escapeHtml(label)}</strong>
         <span>${escapeHtml(helpText)}</span>
       </span>
-    </button>
+    </span>
   `;
 }
 
@@ -904,8 +1245,20 @@ function renderReadonlyFieldSummary(label, value, helpKey = '') {
 
 export function createApp(root) {
   const state = loadState(schema, cities, CUSTOM_CHRONICLE_PACK.hooks);
+  state.sidebarCollapsed = typeof state.sidebarCollapsed === 'boolean' ? state.sidebarCollapsed : true;
   state.chronicles.forEach((chronicle) => {
     ensureCharacterCreationState(chronicle.character);
+    for (const discipline of chronicle.character.disciplines || []) {
+      ensureDisciplinePathState(discipline);
+      if (!Array.isArray(discipline.rituals)) {
+        discipline.rituals = [];
+      }
+    }
+    for (const equipment of chronicle.character.equipment || []) {
+      if (!EQUIPMENT_CATEGORIES.includes(equipment.category)) {
+        equipment.category = EQUIPMENT_CATEGORIES[0];
+      }
+    }
     syncCharacterDerivedStats(chronicle.character);
   });
   ensureActiveChronicle(state);
@@ -914,8 +1267,21 @@ export function createApp(root) {
     archiveRootHandle: null,
     archiveLabel: '',
     xpDraft: null,
+    xpPlans: {},
+    sheetUi: {},
     modelCooldowns: {},
     promptRollPending: false,
+    referenceDetail: null,
+    referenceReturnPanel: null,
+    storytellerPending: false,
+    pendingChronicleId: null,
+    storytellerAbortController: null,
+    retryableStorytellerRequest: null,
+    wallpaperDeck: [],
+    wallpaperIndex: 0,
+    wallpaperVisibleLayer: 'a',
+    wallpaperIntervalId: null,
+    overlayOffsets: {},
   };
 
   const ui = {
@@ -926,8 +1292,14 @@ export function createApp(root) {
     overlayHost: null,
     messageInput: null,
     composer: null,
-    regenerateButton: null,
+    retryButton: null,
+    stopButton: null,
+    sendButton: null,
     topbarControls: null,
+    appShell: null,
+    sidebar: null,
+    wallpaperLayerA: null,
+    wallpaperLayerB: null,
   };
 
   renderShell();
@@ -935,71 +1307,80 @@ export function createApp(root) {
 
   function renderShell() {
     root.innerHTML = `
-      <div class="app-shell">
+      <div class="page-background" aria-hidden="true">
+        <div class="wallpaper-layer active" data-role="wallpaper-a"></div>
+        <div class="wallpaper-layer" data-role="wallpaper-b"></div>
+        <div class="wallpaper-overlay"></div>
+      </div>
+      <div class="app-shell${state.sidebarCollapsed ? ' sidebar-collapsed' : ''}" data-role="app-shell">
         <aside class="sidebar">
-          <section class="brand-block">
-            <div class="brand-eyebrow">V20 Storyteller</div>
-            <h1 class="brand-title">Midnight Domain</h1>
-            <p class="brand-copy">Build your vampire, tune the chronicle, and let the city answer back.</p>
-          </section>
+          <div class="sidebar-toggle-row">
+            <button class="sidebar-toggle" type="button" data-action="toggle-sidebar" aria-expanded="${state.sidebarCollapsed ? 'false' : 'true'}" aria-label="${state.sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}">
+              <span></span><span></span><span></span>
+            </button>
+          </div>
 
-          <section class="sidebar-section">
-            <h2 class="section-heading">Pages</h2>
-            <div class="tab-row three-tabs">
-              <button class="tab-button" data-view="creation">Sessions</button>
-              <button class="tab-button" data-view="settings">Settings</button>
-              <button class="tab-button" data-view="play">Chronicle</button>
-            </div>
-          </section>
+          <div class="sidebar-scroll" data-role="sidebar-scroll">
+            <section class="brand-block">
+              <div class="brand-eyebrow">V20 Storyteller</div>
+              <h1 class="brand-title">Storyteller AI</h1>
+              <p class="brand-copy">Build the chronicle, track the vampire, and keep every session moving through the same night city.</p>
+            </section>
 
-          <section class="sidebar-section">
-            <h2 class="section-heading">Drawers</h2>
-            <div class="tab-row four-tabs">
-              <button class="tab-button" data-panel="notes">Notes</button>
-              <button class="tab-button" data-panel="sheet">Character Sheet</button>
-              <button class="tab-button" data-panel="npcs">NPC Directory</button>
-              <button class="tab-button" data-panel="downtime">Downtime</button>
-            </div>
-          </section>
+            <details class="sidebar-section sidebar-group">
+              <summary class="section-heading">[S] Settings</summary>
+              <label>
+                <span class="helper-text">API Key Value For VTM_CHATBOT</span>
+                <input type="password" placeholder="Paste the actual OpenRouter secret key here" data-role="api-key" />
+              </label>
+              <label>
+                <span class="helper-text">Preset Model</span>
+                <select data-role="model-select"></select>
+              </label>
+              <label data-role="custom-model-row" style="display: none;">
+                <span class="helper-text">Custom Model</span>
+                <input type="text" data-role="model" placeholder="provider/model-name" />
+              </label>
+              <div class="api-actions">
+                <button class="secondary-button" data-action="save-api-config">Save AI Settings</button>
+              </div>
+              <p class="footer-note" data-role="model-help"></p>
+              <p class="footer-note">OpenRouter settings and model selection.</p>
+            </details>
 
-          <section class="sidebar-section">
-            <button class="primary" data-action="new-chronicle">+ New Chronicle</button>
-            <button class="ghost-button" data-action="delete-chronicle">Delete Active Chronicle</button>
-          </section>
+            <details class="sidebar-section sidebar-group">
+              <summary class="section-heading">[C] Chronicles</summary>
+              <button class="primary" data-action="new-chronicle">+ New Chronicle</button>
+              <button class="ghost-button" data-action="delete-chronicle">Delete Active Chronicle</button>
+              <div class="chronicle-list" data-role="chronicle-list"></div>
+              <p class="footer-note">Chronicles auto-save in this browser via local storage. Closing the page keeps your current chronicle, notes, sheet, and chat history on this device.</p>
+            </details>
 
-          <section class="sidebar-section">
-            <h2 class="section-heading">Chronicles</h2>
-            <div class="chronicle-list" data-role="chronicle-list"></div>
-            <p class="footer-note">Chronicles auto-save in this browser via local storage. Closing the page keeps your current chronicle, notes, sheet, and chat history on this device.</p>
-          </section>
-
-          <section class="sidebar-section">
-            <h2 class="section-heading">OpenRouter</h2>
-            <label>
-              <span class="helper-text">API Key Value For VTM_CHATBOT</span>
-              <input type="password" placeholder="Paste the actual OpenRouter secret key here" data-role="api-key" />
-            </label>
-            <label>
-              <span class="helper-text">Preset Model</span>
-              <select data-role="model-select"></select>
-            </label>
-            <label data-role="custom-model-row" style="display: none;">
-              <span class="helper-text">Custom Model</span>
-              <input type="text" data-role="model" placeholder="provider/model-name" />
-            </label>
-            <div class="api-actions">
-              <button class="secondary-button" data-action="save-api-config">Save AI Settings</button>
-            </div>
-            <p class="footer-note" data-role="model-help"></p>
-            <p class="footer-note">Paste the real secret key value, not the key name. Authentication uses a Bearer token in the Authorization header. App title and referer headers are optional.</p>
-          </section>
+            <details class="sidebar-section sidebar-group">
+              <summary class="section-heading">[P] Character</summary>
+              <div class="tab-row">
+                <button class="tab-button" data-nav="sessions">Sessions</button>
+                <button class="tab-button" data-nav="chronicle">Chronicle</button>
+              </div>
+              <div class="tab-row">
+                <button class="tab-button" data-panel="notes">Notes</button>
+                <button class="tab-button" data-panel="sheet">Character Sheet</button>
+                <button class="tab-button" data-panel="npcs">NPC Directory</button>
+                <button class="tab-button" data-panel="archives">Archives</button>
+                <button class="tab-button" data-panel="downtime">Downtime</button>
+              </div>
+            </details>
+          </div>
         </aside>
 
         <main class="main-panel">
           <header class="topbar">
-            <div>
-              <div class="brand-eyebrow">Current Domain</div>
-              <h1 data-role="top-title"></h1>
+            <div class="topbar-heading">
+              <div class="brand-eyebrow" data-role="top-eyebrow">Current Domain</div>
+              <div class="topbar-title-row">
+                <h1 data-role="top-title"></h1>
+                <div class="topbar-clan-symbol" data-role="top-symbol"></div>
+              </div>
               <div class="topbar-copy" data-role="top-copy"></div>
             </div>
             <div class="topbar-actions" data-role="topbar-controls"></div>
@@ -1013,8 +1394,16 @@ export function createApp(root) {
             <form class="composer" data-role="composer">
               <textarea data-role="message-input" placeholder="Describe your action, ask for a scene, or tell the Storyteller how your vampire responds."></textarea>
               <div class="composer-actions">
-                <button class="ghost-button" type="button" data-action="regenerate-response">Regenerate Response</button>
-                <button class="send-button" type="submit">Send To Storyteller</button>
+                <button class="ghost-button" type="button" data-action="retry-response" hidden>Retry</button>
+                <button class="ghost-button" type="button" data-action="stop-response" hidden aria-label="Stop Storyteller response">
+                  <span class="button-stop" aria-hidden="true"></span>
+                </button>
+                <button class="send-button icon-button" type="submit" aria-label="Send message to Storyteller">
+                  <span class="button-spinner" aria-hidden="true"></span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M3 11.5 20.5 3l-4.6 18-4.9-6.3-4.3-1.7 10-6.3-11.6 4.8Z" fill="currentColor"></path>
+                  </svg>
+                </button>
               </div>
             </form>
           </section>
@@ -1029,24 +1418,35 @@ export function createApp(root) {
     ui.chatLog = root.querySelector('[data-role="chat-log"]');
     ui.chronicleList = root.querySelector('[data-role="chronicle-list"]');
     ui.overlayHost = root.querySelector('[data-role="overlay-host"]');
+    ui.appShell = root.querySelector('[data-role="app-shell"]');
+    ui.sidebar = root.querySelector('.sidebar');
+    ui.wallpaperLayerA = root.querySelector('[data-role="wallpaper-a"]');
+    ui.wallpaperLayerB = root.querySelector('[data-role="wallpaper-b"]');
     ui.messageInput = root.querySelector('[data-role="message-input"]');
     ui.composer = root.querySelector('[data-role="composer"]');
-    ui.regenerateButton = root.querySelector('[data-action="regenerate-response"]');
+    ui.retryButton = root.querySelector('[data-action="retry-response"]');
+    ui.stopButton = root.querySelector('[data-action="stop-response"]');
+    ui.sendButton = root.querySelector('.send-button');
     ui.topbarControls = root.querySelector('[data-role="topbar-controls"]');
     ui.chatLog?.addEventListener('click', onPromptRollClick);
+    root.addEventListener('click', onTooltipClick);
+    root.addEventListener('keydown', onTooltipKeydown);
 
     root.querySelector('[data-role="composer"]').addEventListener('submit', onSendMessage);
-    ui.regenerateButton?.addEventListener('click', onRegenerateResponse);
+    ui.retryButton?.addEventListener('click', onRetryStorytellerResponse);
+    ui.stopButton?.addEventListener('click', onStopStorytellerRequest);
     ui.messageInput?.addEventListener('input', syncComposerHeight);
+    ui.messageInput?.addEventListener('keydown', onComposerKeyDown);
     root.querySelector('[data-action="new-chronicle"]').addEventListener('click', onNewChronicle);
     root.querySelector('[data-action="delete-chronicle"]').addEventListener('click', onDeleteChronicle);
     root.querySelector('[data-action="save-api-config"]').addEventListener('click', onSaveApiConfig);
+    root.querySelector('[data-action="toggle-sidebar"]')?.addEventListener('click', onToggleSidebar);
     root.querySelector('[data-role="model-select"]')?.addEventListener('change', syncModelPricingUi);
     root.querySelector('[data-role="model"]')?.addEventListener('input', syncModelPricingUi);
 
-    for (const button of root.querySelectorAll('[data-view]')) {
+    for (const button of root.querySelectorAll('[data-nav]')) {
       button.addEventListener('click', () => {
-        state.activeView = button.dataset.view;
+        state.activeView = resolveNavigationView(button.dataset.nav, getActiveChronicle());
         persist();
         render();
       });
@@ -1064,6 +1464,79 @@ export function createApp(root) {
     }
 
     syncComposerHeight();
+    initializeWallpaperRotation();
+  }
+
+  function shuffleArray(items) {
+    const next = [...items];
+    for (let index = next.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [next[index], next[swapIndex]] = [next[swapIndex], next[index]];
+    }
+    return next;
+  }
+
+  function ensureWallpaperDeck() {
+    if (!runtime.wallpaperDeck.length) {
+      runtime.wallpaperDeck = shuffleArray(WALLPAPER_URLS);
+      runtime.wallpaperIndex = 0;
+    }
+    return runtime.wallpaperDeck;
+  }
+
+  function getCurrentWallpaperUrl() {
+    const deck = ensureWallpaperDeck();
+    return deck[runtime.wallpaperIndex] || deck[0] || '';
+  }
+
+  function advanceWallpaperDeck() {
+    const deck = ensureWallpaperDeck();
+    runtime.wallpaperIndex += 1;
+    if (runtime.wallpaperIndex >= deck.length) {
+      runtime.wallpaperDeck = shuffleArray(WALLPAPER_URLS);
+      runtime.wallpaperIndex = 0;
+    }
+    return getCurrentWallpaperUrl();
+  }
+
+  function initializeWallpaperRotation() {
+    const initialUrl = getCurrentWallpaperUrl();
+    if (ui.wallpaperLayerA) {
+      ui.wallpaperLayerA.style.backgroundImage = `url("${initialUrl}")`;
+    }
+    if (runtime.wallpaperIntervalId) {
+      return;
+    }
+    runtime.wallpaperIntervalId = window.setInterval(() => {
+      crossfadeToWallpaper(advanceWallpaperDeck());
+    }, WALLPAPER_INTERVAL_MS);
+  }
+
+  function crossfadeToWallpaper(url) {
+    if (!ui.wallpaperLayerA || !ui.wallpaperLayerB || !url) {
+      return;
+    }
+    const nextLayer = runtime.wallpaperVisibleLayer === 'a' ? ui.wallpaperLayerB : ui.wallpaperLayerA;
+    const previousLayer = runtime.wallpaperVisibleLayer === 'a' ? ui.wallpaperLayerA : ui.wallpaperLayerB;
+    nextLayer.style.backgroundImage = `url("${url}")`;
+    nextLayer.classList.add('active');
+    previousLayer.classList.remove('active');
+    runtime.wallpaperVisibleLayer = runtime.wallpaperVisibleLayer === 'a' ? 'b' : 'a';
+  }
+
+  function onToggleSidebar() {
+    state.sidebarCollapsed = !state.sidebarCollapsed;
+    applySidebarState();
+    persist();
+  }
+
+  function applySidebarState() {
+    ui.appShell?.classList.toggle('sidebar-collapsed', Boolean(state.sidebarCollapsed));
+    const toggle = root.querySelector('[data-action="toggle-sidebar"]');
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', state.sidebarCollapsed ? 'false' : 'true');
+      toggle.setAttribute('aria-label', state.sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar');
+    }
   }
 
   function syncComposerHeight() {
@@ -1076,6 +1549,103 @@ export function createApp(root) {
     const nextHeight = Math.min(ui.messageInput.scrollHeight, maxHeight);
     ui.messageInput.style.height = `${Math.max(52, nextHeight)}px`;
     ui.messageInput.style.overflowY = ui.messageInput.scrollHeight > maxHeight ? 'auto' : 'hidden';
+  }
+
+  function isStorytellerRequestPending(chronicle = null) {
+    if (!runtime.storytellerPending) {
+      return false;
+    }
+
+    if (!chronicle) {
+      return true;
+    }
+
+    return runtime.pendingChronicleId === chronicle.id;
+  }
+
+  function getRetryableStorytellerRequest(chronicle) {
+    if (!chronicle) {
+      return null;
+    }
+
+    return runtime.retryableStorytellerRequest?.chronicleId === chronicle.id ? runtime.retryableStorytellerRequest : null;
+  }
+
+  function renderComposerState(chronicle) {
+    if (!ui.composer || !ui.sendButton || !ui.stopButton || !ui.retryButton) {
+      return;
+    }
+
+    const pending = isStorytellerRequestPending(chronicle);
+    const retryableRequest = getRetryableStorytellerRequest(chronicle);
+    ui.composer.classList.toggle('is-pending', pending);
+    ui.sendButton.disabled = pending;
+    ui.sendButton.classList.toggle('pending', pending);
+    ui.stopButton.hidden = !pending;
+    ui.stopButton.disabled = !pending;
+    ui.retryButton.hidden = pending || !retryableRequest;
+    ui.retryButton.disabled = pending || !retryableRequest;
+
+    if (ui.messageInput) {
+      ui.messageInput.setAttribute('aria-busy', pending ? 'true' : 'false');
+    }
+  }
+
+  function onComposerKeyDown(event) {
+    if (event.key !== 'Enter' || event.shiftKey) {
+      return;
+    }
+
+    event.preventDefault();
+    ui.composer?.requestSubmit();
+  }
+
+  function closeOpenTooltips(exceptWrap = null) {
+    root.querySelectorAll('.info-chip-wrap.open').forEach((wrap) => {
+      if (exceptWrap && wrap === exceptWrap) {
+        return;
+      }
+      wrap.classList.remove('open');
+      wrap.querySelector('[data-action="toggle-help"]')?.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function onTooltipClick(event) {
+    const closeButton = event.target.closest('[data-action="close-tooltip"]');
+    if (closeButton) {
+      const wrap = closeButton.closest('.info-chip-wrap');
+      if (wrap) {
+        wrap.classList.remove('open');
+        wrap.querySelector('[data-action="toggle-help"]')?.setAttribute('aria-expanded', 'false');
+      }
+      return;
+    }
+
+    const toggle = event.target.closest('[data-action="toggle-help"]');
+    if (toggle) {
+      event.preventDefault();
+      const wrap = toggle.closest('.info-chip-wrap');
+      if (!wrap) {
+        return;
+      }
+      const shouldOpen = !wrap.classList.contains('open');
+      closeOpenTooltips(wrap);
+      wrap.classList.toggle('open', shouldOpen);
+      toggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+      return;
+    }
+
+    if (!event.target.closest('.info-chip-wrap')) {
+      closeOpenTooltips();
+    }
+  }
+
+  function onTooltipKeydown(event) {
+    if (event.key !== 'Escape') {
+      return;
+    }
+
+    closeOpenTooltips();
   }
 
   function getActiveChronicle() {
@@ -1303,6 +1873,7 @@ export function createApp(root) {
 
   function render() {
     const chronicle = getActiveChronicle();
+    applySidebarState();
     renderChronicleList();
     renderSidebarConfig();
     renderViewButtons();
@@ -1327,7 +1898,13 @@ export function createApp(root) {
   function renderEmptyState() {
     const title = root.querySelector('[data-role="top-title"]');
     const copy = root.querySelector('[data-role="top-copy"]');
+    const eyebrow = root.querySelector('[data-role="top-eyebrow"]');
+    const symbol = root.querySelector('[data-role="top-symbol"]');
 
+    eyebrow.textContent = 'Current Domain';
+    eyebrow.hidden = false;
+    symbol.innerHTML = '';
+    symbol.hidden = true;
     title.textContent = 'No Chronicle Loaded';
     copy.textContent = 'Create a new chronicle to choose its chronicle foundation first, then build the vampire who enters it.';
     ui.topbarControls.innerHTML = '<div class="pill-row"><span class="status-pill">Waiting for a new chronicle</span></div>';
@@ -1352,17 +1929,49 @@ export function createApp(root) {
   function renderViewButtons() {
     const chronicle = getActiveChronicle();
     const hasChronicle = Boolean(chronicle);
-    root.querySelectorAll('[data-view]').forEach((button) => {
-      const view = button.dataset.view;
-      button.classList.toggle('active', state.activeView === view);
+    const activeNav = getActiveNavigationKey(chronicle);
+    root.querySelectorAll('[data-nav]').forEach((button) => {
+      const nav = button.dataset.nav;
+      button.classList.toggle('active', activeNav === nav);
       if (!hasChronicle) {
-        button.disabled = view !== 'settings';
+        button.disabled = nav === 'sessions';
         return;
       }
-      button.disabled =
-        (view === 'creation' && !chronicle.setupComplete) ||
-        (view === 'play' && (!chronicle.setupComplete || !chronicle.character.created));
+
+      button.disabled = nav === 'sessions' && !chronicle.character.created;
     });
+  }
+
+  function resolveNavigationView(nav, chronicle) {
+    if (nav === 'sessions') {
+      return 'creation';
+    }
+
+    if (!chronicle) {
+      return 'settings';
+    }
+
+    if (!chronicle.setupComplete) {
+      return 'settings';
+    }
+
+    if (!chronicle.character.created) {
+      return 'creation';
+    }
+
+    return 'play';
+  }
+
+  function getActiveNavigationKey(chronicle) {
+    if (!chronicle) {
+      return state.activeView === 'creation' ? 'sessions' : 'chronicle';
+    }
+
+    if (state.activeView === 'creation' && chronicle.character.created) {
+      return 'sessions';
+    }
+
+    return 'chronicle';
   }
 
   function renderPanelButtons() {
@@ -1400,15 +2009,23 @@ export function createApp(root) {
   function renderHeader(chronicle, city) {
     const title = root.querySelector('[data-role="top-title"]');
     const copy = root.querySelector('[data-role="top-copy"]');
+    const eyebrow = root.querySelector('[data-role="top-eyebrow"]');
+    const symbol = root.querySelector('[data-role="top-symbol"]');
+
+    eyebrow.hidden = false;
+    symbol.innerHTML = '';
+    symbol.hidden = true;
 
     if (state.activeView === 'creation') {
       if (chronicle.character.created) {
+        eyebrow.textContent = 'Current Domain';
         title.textContent = 'Chronicle Sessions';
         copy.textContent = 'Review active chronicles, reopen a saved chat session, or start a new chronicle from the sidebar.';
         ui.topbarControls.innerHTML = `<div class="pill-row"><span class="status-pill">${state.chronicles.length} chronicle${state.chronicles.length === 1 ? '' : 's'} tracked</span></div>`;
         return;
       }
 
+      eyebrow.textContent = 'Current Domain';
       title.textContent = 'Character Creation';
       copy.textContent = `Build the vampire for ${city.name}. Once the sheet is locked in, spend experience through confirmed purchases only.`;
       ui.topbarControls.innerHTML = '<div class="pill-row"><span class="status-pill">Page 2 of 3</span></div>';
@@ -1416,38 +2033,43 @@ export function createApp(root) {
     }
 
     if (state.activeView === 'settings') {
+      eyebrow.textContent = 'Current Domain';
       title.textContent = 'Chronicle Settings';
       copy.textContent = 'Choose the chronicle foundation, city frame, and Storyteller brief before character creation begins.';
       ui.topbarControls.innerHTML = '<div class="pill-row"><span class="status-pill">Page 1 of 3</span></div>';
       return;
     }
 
-    title.textContent = chronicle.title;
-    copy.textContent = `${city.name} · ${city.region} · ${chronicle.year} · ${city.mood}`;
+    title.textContent = city.chronicleBook || chronicle.title;
+    eyebrow.hidden = true;
+    copy.textContent = `${chronicle.character.name || 'Unnamed vampire'} · ${city.name} · ${chronicle.character.experience.unspent} XP available`;
     ui.topbarControls.innerHTML = renderPlayControls(chronicle);
     bindPlayControls(chronicle);
   }
 
+  function renderClanSymbol(clanName) {
+    const config = CLAN_SYMBOLS[clanName];
+    if (!config?.src) {
+      return '';
+    }
+    return `<img class="clan-symbol${config.invert ? ' invert-white' : ''}" src="${config.src}" alt="${escapeHtml(clanName)} clan symbol" />`;
+  }
+
   function renderPlayControls(chronicle) {
-    const city = getChronicleCity(chronicle);
     const progression = ensureChronicleProgressionState(chronicle);
     return `
       <div class="topbar-row play-topbar-row">
         <div class="topbar-card">
-          <span class="helper-text">Chronicle</span>
-          <strong>${escapeHtml(city.chronicleBook || city.name)}</strong>
+          <span class="helper-text">Character</span>
+          <strong>${escapeHtml(chronicle.character.name || 'Unnamed vampire')}</strong>
         </div>
         <div class="topbar-card">
-          <span class="helper-text">City</span>
-          <strong>${escapeHtml(city.name)}</strong>
+          <span class="helper-text">EXP Available</span>
+          <strong>${chronicle.character.experience.unspent}</strong>
         </div>
         <div class="topbar-card">
-          <span class="helper-text">Year</span>
-          <strong>${chronicle.year}</strong>
-        </div>
-        <div class="topbar-card">
-          <span class="helper-text">Difficulty</span>
-          <strong>${escapeHtml(DIFFICULTY_MAP[chronicle.difficulty]?.label ?? 'Balanced')}</strong>
+          <span class="helper-text">Willpower</span>
+          <strong>${chronicle.character.currentWillpower}/${chronicle.character.willpower}</strong>
         </div>
         <div class="topbar-card">
           <span class="helper-text">Phase</span>
@@ -1457,47 +2079,17 @@ export function createApp(root) {
           <span class="helper-text">Session</span>
           <strong>${progression.sessionNumber}</strong>
         </div>
-        <div class="topbar-card">
-          <span class="helper-text">Willpower</span>
-          <strong>${chronicle.character.currentWillpower}/${chronicle.character.willpower}</strong>
-        </div>
       </div>
       <div class="play-topbar-actions">
         ${progression.downtimeReason ? `<span class="status-pill compact">${escapeHtml(progression.downtimeReason)}</span>` : ''}
-        <button class="secondary-button" type="button" data-action="toggle-downtime">${progression.phase === 'downtime' ? 'Resume Scenes' : 'Enter Downtime'}</button>
+        <span class="helper-text">Downtime is Storyteller-triggered.</span>
       </div>
     `;
   }
 
   function bindPlayControls(chronicle) {
-    ui.topbarControls.querySelector('[data-action="toggle-downtime"]')?.addEventListener('click', () => {
-      if (isDowntimeActive(chronicle)) {
-        const recovery = resumeScenesFromDowntime(chronicle);
-        if (state.activePanel === 'downtime') {
-          state.activePanel = null;
-        }
-        persist();
-        const recoveryParts = [];
-        if (recovery.willpowerRecovered > 0) {
-          recoveryParts.push(`Temporary Willpower +${recovery.willpowerRecovered}`);
-        }
-        if (recovery.resourcesRecovered > 0) {
-          recoveryParts.push(`temporary Resources +${recovery.resourcesRecovered}`);
-        }
-        setStatus(
-          recoveryParts.length
-            ? `Downtime ended. Session ${chronicle.progression.sessionNumber} is now active. ${recoveryParts.join('; ')}.`
-            : `Downtime ended. Session ${chronicle.progression.sessionNumber} is now active.`,
-        );
-      } else {
-        beginDowntime(chronicle, 'Player-entered downtime');
-        state.activePanel = 'downtime';
-        runtime.xpDraft = null;
-        persist();
-        setStatus('Downtime is now active. XP spending and long-form advancement actions are available.');
-      }
-      render();
-    });
+    // Downtime transitions are Storyteller-driven via structured state updates.
+    void chronicle;
   }
 
   function renderMainContent(chronicle, city, selectedHooks) {
@@ -1508,11 +2100,9 @@ export function createApp(root) {
     ui.playShell.style.display = isPlay ? 'grid' : 'none';
 
     if (isPlay) {
-      if (ui.regenerateButton) {
-        ui.regenerateButton.disabled = !canRegenerateStorytellerResponse(chronicle);
-      }
+      renderComposerState(chronicle);
       syncComposerHeight();
-      renderChat(chronicle.messages);
+      renderChat(chronicle.messages, chronicle);
       return;
     }
 
@@ -1607,6 +2197,7 @@ export function createApp(root) {
             </div>
 
             ${renderCreationStepContent({
+              chronicle,
               character,
               validation,
               creationBudget,
@@ -1642,7 +2233,7 @@ export function createApp(root) {
     `;
   }
 
-  function renderCreationStepContent({ character, validation, creationBudget, clanOptions, clanMeritTitle, clanFlawTitle, morality, phase, currentStepId }) {
+  function renderCreationStepContent({ chronicle, character, validation, creationBudget, clanOptions, clanMeritTitle, clanFlawTitle, morality, phase, currentStepId }) {
     if (currentStepId === 'identity') {
       return renderCreationIdentitySection(character, creationBudget, morality);
     }
@@ -1668,7 +2259,7 @@ export function createApp(root) {
         ${renderSpecialtyCard(character, false)}
         ${renderInventoryCard('equipment', 'Equipment', character.equipment, false)}
         ${renderInventoryCard('items', 'Items', character.items, false)}
-        ${phase === 'experience' ? renderCreationExperienceCard(character) : renderCreationLockedCard('Starting Experience', 'Starting XP unlocks only after you confirm the freebie phase.')}
+        ${phase === 'experience' ? renderCreationExperienceCard(character, chronicle) : renderCreationLockedCard('Starting Experience', 'Starting XP unlocks only after you confirm the freebie phase.')}
       `;
     }
 
@@ -1741,6 +2332,7 @@ export function createApp(root) {
           ${renderLockedCard('Blood Pool', `${character.currentBloodPool}/${character.bloodPool}`, 'bloodPool')}
         </div>
       </div>
+      ${renderSpecialtyCard(character, false)}
       ${renderReadOnlyStats(character)}
       <div class="inline-grid two">
         <div class="list-card">
@@ -1936,11 +2528,19 @@ export function createApp(root) {
       return;
     }
 
+    const offset = getOverlayOffset(state.activePanel);
+
     const overlay = document.createElement('div');
     overlay.className = 'overlay-backdrop';
     overlay.innerHTML = `
-      <div class="overlay-window">
-        <button class="overlay-close" type="button" data-action="close-overlay">Close</button>
+      <div class="overlay-window" data-role="overlay-window" style="--overlay-offset-x: ${offset.x}px; --overlay-offset-y: ${offset.y}px;">
+        <div class="overlay-window-header" data-role="overlay-drag-handle">
+          <strong>${escapeHtml(getOverlayTitle(state.activePanel))}</strong>
+          <div class="overlay-window-actions">
+            <button class="overlay-reset" type="button" data-action="reset-overlay-position" aria-label="Reset overlay position">Reset</button>
+            <button class="overlay-close" type="button" data-action="close-overlay" aria-label="Close overlay">X</button>
+          </div>
+        </div>
         ${
           state.activePanel === 'notes'
             ? renderNotesOverlay(chronicle, city, selectedHooks)
@@ -1948,8 +2548,12 @@ export function createApp(root) {
               ? renderSheetOverlay(chronicle)
               : state.activePanel === 'npcs'
                 ? renderNpcOverlay(chronicle)
+                : state.activePanel === ARCHIVE_PANEL_ID
+                  ? renderArchiveOverlay(chronicle)
                 : state.activePanel === 'downtime'
                   ? renderDowntimeOverlay(chronicle)
+                : state.activePanel === 'reference'
+                  ? renderReferenceOverlay(chronicle)
             : state.activePanel === CREATION_ASSISTANT_PANEL_ID
               ? renderCreationAssistantOverlay(chronicle)
                 : renderXpOverlay(chronicle)
@@ -1963,6 +2567,10 @@ export function createApp(root) {
       }
     });
     overlay.querySelector('[data-action="close-overlay"]').addEventListener('click', closeOverlay);
+    overlay.querySelector('[data-action="reset-overlay-position"]')?.addEventListener('click', () => {
+      resetOverlayPosition(state.activePanel, overlay.querySelector('[data-role="overlay-window"]'));
+    });
+    bindOverlayWindowDrag(overlay);
 
     ui.overlayHost.appendChild(overlay);
 
@@ -1972,13 +2580,118 @@ export function createApp(root) {
       bindSheetEvents(overlay, chronicle);
     } else if (state.activePanel === 'npcs') {
       return;
+    } else if (state.activePanel === ARCHIVE_PANEL_ID) {
+      return;
     } else if (state.activePanel === 'downtime') {
       bindDowntimeEvents(overlay, chronicle);
+    } else if (state.activePanel === 'reference') {
+      bindReferenceEvents(overlay);
     } else if (state.activePanel === CREATION_ASSISTANT_PANEL_ID) {
       bindCreationAssistantEvents(overlay, chronicle);
     } else if (state.activePanel === 'xp') {
       bindXpEvents(overlay, chronicle);
     }
+  }
+
+  function getOverlayTitle(panelId) {
+    if (panelId === 'notes') {
+      return 'Chronicle Notes';
+    }
+    if (panelId === 'sheet') {
+      return 'Character Sheet';
+    }
+    if (panelId === 'npcs') {
+      return 'NPC Directory';
+    }
+    if (panelId === ARCHIVE_PANEL_ID) {
+      return 'Archives';
+    }
+    if (panelId === 'downtime') {
+      return 'Downtime';
+    }
+    if (panelId === 'reference') {
+      return 'Reference';
+    }
+    if (panelId === CREATION_ASSISTANT_PANEL_ID) {
+      return 'Creation Assistant';
+    }
+    if (panelId === 'xp') {
+      return 'Experience';
+    }
+    return 'Window';
+  }
+
+  function getOverlayOffset(panelId) {
+    if (!runtime.overlayOffsets[panelId]) {
+      runtime.overlayOffsets[panelId] = { x: 0, y: 0 };
+    }
+    return runtime.overlayOffsets[panelId];
+  }
+
+  function clampOverlayOffset(windowEl, offset) {
+    if (!windowEl) {
+      return offset;
+    }
+
+    const rect = windowEl.getBoundingClientRect();
+    const margin = 16;
+    const maxX = Math.max(0, window.innerWidth - rect.width - margin);
+    const minX = Math.min(0, margin - rect.left + offset.x);
+    const clampedX = Math.min(maxX, Math.max(minX, offset.x));
+
+    const maxY = Math.max(0, window.innerHeight - rect.height - margin);
+    const minY = Math.min(0, margin - rect.top + offset.y);
+    const clampedY = Math.min(maxY, Math.max(minY, offset.y));
+
+    return { x: clampedX, y: clampedY };
+  }
+
+  function applyOverlayOffset(panelId, windowEl, offset) {
+    const next = clampOverlayOffset(windowEl, offset);
+    runtime.overlayOffsets[panelId] = next;
+    windowEl.style.setProperty('--overlay-offset-x', `${next.x}px`);
+    windowEl.style.setProperty('--overlay-offset-y', `${next.y}px`);
+  }
+
+  function resetOverlayPosition(panelId, windowEl) {
+    if (!panelId || !windowEl) {
+      return;
+    }
+    applyOverlayOffset(panelId, windowEl, { x: 0, y: 0 });
+  }
+
+  function bindOverlayWindowDrag(overlay) {
+    const handle = overlay.querySelector('[data-role="overlay-drag-handle"]');
+    const windowEl = overlay.querySelector('[data-role="overlay-window"]');
+    if (!handle || !windowEl || !state.activePanel) {
+      return;
+    }
+
+    handle.addEventListener('mousedown', (event) => {
+      if (event.button !== 0 || event.target.closest('button')) {
+        return;
+      }
+
+      event.preventDefault();
+      const panelId = state.activePanel;
+      const startOffset = getOverlayOffset(panelId);
+      const startX = event.clientX;
+      const startY = event.clientY;
+
+      const onMove = (moveEvent) => {
+        const nextX = startOffset.x + (moveEvent.clientX - startX);
+        const nextY = startOffset.y + (moveEvent.clientY - startY);
+        applyOverlayOffset(panelId, windowEl, { x: nextX, y: nextY });
+      };
+
+      const onUp = () => {
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onUp);
+      };
+
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+    });
   }
 
   function renderNotesOverlay(chronicle, city, selectedHooks) {
@@ -2050,6 +2763,7 @@ export function createApp(root) {
   function renderSheetOverlay(chronicle) {
     const character = chronicle.character;
     const xpSpendAllowed = canSpendExperience(chronicle);
+    const sheetUi = getSheetUiState(chronicle);
     const lockedFields = [
       ['Concept', character.concept || 'Unwritten'],
       ['Clan', character.clan],
@@ -2064,7 +2778,7 @@ export function createApp(root) {
     return `
       <div class="drawer-card overlay-card">
         <h2>Character Sheet</h2>
-        <p class="helper-text">Only identity and motivation details stay editable here. All other progression must be confirmed through a one-way XP purchase. Backgrounds, equipment, and items are Storyteller-managed once play begins.</p>
+        <p class="helper-text">Only identity and motivation details stay editable here. Backgrounds, equipment, and items are Storyteller-managed once play begins.</p>
 
         <div class="inline-grid three sheet-summary-strip">
           ${renderLockedCard('Clan', character.clan)}
@@ -2103,12 +2817,29 @@ export function createApp(root) {
           </div>
           <div class="list-card">
             ${renderCardHeading('Experience')}
-            <div class="locked-card compact">${renderFieldLabel('Unspent XP')}<strong>${character.experience.unspent}</strong></div>
+            <div class="locked-card compact">${renderFieldLabel('Available EXP')}<strong>${character.experience.unspent}</strong></div>
             <div class="meta-text">Spent XP: ${character.experience.spent}</div>
-            <div class="meta-text">Confirmed purchases cannot be refunded.</div>
+            <div class="meta-text">Confirmed purchases cannot be refunded. Use plus/minus to draft changes before confirming.</div>
             <div class="meta-text">${escapeHtml(xpSpendAllowed ? 'XP spending is currently available.' : getXpGateMessage(chronicle))}</div>
-            <button class="primary" type="button" data-action="open-xp" ${xpSpendAllowed ? '' : 'disabled'}>Spend Experience</button>
           </div>
+        </div>
+
+        ${renderXpPlannerCard(chronicle, false)}
+
+        <div class="list-card">
+          <div class="card-heading-row">
+            <h4>Quick Guide</h4>
+            <button class="secondary-button" type="button" data-action="toggle-sheet-guide">${sheetUi.showGuide ? 'Hide' : 'Show'}</button>
+          </div>
+          ${sheetUi.showGuide
+            ? `
+              <label>
+                <span class="helper-text">Search reference</span>
+                <input type="search" data-role="sheet-guide-search" value="${escapeHtml(sheetUi.guideQuery || '')}" placeholder="Search stats, traits, and rules notes" />
+              </label>
+              <div class="summary-list">${renderQuickGuideList(sheetUi.guideQuery || '')}</div>
+            `
+            : '<p class="helper-text">Open the quick guide for a searchable in-sheet reference to core non-discipline traits.</p>'}
         </div>
 
         <div class="list-card">
@@ -2167,8 +2898,29 @@ export function createApp(root) {
         </div>
 
         <div class="list-card">
-          ${renderCardHeading('Confirmed XP Log')}
-          <div class="xp-log">${renderXpLog(character.experience.log)}</div>
+          <div class="card-heading-row">
+            <h4>Confirmed XP Log</h4>
+            <button class="secondary-button" type="button" data-action="toggle-xp-log">${sheetUi.showXpLog ? 'Hide' : 'Show'}</button>
+          </div>
+          ${sheetUi.showXpLog ? `<div class="xp-log">${renderXpLog(character.experience.log)}</div>` : '<p class="helper-text">Expand to review confirmed XP transactions.</p>'}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderReferenceOverlay(chronicle) {
+    const detail = runtime.referenceDetail || {};
+    const disciplineName = String(detail.name || detail.discipline || '').trim();
+    const ritualName = String(detail.ritualName || detail.name || '').trim();
+    const characterDiscipline = (chronicle.character.disciplines || []).find((entry) => entry.name === disciplineName);
+    const content = detail.kind === 'ritual'
+      ? renderRitualReferenceContent(ritualName, disciplineName)
+      : renderDisciplineReferenceContent(disciplineName, characterDiscipline);
+    return `
+      <div class="drawer-card overlay-card">
+        ${content}
+        <div class="stage-actions split">
+          <button class="secondary-button" type="button" data-action="reference-back">Back</button>
         </div>
       </div>
     `;
@@ -2186,10 +2938,58 @@ export function createApp(root) {
     `;
   }
 
+  function renderArchiveOverlay(chronicle) {
+    const archives = Array.isArray(chronicle.messageArchives) ? [...chronicle.messageArchives].reverse() : [];
+    return `
+      <div class="drawer-card overlay-card">
+        <h2>Archives</h2>
+        <p class="helper-text">Older turns are compacted here so the live chat stays focused on the latest Storyteller reply.</p>
+        <div class="summary-list">
+          <div><strong>Archived blocks:</strong> ${archives.length}</div>
+          <div><strong>Compaction rule:</strong> archive the oldest ${ARCHIVE_MESSAGE_BATCH_SIZE} eligible messages while preserving the newest Storyteller reply in live chat.</div>
+        </div>
+        <div class="npc-directory-grid">
+          ${archives.length
+            ? archives
+                .map(
+                  (archive) => `
+                    <article class="npc-card npc-dossier archive-card">
+                      <div class="npc-header-row">
+                        <strong>${escapeHtml(archive.title || 'Archived Turns')}</strong>
+                        <span class="meta-text">${escapeHtml(formatArchiveDateRange(archive.startedAt, archive.endedAt))}</span>
+                      </div>
+                      <div class="meta-text">${archive.messageCount} messages archived · Created ${escapeHtml(formatTimestamp(archive.createdAt))}</div>
+                      <div><strong>Summary:</strong> ${escapeHtml(archive.summary || 'Summary pending.')}</div>
+                      <details>
+                        <summary>View archived transcript</summary>
+                        <pre class="archive-transcript">${escapeHtml(archive.text || 'No transcript stored.')}</pre>
+                      </details>
+                    </article>
+                  `,
+                )
+                .join('')
+            : '<p class="helper-text">No archived turn blocks yet.</p>'}
+        </div>
+      </div>
+    `;
+  }
+
   function renderDowntimeOverlay(chronicle) {
     const progression = ensureChronicleProgressionState(chronicle);
     const downtimeActive = progression.phase === 'downtime';
     const xpSpendAllowed = canSpendExperience(chronicle);
+    const downtimeActivity = progression.downtimeActivity || {};
+    const activityLabel = downtimeActivity.type ? startCase(downtimeActivity.type) : 'None selected';
+    const activityStatus = downtimeActivity.completed
+      ? 'Completed'
+      : downtimeActivity.status === 'active'
+        ? 'In progress'
+        : 'Idle';
+    const activityProgress = downtimeActivity.targetSuccesses > 0
+      ? `${downtimeActivity.progressSuccesses}/${downtimeActivity.targetSuccesses}`
+      : 'N/A';
+    const activityOptions = DOWNTIME_ACTIVITY_DEFINITIONS.map((item) => item.id);
+    const selectedActivityType = downtimeActivity.type || activityOptions[0] || '';
     return `
       <div class="drawer-card overlay-card">
         <h2>Downtime</h2>
@@ -2229,10 +3029,28 @@ export function createApp(root) {
           </div>
         </div>
 
-        <div class="stage-actions split">
-          <button class="secondary-button" type="button" data-action="toggle-downtime-panel">${downtimeActive ? 'Resume Scenes' : 'Enter Downtime'}</button>
-          <button class="primary" type="button" data-action="open-downtime-xp" ${xpSpendAllowed ? '' : 'disabled'}>Spend Experience</button>
+        <div class="list-card">
+          <h4>Downtime Activity</h4>
+          <div class="summary-list">
+            <div><strong>Selection:</strong> ${escapeHtml(activityLabel)}</div>
+            <div><strong>Status:</strong> ${escapeHtml(activityStatus)}</div>
+            <div><strong>Progress:</strong> ${escapeHtml(activityProgress)}</div>
+            <div><strong>Rule:</strong> Only one downtime activity can be completed per downtime session.</div>
+          </div>
+          <div class="entry-row inventory">
+            <label><span class="helper-text">Choose Activity</span>${renderSelect('downtime-activity', activityOptions.map((item) => startCase(item)), selectedActivityType, 'data-downtime-activity', activityOptions)}</label>
+            <button class="secondary-button" type="button" data-action="set-downtime-activity" ${downtimeActivity.completed ? 'disabled' : ''}>Set Activity</button>
+            <button class="secondary-button" type="button" data-action="prompt-downtime-roll" ${downtimeActivity.status === 'active' ? '' : 'disabled'}>Prompt Roll</button>
+            <button class="secondary-button" type="button" data-action="advance-downtime-success" ${downtimeActivity.status === 'active' ? '' : 'disabled'}>+1 Success</button>
+          </div>
+          <p class="footer-note">Use Prompt Roll to generate clickable chat roll controls from the mechanics block.</p>
         </div>
+
+        <div class="stage-actions split">
+          <button class="secondary-button" type="button" data-action="prompt-combat-sequence">Combat Sequence Prompt</button>
+        </div>
+        <p class="footer-note">Spend XP from Character Sheet using the planner controls once downtime is active.</p>
+        <p class="footer-note">Only the Storyteller can start or end downtime. Ask in chat when you want to transition phases.</p>
       </div>
     `;
   }
@@ -2415,7 +3233,9 @@ export function createApp(root) {
     });
 
     container.querySelector('[data-action="add-discipline"]')?.addEventListener('click', () => {
-      chronicle.character.disciplines.push({ id: uid('discipline'), name: disciplinesData[0].name, dots: 1 });
+      const entry = { id: uid('discipline'), name: disciplinesData[0].name, dots: 1, rituals: [] };
+      ensureDisciplinePathState(entry);
+      chronicle.character.disciplines.push(entry);
       persist();
       render();
     });
@@ -2474,7 +3294,7 @@ export function createApp(root) {
     });
 
     container.querySelector('[data-action="add-equipment"]')?.addEventListener('click', () => {
-      chronicle.character.equipment.push({ id: uid('equipment'), name: '', details: '' });
+      chronicle.character.equipment.push({ id: uid('equipment'), category: EQUIPMENT_CATEGORIES[0], name: '', details: '' });
       persist();
       render();
     });
@@ -2523,20 +3343,14 @@ export function createApp(root) {
         0,
         (Number(chronicle.character.creation.startingExperience) || 15) - (Number(chronicle.character.experience.spent) || 0),
       );
-      runtime.xpDraft = getDefaultXpDraft(chronicle.character);
-      state.activePanel = 'xp';
+      getXpPlanState(chronicle).steps = [];
       setCharacterCreationUiStep(chronicle.character, 'finishing');
       persist();
       setStatus('Freebie phase confirmed. Starting experience is now available. Any unspent creation XP will be lost once the chronicle begins.');
       render();
     });
 
-    container.querySelector('[data-action="open-creation-xp"]')?.addEventListener('click', () => {
-      runtime.xpDraft = getDefaultXpDraft(chronicle.character);
-      state.activePanel = 'xp';
-      persist();
-      render();
-    });
+    bindXpPlannerEvents(container, chronicle);
 
     container.querySelector('[data-action="finalize-character"]')?.addEventListener('click', () => {
       syncCharacterDerivedStats(chronicle.character);
@@ -3247,6 +4061,32 @@ export function createApp(root) {
 
   function bindSheetEvents(container, chronicle) {
     bindAdditionalDisciplineMeritSelector(container, chronicle.character, persist, null);
+    container.querySelectorAll('[data-action="open-discipline-reference"]').forEach((button) => {
+      button.addEventListener('click', () => {
+        runtime.referenceDetail = {
+          kind: 'discipline',
+          name: button.getAttribute('data-discipline-name') || '',
+        };
+        runtime.referenceReturnPanel = 'sheet';
+        state.activePanel = 'reference';
+        persist();
+        render();
+      });
+    });
+    container.querySelectorAll('[data-action="open-ritual-reference"]').forEach((button) => {
+      button.addEventListener('click', () => {
+        runtime.referenceDetail = {
+          kind: 'ritual',
+          name: button.getAttribute('data-ritual-name') || '',
+          ritualName: button.getAttribute('data-ritual-name') || '',
+          discipline: button.getAttribute('data-ritual-discipline') || '',
+        };
+        runtime.referenceReturnPanel = 'sheet';
+        state.activePanel = 'reference';
+        persist();
+        render();
+      });
+    });
     container.querySelectorAll('[data-sheet-field]').forEach((input) => {
       input.addEventListener('input', (event) => {
         const field = event.target.dataset.sheetField;
@@ -3258,16 +4098,26 @@ export function createApp(root) {
       });
     });
 
-    container.querySelector('[data-action="open-xp"]').addEventListener('click', () => {
-      if (!canSpendExperience(chronicle)) {
-        setStatus(getXpGateMessage(chronicle), true);
-        return;
-      }
-      runtime.xpDraft = getDefaultXpDraft(chronicle.character);
-      state.activePanel = 'xp';
+    const sheetUi = getSheetUiState(chronicle);
+    container.querySelector('[data-action="toggle-sheet-guide"]')?.addEventListener('click', () => {
+      sheetUi.showGuide = !sheetUi.showGuide;
       persist();
       render();
     });
+
+    container.querySelector('[data-role="sheet-guide-search"]')?.addEventListener('input', (event) => {
+      sheetUi.guideQuery = event.target.value;
+      persist();
+      render();
+    });
+
+    container.querySelector('[data-action="toggle-xp-log"]')?.addEventListener('click', () => {
+      sheetUi.showXpLog = !sheetUi.showXpLog;
+      persist();
+      render();
+    });
+
+    bindXpPlannerEvents(container, chronicle);
 
     container.querySelector('[data-action="spend-temp-willpower"]')?.addEventListener('click', () => {
       const current = Math.max(0, Number(chronicle.character.currentWillpower) || 0);
@@ -3288,6 +4138,124 @@ export function createApp(root) {
           ? `Temporary Willpower recovered to ${chronicle.character.currentWillpower}/${chronicle.character.willpower}.`
           : 'Temporary Willpower is already full.',
       );
+      render();
+    });
+  }
+
+  function bindXpPlannerEvents(container, chronicle) {
+    const plan = getXpPlanState(chronicle);
+
+    container.querySelector('[data-role="xp-plan-reason"]')?.addEventListener('input', (event) => {
+      plan.reason = event.target.value;
+      persist();
+    });
+
+    container.querySelector('[data-role="xp-plan-filter"]')?.addEventListener('input', (event) => {
+      plan.reasonFilter = event.target.value;
+      render();
+    });
+
+    container.querySelectorAll('[data-action="xp-plan-plus"]').forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!canSpendExperience(chronicle)) {
+          setStatus(getXpGateMessage(chronicle), true);
+          return;
+        }
+
+        const category = button.getAttribute('data-category') || '';
+        const target = button.getAttribute('data-target') || '';
+        const projected = getProjectedCharacterForXpPlan(chronicle.character, plan);
+        const preview = getXpPurchasePreview(projected, { category, target, reason: plan.reason });
+        const currentDraftCost = plan.steps.reduce((sum, step) => sum + step.cost, 0);
+        const remaining = Math.max(0, Number(chronicle.character.experience.unspent) - currentDraftCost);
+
+        if (!preview.valid) {
+          setStatus(preview.summary, true);
+          return;
+        }
+
+        if (preview.cost > remaining) {
+          setStatus('Not enough available EXP for that draft change.', true);
+          return;
+        }
+
+        plan.steps.push({
+          key: `${category}:${target}`,
+          category,
+          target,
+          cost: preview.cost,
+          summary: preview.summary,
+          formula: preview.formula,
+        });
+        persist();
+        render();
+      });
+    });
+
+    container.querySelectorAll('[data-action="xp-plan-minus"]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const category = button.getAttribute('data-category') || '';
+        const target = button.getAttribute('data-target') || '';
+        const key = `${category}:${target}`;
+        const index = [...plan.steps].map((step) => step.key).lastIndexOf(key);
+        if (index < 0) {
+          return;
+        }
+        plan.steps.splice(index, 1);
+        persist();
+        render();
+      });
+    });
+
+    container.querySelector('[data-action="xp-plan-clear"]')?.addEventListener('click', () => {
+      plan.steps = [];
+      persist();
+      render();
+    });
+
+    container.querySelector('[data-action="xp-plan-confirm"]')?.addEventListener('click', () => {
+      if (!canSpendExperience(chronicle)) {
+        setStatus(getXpGateMessage(chronicle), true);
+        return;
+      }
+
+      if (!plan.steps.length) {
+        setStatus('Add at least one change to the XP draft first.', true);
+        return;
+      }
+
+      const reason = String(plan.reason || '').trim();
+      let totalCost = 0;
+      for (const step of plan.steps) {
+        const preview = getXpPurchasePreview(chronicle.character, { category: step.category, target: step.target, reason });
+        if (!preview.valid) {
+          setStatus(preview.summary, true);
+          return;
+        }
+        totalCost += preview.cost;
+        if (totalCost > chronicle.character.experience.unspent) {
+          setStatus('This draft now exceeds available EXP.', true);
+          return;
+        }
+        applyXpPurchase(chronicle.character, { category: step.category, target: step.target }, preview);
+        chronicle.character.experience.log.unshift({
+          id: uid('xp'),
+          category: step.category,
+          target: step.target,
+          cost: preview.cost,
+          reason: reason || preview.summary,
+          formula: preview.formula,
+          summary: preview.summary,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      chronicle.character.experience.unspent -= totalCost;
+      chronicle.character.experience.spent += totalCost;
+      markCharacterSummaryDirty(chronicle);
+      plan.steps = [];
+      persist();
+      setStatus(`Confirmed XP draft for ${totalCost} EXP.`);
       render();
     });
   }
@@ -3364,42 +4332,137 @@ export function createApp(root) {
   }
 
   function bindDowntimeEvents(container, chronicle) {
-    container.querySelector('[data-action="toggle-downtime-panel"]')?.addEventListener('click', () => {
-      if (isDowntimeActive(chronicle)) {
-        const recovery = resumeScenesFromDowntime(chronicle);
-        state.activePanel = null;
-        persist();
-        const recoveryParts = [];
-        if (recovery.willpowerRecovered > 0) {
-          recoveryParts.push(`Temporary Willpower +${recovery.willpowerRecovered}`);
-        }
-        if (recovery.resourcesRecovered > 0) {
-          recoveryParts.push(`temporary Resources +${recovery.resourcesRecovered}`);
-        }
-        setStatus(
-          recoveryParts.length
-            ? `Downtime ended. Session ${chronicle.progression.sessionNumber} is now active. ${recoveryParts.join('; ')}.`
-            : `Downtime ended. Session ${chronicle.progression.sessionNumber} is now active.`,
-        );
-      } else {
-        beginDowntime(chronicle, 'Player-entered downtime');
-        state.activePanel = 'downtime';
-        runtime.xpDraft = null;
-        persist();
-        setStatus('Downtime is now active. XP spending and long-form advancement actions are available.');
+    container.querySelector('[data-action="set-downtime-activity"]')?.addEventListener('click', () => {
+      const select = container.querySelector('[data-downtime-activity]');
+      const nextType = String(select?.value || '').trim();
+      const progression = ensureChronicleProgressionState(chronicle);
+      if (!nextType) {
+        setStatus('Choose a downtime activity first.', true);
+        return;
       }
+      if (progression.downtimeActivity?.completed) {
+        setStatus('Only one downtime activity can complete per downtime session.', true);
+        return;
+      }
+      const def = getDowntimeActivityDefinition(nextType);
+      if (!def) {
+        setStatus('That downtime activity is not configured.', true);
+        return;
+      }
+      progression.downtimeActivity = {
+        type: def.id,
+        status: 'active',
+        completed: false,
+        progressSuccesses: 0,
+        targetSuccesses: def.target,
+        rollPool: def.pool,
+        rollDifficulty: def.difficulty,
+      };
+      persist();
+      render();
+      setStatus(`${def.label} started. Progress now tracks on the downtime card.`);
+    });
+
+    container.querySelector('[data-action="prompt-downtime-roll"]')?.addEventListener('click', () => {
+      const progression = ensureChronicleProgressionState(chronicle);
+      const activity = progression.downtimeActivity || {};
+      if (!activity.type || activity.status !== 'active') {
+        setStatus('No active downtime activity is selected.', true);
+        return;
+      }
+      const def = getDowntimeActivityDefinition(activity.type);
+      if (!def) {
+        setStatus('Downtime activity definition is missing.', true);
+        return;
+      }
+      appendStorytellerPrompt(
+        chronicle,
+        [
+          `Downtime Activity: ${def.label}`,
+          'Mechanics:',
+          `- Pool: ${def.pool}`,
+          `- Difficulty: ${def.difficulty}`,
+          '- Outcome: Apply successes toward the activity target.',
+        ].join('\n'),
+      );
+      persist();
+      render();
+      setStatus('Downtime roll prompt added to chat.');
+    });
+
+    container.querySelector('[data-action="advance-downtime-success"]')?.addEventListener('click', () => {
+      const progression = ensureChronicleProgressionState(chronicle);
+      const activity = progression.downtimeActivity || {};
+      if (!activity.type || activity.status !== 'active') {
+        setStatus('No active downtime activity to advance.', true);
+        return;
+      }
+      activity.progressSuccesses = Math.max(0, Number(activity.progressSuccesses) || 0) + 1;
+      if (activity.targetSuccesses > 0 && activity.progressSuccesses >= activity.targetSuccesses) {
+        activity.completed = true;
+        activity.status = 'completed';
+      }
+      persist();
       render();
     });
 
-    container.querySelector('[data-action="open-downtime-xp"]')?.addEventListener('click', () => {
-      if (!canSpendExperience(chronicle)) {
-        setStatus(getXpGateMessage(chronicle), true);
-        return;
-      }
-      runtime.xpDraft = getDefaultXpDraft(chronicle.character);
-      state.activePanel = 'xp';
+    container.querySelector('[data-action="prompt-combat-sequence"]')?.addEventListener('click', () => {
+      appendStorytellerPrompt(
+        chronicle,
+        [
+          'Combat Sequence Prompt',
+          'Mechanics:',
+          '- Pool: Wits + Alertness',
+          '- Difficulty: 6',
+          '- Outcome: Initiative ordering for the round.',
+          'After initiative, resolve declarations then actions in order.',
+        ].join('\n'),
+      );
       persist();
       render();
+      setStatus('Combat sequence prompt added to chat.');
+    });
+  }
+
+  function bindReferenceEvents(container) {
+    container.querySelector('[data-action="reference-back"]')?.addEventListener('click', () => {
+      state.activePanel = runtime.referenceReturnPanel || null;
+      persist();
+      render();
+    });
+    container.querySelectorAll('[data-action="open-discipline-reference"]').forEach((button) => {
+      button.addEventListener('click', () => {
+        runtime.referenceDetail = {
+          kind: 'discipline',
+          name: button.getAttribute('data-discipline-name') || '',
+        };
+        state.activePanel = 'reference';
+        persist();
+        render();
+      });
+    });
+    container.querySelectorAll('[data-action="open-ritual-reference"]').forEach((button) => {
+      button.addEventListener('click', () => {
+        runtime.referenceDetail = {
+          kind: 'ritual',
+          name: button.getAttribute('data-ritual-name') || '',
+          ritualName: button.getAttribute('data-ritual-name') || '',
+          discipline: button.getAttribute('data-ritual-discipline') || '',
+        };
+        state.activePanel = 'reference';
+        persist();
+        render();
+      });
+    });
+  }
+
+  function appendStorytellerPrompt(chronicle, content) {
+    chronicle.messages.push({
+      id: uid('msg'),
+      role: 'assistant',
+      kind: 'storyteller',
+      content,
+      timestamp: new Date().toISOString(),
     });
   }
 
@@ -3501,7 +4564,15 @@ export function createApp(root) {
 
     container.querySelectorAll(`[${idAttr}]`).forEach((row) => {
       const id = row.getAttribute(idAttr);
-      row.querySelector(`[${nameAttr}]`).addEventListener('change', (event) => {
+      const nameInput = row.querySelector(`[${nameAttr}]`);
+      const dotsInput = row.querySelector(`[${dotsAttr}]`);
+      const removeButton = row.querySelector('[data-remove-entry]');
+
+      if (!id || !nameInput || !dotsInput || !removeButton) {
+        return;
+      }
+
+      nameInput.addEventListener('change', (event) => {
         const item = target[`${type}s`].find((entry) => entry.id === id);
         if (!item) {
           return;
@@ -3511,6 +4582,9 @@ export function createApp(root) {
           return;
         }
         item.name = event.target.value;
+        if (type === 'discipline') {
+          ensureDisciplinePathState(item);
+        }
         if (namespace !== 'xp') {
           if (type === 'background') {
             syncCharacterDerivedStats(target);
@@ -3521,12 +4595,15 @@ export function createApp(root) {
           persist();
         }
       });
-      row.querySelector(`[${dotsAttr}]`).addEventListener('input', (event) => {
+      dotsInput.addEventListener('input', (event) => {
         const item = target[`${type}s`].find((entry) => entry.id === id);
         if (!item) {
           return;
         }
         item.dots = namespace === 'xp' ? Number(event.target.value) : sanitizeCreationTraitDots(target, type, id, Number(event.target.value));
+        if (type === 'discipline') {
+          ensureDisciplinePathState(item);
+        }
         if (namespace !== 'xp') {
           if (type === 'background') {
             syncCharacterDerivedStats(target);
@@ -3537,7 +4614,7 @@ export function createApp(root) {
           persist();
         }
       });
-      row.querySelector('[data-remove-entry]').addEventListener('click', () => {
+      removeButton.addEventListener('click', () => {
         if (namespace !== 'xp' && isCreationPhaseLockedEntry(target, type, id)) {
           setStatus('Confirmed allocation dots cannot be removed in later creation phases.', true);
           render();
@@ -3552,6 +4629,99 @@ export function createApp(root) {
         }
         render();
       });
+
+      if (type === 'discipline') {
+        row.querySelector('[data-discipline-primary-path]')?.addEventListener('change', (event) => {
+          const item = target.disciplines.find((entry) => entry.id === id);
+          if (!item) {
+            return;
+          }
+          item.primaryPath = event.target.value;
+          ensureDisciplinePathState(item);
+          persist();
+          render();
+        });
+
+        row.querySelector('[data-discipline-secondary-path]')?.addEventListener('change', (event) => {
+          const item = target.disciplines.find((entry) => entry.id === id);
+          if (!item) {
+            return;
+          }
+          item.secondaryPath = event.target.value;
+          ensureDisciplinePathState(item);
+          persist();
+          render();
+        });
+
+        row.querySelector('[data-discipline-tertiary-path]')?.addEventListener('change', (event) => {
+          const item = target.disciplines.find((entry) => entry.id === id);
+          if (!item) {
+            return;
+          }
+          item.tertiaryPath = event.target.value;
+          ensureDisciplinePathState(item);
+          persist();
+          render();
+        });
+
+        row.querySelector('[data-action="open-discipline-reference"]')?.addEventListener('click', () => {
+          runtime.referenceDetail = {
+            kind: 'discipline',
+            name: nameInput.value || '',
+          };
+          runtime.referenceReturnPanel = state.activePanel || null;
+          state.activePanel = 'reference';
+          persist();
+          render();
+        });
+
+        row.querySelectorAll('[data-action="open-ritual-reference"]').forEach((button) => {
+          button.addEventListener('click', () => {
+            runtime.referenceDetail = {
+              kind: 'ritual',
+              name: button.getAttribute('data-ritual-name') || '',
+              ritualName: button.getAttribute('data-ritual-name') || '',
+              discipline: button.getAttribute('data-ritual-discipline') || '',
+            };
+            runtime.referenceReturnPanel = state.activePanel || null;
+            state.activePanel = 'reference';
+            persist();
+            render();
+          });
+        });
+
+        row.querySelector('[data-action="add-discipline-ritual"]')?.addEventListener('click', () => {
+          const item = target.disciplines.find((entry) => entry.id === id);
+          if (!item) {
+            return;
+          }
+          if (!isBloodMagicDisciplineName(item.name)) {
+            setStatus('Rituals are only available for blood magic disciplines.', true);
+            return;
+          }
+          if (!Array.isArray(item.rituals)) {
+            item.rituals = [];
+          }
+          if (item.rituals.length >= RITUAL_MAX_PER_DISCIPLINE) {
+            setStatus(`A maximum of ${RITUAL_MAX_PER_DISCIPLINE} rituals can be tracked per discipline here.`, true);
+            return;
+          }
+
+          const selectedTemplate = row.querySelector('[data-discipline-ritual-template]')?.value || '';
+          if (!selectedTemplate) {
+            setStatus('Choose a ritual from the dropdown before adding it.', true);
+            return;
+          }
+          if (item.rituals.some((ritual) => ritual.name === selectedTemplate)) {
+            setStatus('That ritual is already tracked for this discipline.', true);
+            return;
+          }
+
+          item.rituals.push({ id: uid('ritual'), name: selectedTemplate });
+          persist();
+          render();
+        });
+      }
     });
   }
 
@@ -3592,6 +4762,34 @@ export function createApp(root) {
   function bindInventory(container, target, key) {
     container.querySelectorAll(`[data-${key}-id]`).forEach((row) => {
       const id = row.getAttribute(`data-${key}-id`);
+      row.querySelector(`[data-${key}-category]`)?.addEventListener('change', (event) => {
+        const item = target[key].find((entry) => entry.id === id);
+        if (!item) {
+          return;
+        }
+        item.category = event.target.value;
+        const firstOption = getEquipmentCategoryEntries(item.category)[0];
+        if (firstOption && !item.name) {
+          item.name = firstOption.name;
+          item.details = firstOption.details;
+        }
+        persist();
+        render();
+      });
+      row.querySelector(`[data-${key}-template]`)?.addEventListener('change', (event) => {
+        const item = target[key].find((entry) => entry.id === id);
+        if (!item) {
+          return;
+        }
+        const templateName = event.target.value;
+        const selected = getEquipmentCategoryEntries(item.category).find((entry) => entry.name === templateName);
+        if (selected) {
+          item.name = selected.name;
+          item.details = selected.details;
+          persist();
+          render();
+        }
+      });
       row.querySelector(`[data-${key}-name]`).addEventListener('input', (event) => {
         const item = target[key].find((entry) => entry.id === id);
         item.name = event.target.value;
@@ -3631,20 +4829,36 @@ export function createApp(root) {
     });
   }
 
-  function renderChat(messages) {
+  function renderChat(messages, chronicle = getActiveChronicle()) {
     ui.chatLog.innerHTML = '';
     for (const message of messages) {
+      const kind = getMessageKind(message);
+      const speaker = kind === 'storyteller' ? 'Storyteller' : kind === 'player' ? 'Player' : 'Chronicle';
       const card = document.createElement('article');
-      card.className = `message-card ${message.role}`;
+      card.className = `message-card ${message.role} ${kind}`;
       card.innerHTML = `
         <div class="message-header">
-          <span>${message.role === 'assistant' ? 'Storyteller' : 'Player'}</span>
+          <span>${speaker}</span>
           <span class="meta-text">${formatTimestamp(message.timestamp)}</span>
         </div>
-        <div class="message-body">${formatMessageContent(message.content, { enableInteractiveRolls: message.role === 'assistant' })}</div>
+        <div class="message-body">${formatMessageContent(message.content, { enableInteractiveRolls: kind === 'storyteller' })}</div>
       `;
       ui.chatLog.appendChild(card);
     }
+
+    if (isStorytellerRequestPending(chronicle)) {
+      const pendingCard = document.createElement('article');
+      pendingCard.className = 'message-card assistant storyteller pending-message';
+      pendingCard.innerHTML = `
+        <div class="message-header">
+          <span>Storyteller</span>
+          <span class="meta-text">Pending...</span>
+        </div>
+        <div class="message-body pending-message-body"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span></div>
+      `;
+      ui.chatLog.appendChild(pendingCard);
+    }
+
     ui.chatLog.scrollTop = ui.chatLog.scrollHeight;
   }
 
@@ -3663,7 +4877,41 @@ export function createApp(root) {
       return Number(character.abilities[traitId]) || 0;
     }
 
+    if (String(traitId).startsWith('discipline:')) {
+      const requested = String(traitId).slice('discipline:'.length);
+      const match = (character.disciplines || []).find(
+        (entry) => normalizeDisciplineKey(entry?.name) === requested,
+      );
+      const dots = Number(match?.dots) || 0;
+      return dots > 0 ? dots : null;
+    }
+
     return null;
+  }
+
+  function resolvePromptPool(character, traitIds) {
+    let pool = 0;
+    const parts = [];
+
+    for (const traitId of traitIds) {
+      const dots = getPromptRollTraitDots(character, traitId);
+      if (!Number.isFinite(dots)) {
+        return {
+          error: `Trait ${ROLL_TRAIT_LABELS.get(traitId) || traitId} is unavailable on the current sheet.`,
+          pool: 0,
+          parts: [],
+        };
+      }
+
+      pool += dots;
+      parts.push(`${ROLL_TRAIT_LABELS.get(traitId) || startCase(traitId)} ${dots}`);
+    }
+
+    return {
+      error: '',
+      pool,
+      parts,
+    };
   }
 
   async function onPromptRollClick(event) {
@@ -3697,18 +4945,13 @@ export function createApp(root) {
         return;
       }
 
-      let pool = 0;
-      const parts = [];
-      for (const traitId of traitIds) {
-        const dots = getPromptRollTraitDots(chronicle.character, traitId);
-        if (!Number.isFinite(dots)) {
-          setStatus(`Trait ${ROLL_TRAIT_LABELS.get(traitId) || traitId} is unavailable on the current sheet.`, true);
-          return;
-        }
-
-        pool += dots;
-        parts.push(`${ROLL_TRAIT_LABELS.get(traitId) || startCase(traitId)} ${dots}`);
+      const actorPool = resolvePromptPool(chronicle.character, traitIds);
+      if (actorPool.error) {
+        setStatus(actorPool.error, true);
+        return;
       }
+
+      const { pool, parts } = actorPool;
 
       if (pool <= 0) {
         setStatus('Computed dice pool is 0. Adjust the character sheet first.', true);
@@ -3723,12 +4966,43 @@ export function createApp(root) {
       }
 
       const difficulty = parseDifficultyValue(trigger.dataset.rollDifficulty, 6);
+      const selectedPath = String(trigger.dataset.rollPath || '').trim();
       const baseResult = rollDice(pool, difficulty);
+
+      const resistanceTraitIds = String(trigger.dataset.rollResistanceTraits || '')
+        .split('+')
+        .map((value) => value.trim())
+        .filter(Boolean);
+
+      const hasResistance = resistanceTraitIds.length > 0;
+      const resistanceDifficulty = parseDifficultyValue(trigger.dataset.rollResistanceDifficulty, 6);
+      let resistanceSummary = null;
+      if (hasResistance) {
+        const resistancePool = resolvePromptPool(chronicle.character, resistanceTraitIds);
+        if (resistancePool.error) {
+          setStatus(resistancePool.error, true);
+          return;
+        }
+
+        if (resistancePool.pool <= 0) {
+          setStatus('Computed resistance pool is 0. Adjust the character sheet first.', true);
+          return;
+        }
+
+        const resistanceResult = rollDice(resistancePool.pool, resistanceDifficulty);
+        resistanceSummary = {
+          pool: resistancePool.pool,
+          parts: resistancePool.parts,
+          result: resistanceResult,
+        };
+      }
 
       let finalResult = {
         ...baseResult,
         automaticSuccesses: 0,
         willpowerSpent: false,
+        resistance: resistanceSummary,
+        path: selectedPath,
       };
 
       if (useWillpower) {
@@ -3738,7 +5012,7 @@ export function createApp(root) {
         const totalSuccesses = baseResult.totalSuccesses + 1;
         const outcome = totalSuccesses > 0 ? (totalSuccesses >= 5 ? 'Exceptional success' : 'Success') : 'Failure';
         finalResult = {
-          ...baseResult,
+          ...finalResult,
           totalSuccesses,
           outcome,
           automaticSuccesses: 1,
@@ -3747,12 +5021,33 @@ export function createApp(root) {
       }
 
       chronicle.diceLog.push(finalResult);
-      chronicle.notes = `${chronicle.notes}\n[${new Date().toLocaleTimeString()}] Prompt roll (${parts.join(' + ')}) at difficulty ${finalResult.difficulty}: ${finalResult.outcome}; dice ${finalResult.dice.join(', ')}, net successes ${finalResult.totalSuccesses}${finalResult.automaticSuccesses ? `, +${finalResult.automaticSuccesses} automatic success` : ''}.`.trim();
+      const resistanceNotes = finalResult.resistance
+        ? ` Resistance (${finalResult.resistance.parts.join(' + ')}) at difficulty ${resistanceDifficulty}: ${finalResult.resistance.result.outcome}; dice ${finalResult.resistance.result.dice.join(', ')}, net successes ${finalResult.resistance.result.totalSuccesses}.`
+        : '';
+      const pathNotes = finalResult.path ? ` Path: ${finalResult.path}.` : '';
+      chronicle.notes = `${chronicle.notes}\n[${new Date().toLocaleTimeString()}] Prompt roll (${parts.join(' + ')}) at difficulty ${finalResult.difficulty}: ${finalResult.outcome}; dice ${finalResult.dice.join(', ')}, net successes ${finalResult.totalSuccesses}${finalResult.automaticSuccesses ? `, +${finalResult.automaticSuccesses} automatic success` : ''}.${pathNotes}${resistanceNotes}`.trim();
       persist();
       render();
 
+      let resistanceBlock = [];
+      if (finalResult.resistance) {
+        const contestMargin = finalResult.totalSuccesses - finalResult.resistance.result.totalSuccesses;
+        const contestLabel = contestMargin > 0 ? 'Actor overcomes resistance' : contestMargin < 0 ? 'Resistance prevails' : 'Stalemate';
+        resistanceBlock = [
+          `Resistance Pool: ${finalResult.resistance.pool} (${finalResult.resistance.parts.join(' + ')})`,
+          `Resistance Difficulty: ${resistanceDifficulty}`,
+          `Resistance Dice: ${finalResult.resistance.result.dice.join(', ')}`,
+          `Resistance Raw Successes: ${finalResult.resistance.result.rawSuccesses}`,
+          `Resistance 1s: ${finalResult.resistance.result.cancelledByOnes}`,
+          `Resistance Final Successes: ${finalResult.resistance.result.totalSuccesses}`,
+          `Contest Margin (Actor - Resistance): ${contestMargin}`,
+          `Contest Outcome: ${contestLabel}`,
+        ];
+      }
+
       const reportMessage = [
         '[AUTO-ROLL RESULT]',
+        ...(finalResult.path ? [`Path: ${finalResult.path}`] : []),
         `Pool: ${finalResult.pool} (${parts.join(' + ')})`,
         `Difficulty: ${finalResult.difficulty}`,
         `Dice: ${finalResult.dice.join(', ')}`,
@@ -3762,6 +5057,7 @@ export function createApp(root) {
         ...(finalResult.automaticSuccesses ? [`Automatic Successes: +${finalResult.automaticSuccesses} (Willpower spent)`] : []),
         `Final Successes: ${finalResult.totalSuccesses}`,
         `Outcome: ${finalResult.outcome}`,
+        ...resistanceBlock,
         'Storyteller: adjudicate consequences from this result.',
       ].join('\n');
 
@@ -3824,6 +5120,9 @@ export function createApp(root) {
   }
 
   function renderDisciplineCard(character, xpMode) {
+    for (const discipline of character.disciplines) {
+      ensureDisciplinePathState(discipline);
+    }
     return `
       <div class="list-card">
         ${renderCardHeading('Disciplines', 'disciplines')}
@@ -3974,16 +5273,34 @@ export function createApp(root) {
 
   function renderReadOnlyStats(character) {
     const morality = getMoralityConfig(character.path);
+    const ritualSummary = (character.disciplines || [])
+      .filter((item) => Array.isArray(item.rituals) && item.rituals.length)
+      .flatMap((item) => item.rituals.map((ritual) => `${item.name}: ${ritual.name}`));
     return `
       <div class="inline-grid two">
         <div class="list-card">
           ${renderCardHeading('Disciplines', 'disciplines')}
-          ${renderSimpleList(character.disciplines.map((item) => `${item.name} ${item.dots}`), 'Raise or learn disciplines through XP purchases only.')}
+          <div class="summary-list">
+            ${character.disciplines.length
+              ? character.disciplines
+                  .map(
+                    (item) => `<div class="entry-row inventory"><button class="reference-link-button" type="button" data-action="open-discipline-reference" data-discipline-name="${escapeHtml(item.name)}">${escapeHtml(item.name)}</button><span>${item.dots}</span></div>`,
+                  )
+                  .join('')
+              : '<div>None recorded.</div>'}
+          </div>
+          <p class="footer-note">Raise or learn disciplines through XP purchases only.</p>
         </div>
         <div class="list-card">
           ${renderCardHeading('Specialties', 'specialties')}
           ${renderSimpleList(character.specialties.map((item) => `${startCase(item.ability)}: ${item.name}`), 'New specialties should be confirmed through XP purchases.')}
         </div>
+      </div>
+
+      <div class="list-card">
+        ${renderCardHeading('Rituals')}
+        <div class="summary-list">${renderTrackedRitualRows(character)}</div>
+        <p class="footer-note">Rituals are tied to blood magic disciplines and should be granted through downtime or Storyteller updates. A new primary path level grants one ritual of the same level for free.</p>
       </div>
 
       <div class="stat-grid compact">
@@ -4051,7 +5368,179 @@ export function createApp(root) {
     `;
   }
 
-  function renderCreationExperienceCard(character) {
+  function getSheetUiState(chronicle) {
+    if (!runtime.sheetUi[chronicle.id]) {
+      runtime.sheetUi[chronicle.id] = {
+        showGuide: false,
+        guideQuery: '',
+        showXpLog: false,
+      };
+    }
+    return runtime.sheetUi[chronicle.id];
+  }
+
+  function getXpPlanState(chronicle) {
+    if (!runtime.xpPlans[chronicle.id]) {
+      runtime.xpPlans[chronicle.id] = {
+        steps: [],
+        reason: '',
+        reasonFilter: '',
+      };
+    }
+    return runtime.xpPlans[chronicle.id];
+  }
+
+  function getProjectedCharacterForXpPlan(character, plan) {
+    const projected = JSON.parse(JSON.stringify(character));
+    for (const step of plan.steps) {
+      const preview = getXpPurchasePreview(projected, { category: step.category, target: step.target, reason: plan.reason });
+      if (!preview.valid) {
+        continue;
+      }
+      applyXpPurchase(projected, { category: step.category, target: step.target }, preview);
+    }
+    return projected;
+  }
+
+  function getXpDraftLabel(projectedCharacter, category, target) {
+    if (category === 'attribute') {
+      const field = ATTRIBUTE_FIELDS.find((item) => item.id === target);
+      return field?.label || startCase(target);
+    }
+    if (category === 'ability') {
+      const field = ABILITY_FIELDS.find((item) => item.id === target);
+      return field?.label || startCase(target);
+    }
+    if (category === 'discipline') {
+      const [mode, name] = String(target).split(':');
+      const current = (projectedCharacter.disciplines || []).find((item) => item.name === name)?.dots || 0;
+      return mode === 'new' ? `Learn ${name}` : `Raise ${name} (${current} -> ${current + 1})`;
+    }
+    if (category === 'virtue') {
+      const morality = getMoralityConfig(projectedCharacter.path);
+      if (target === 'conscience') {
+        return morality.primaryLabel;
+      }
+      if (target === 'selfControl') {
+        return morality.secondaryLabel;
+      }
+      return 'Courage';
+    }
+    if (category === 'humanity') {
+      return getMoralityConfig(projectedCharacter.path).ratingLabel;
+    }
+    return 'Willpower';
+  }
+
+  function renderXpPlannerCard(chronicle, isCreationPhase) {
+    const character = chronicle.character;
+    const plan = getXpPlanState(chronicle);
+    const projected = getProjectedCharacterForXpPlan(character, plan);
+    const xpSpendAllowed = canSpendExperience(chronicle);
+    const remaining = Math.max(0, Number(character.experience.unspent) - plan.steps.reduce((sum, step) => sum + step.cost, 0));
+    const rows = [];
+
+    const pushRows = (category, options) => {
+      for (const option of options) {
+        const target = option.value;
+        const draft = { category, target, reason: plan.reason };
+        const preview = getXpPurchasePreview(projected, draft);
+        const key = `${category}:${target}`;
+        const pending = plan.steps.filter((step) => step.key === key).length;
+        const nextCost = preview.valid ? preview.cost : 0;
+        const label = getXpDraftLabel(projected, category, target);
+        rows.push({ key, category, target, label, preview, pending, nextCost });
+      }
+    };
+
+    pushRows('attribute', ATTRIBUTE_FIELDS.map((item) => ({ value: item.id })));
+    pushRows('ability', ABILITY_FIELDS.map((item) => ({ value: item.id })));
+    pushRows('discipline', getXpTargetOptions(projected, 'discipline'));
+    pushRows('virtue', getXpTargetOptions(projected, 'virtue'));
+    pushRows('humanity', [{ value: 'humanity' }]);
+    pushRows('willpower', [{ value: 'willpower' }]);
+
+    const filter = (plan.reasonFilter || '').trim().toLowerCase();
+    const visibleRows = rows.filter((row) => {
+      if (!filter) {
+        return true;
+      }
+      return row.label.toLowerCase().includes(filter) || row.preview.summary.toLowerCase().includes(filter);
+    });
+
+    return `
+      <div class="list-card xp-planner-card ${xpSpendAllowed ? '' : 'disabled'}">
+        <div class="npc-header-row">
+          <h4>${isCreationPhase ? 'Starting Experience Planner' : 'Experience Planner'}</h4>
+          <span class="status-pill">Draft: ${plan.steps.length} change${plan.steps.length === 1 ? '' : 's'}</span>
+        </div>
+        <div class="inline-grid three">
+          <div class="locked-card compact"><span class="helper-text">Available EXP</span><strong>${character.experience.unspent}</strong></div>
+          <div class="locked-card compact"><span class="helper-text">Draft Cost</span><strong>${plan.steps.reduce((sum, step) => sum + step.cost, 0)}</strong></div>
+          <div class="locked-card compact"><span class="helper-text">Remaining After Draft</span><strong>${remaining}</strong></div>
+        </div>
+        <label>
+          <span class="helper-text">Reason for this XP batch</span>
+          <input data-role="xp-plan-reason" value="${escapeHtml(plan.reason || '')}" placeholder="Why did this growth happen in play?" ${xpSpendAllowed ? '' : 'disabled'} />
+        </label>
+        <label>
+          <span class="helper-text">Filter targets</span>
+          <input data-role="xp-plan-filter" value="${escapeHtml(plan.reasonFilter || '')}" placeholder="Search attribute, ability, discipline, or virtue" />
+        </label>
+        <div class="xp-plan-grid">
+          ${visibleRows
+            .map(
+              (row) => `
+                <div class="xp-plan-row ${row.preview.valid ? '' : 'invalid'}">
+                  <div>
+                    <strong>${escapeHtml(row.label)}</strong>
+                    <div class="meta-text">${escapeHtml(row.preview.summary)}</div>
+                    <div class="meta-text">${escapeHtml(row.preview.formula)}</div>
+                  </div>
+                  <div class="locked-card compact"><span class="helper-text">Cost</span><strong>${row.preview.valid ? row.nextCost : '-'}</strong></div>
+                  <div class="locked-card compact"><span class="helper-text">Pending</span><strong>${row.pending}</strong></div>
+                  <div class="inline-actions">
+                    <button class="secondary-button" type="button" data-action="xp-plan-minus" data-category="${row.category}" data-target="${escapeHtml(row.target)}" ${row.pending > 0 ? '' : 'disabled'}>-</button>
+                    <button class="secondary-button" type="button" data-action="xp-plan-plus" data-category="${row.category}" data-target="${escapeHtml(row.target)}" ${xpSpendAllowed && row.preview.valid && row.nextCost <= remaining ? '' : 'disabled'}>+</button>
+                  </div>
+                </div>
+              `,
+            )
+            .join('')}
+        </div>
+        <div class="stage-actions split">
+          <button class="secondary-button" type="button" data-action="xp-plan-clear" ${plan.steps.length ? '' : 'disabled'}>Clear Draft</button>
+          <button class="primary" type="button" data-action="xp-plan-confirm" ${xpSpendAllowed && plan.steps.length ? '' : 'disabled'}>Confirm Draft</button>
+        </div>
+        ${isCreationPhase
+          ? '<p class="footer-note">Unspent starting XP is discarded when creation ends. Confirm this draft before finalizing the character.</p>'
+          : '<p class="footer-note">XP spending is available during downtime only. Build the draft with plus/minus, then confirm in one batch.</p>'}
+      </div>
+    `;
+  }
+
+  function renderQuickGuideList(query) {
+    const needle = String(query || '').trim().toLowerCase();
+    const entries = Object.entries(STAT_HELP)
+      .filter(([key]) => !key.includes('discipline') && !key.includes('ritual'))
+      .filter(([key, value]) => {
+        if (!needle) {
+          return true;
+        }
+        return key.toLowerCase().includes(needle) || String(value).toLowerCase().includes(needle);
+      })
+      .sort((a, b) => a[0].localeCompare(b[0]));
+
+    if (!entries.length) {
+      return '<div class="helper-text">No matching quick-guide entries.</div>';
+    }
+
+    return entries
+      .map(([key, value]) => `<div><strong>${escapeHtml(startCase(key))}:</strong> ${escapeHtml(String(value))}</div>`)
+      .join('');
+  }
+
+  function renderCreationExperienceCard(character, chronicle) {
     const startingExperience = Number(character.creation?.startingExperience) || 15;
     return `
       <div class="list-card validation-card valid">
@@ -4061,12 +5550,10 @@ export function createApp(root) {
         </div>
         <div class="summary-list validation-list">
           <div>Confirmed purchases use the normal V20 XP costs.</div>
-          <div>Unspent starting XP: ${character.experience.unspent}</div>
+          <div>Available EXP: ${character.experience.unspent}</div>
           <div>Spent starting XP: ${character.experience.spent}</div>
         </div>
-        <div class="inline-actions">
-          <button class="secondary-button" type="button" data-action="open-creation-xp">Spend Starting Experience</button>
-        </div>
+        ${chronicle ? renderXpPlannerCard(chronicle, true) : ''}
         <p class="footer-note">You may leave character creation with unspent starting XP, but any remaining creation XP is discarded when the chronicle starts and does not carry into play.</p>
       </div>
     `;
@@ -4136,15 +5623,47 @@ export function createApp(root) {
     const nameAttr = xpMode ? `data-xp-${type}-name` : `data-${type}-name`;
     const dotsAttr = xpMode ? `data-xp-${type}-dots` : `data-${type}-dots`;
     return items
-      .map(
-        (item) => `
-          <div class="entry-row" ${idAttr}="${item.id}">
-            ${renderSelect(`${type}-name`, options, item.name, nameAttr)}
-            <label><span class="helper-text">Dots</span><input type="number" min="1" max="5" value="${item.dots}" ${dotsAttr} /></label>
-            <button class="remove-button" type="button" data-remove-entry>Remove</button>
+      .map((item) => {
+        if (type !== 'discipline') {
+          return `
+            <div class="entry-row" ${idAttr}="${item.id}">
+              ${renderSelect(`${type}-name`, options, item.name, nameAttr)}
+              <label><span class="helper-text">Dots</span><input type="number" min="1" max="5" value="${item.dots}" ${dotsAttr} /></label>
+              <button class="remove-button" type="button" data-remove-entry>Remove</button>
+            </div>
+          `;
+        }
+
+        ensureDisciplinePathState(item);
+        const pathOptions = getDisciplinePathOptions(item.name);
+        const usedPaths = getSelectedDisciplinePaths(item);
+        const ritualOptions = getRitualOptionsForDiscipline(item);
+        const rituals = Array.isArray(item.rituals) ? item.rituals : [];
+        return `
+          <div class="trait-entry-group" ${idAttr}="${item.id}">
+            <div class="entry-row">
+              ${renderSelect(`${type}-name`, options, item.name, nameAttr)}
+              <label><span class="helper-text">Dots</span><input type="number" min="1" max="5" value="${item.dots}" ${dotsAttr} /></label>
+              <button class="secondary-button" type="button" data-action="open-discipline-reference">Details</button>
+              <button class="remove-button" type="button" data-remove-entry>Remove</button>
+            </div>
+          ${pathOptions.length
+            ? `<div class="entry-row inventory">
+                <label><span class="helper-text">Primary Path</span>${renderSelect('discipline-primary-path', pathOptions, item.primaryPath, 'data-discipline-primary-path')}</label>
+              </div>
+              <div class="footer-note">Starting blood magic uses only the primary path. Additional paths can be tracked later through play and XP. Current selection: ${escapeHtml(usedPaths[0] || 'None')}</div>`
+            : ''}
+          ${isBloodMagicDisciplineName(item.name)
+            ? `<div class="entry-row inventory ${rituals.length >= RITUAL_MAX_PER_DISCIPLINE ? 'readonly' : ''}">
+                <label><span class="helper-text">Rituals</span>${renderSelect('ritual-template', ['Select ritual', ...ritualOptions], '', 'data-discipline-ritual-template', ['', ...ritualOptions])}</label>
+                <button class="secondary-button" type="button" data-action="add-discipline-ritual" ${rituals.length >= RITUAL_MAX_PER_DISCIPLINE ? 'disabled' : ''}>Add Ritual</button>
+              </div>
+              <div class="summary-list">${rituals.length ? rituals.map((ritual) => `<div class="entry-row inventory"><span>${escapeHtml(ritual.name)}</span><button class="secondary-button" type="button" data-action="open-ritual-reference" data-ritual-name="${escapeHtml(ritual.name)}" data-ritual-discipline="${escapeHtml(item.name)}">Details</button></div>`).join('') : '<div class="helper-text">No rituals recorded.</div>'}</div>
+              <div class="footer-note">Primary path level sets ritual availability. Reaching a new primary path level grants one ritual of the same level for free.</div>`
+            : ''}
           </div>
-        `,
-      )
+        `;
+      })
       .join('');
   }
 
@@ -4192,15 +5711,29 @@ export function createApp(root) {
     }
 
     return items
-      .map(
-        (item) => `
+      .map((item) => {
+        if (key !== 'equipment') {
+          return `
+            <div class="entry-row inventory ${readOnly ? 'readonly' : ''}" data-${key}-id="${item.id}">
+              <label><span class="helper-text">Name</span><input ${readOnly ? 'disabled' : ''} data-${key}-name value="${escapeHtml(item.name)}" /></label>
+              <label><span class="helper-text">Details</span><input ${readOnly ? 'disabled' : ''} data-${key}-details value="${escapeHtml(item.details || '')}" /></label>
+              ${readOnly ? '' : '<button class="remove-button" type="button" data-remove-entry>Remove</button>'}
+            </div>
+          `;
+        }
+        const category = EQUIPMENT_CATEGORIES.includes(item.category) ? item.category : EQUIPMENT_CATEGORIES[0];
+        const categoryEntries = getEquipmentCategoryEntries(category);
+        const templateNames = categoryEntries.map((entry) => entry.name);
+        return `
           <div class="entry-row inventory ${readOnly ? 'readonly' : ''}" data-${key}-id="${item.id}">
+            <label><span class="helper-text">Source</span>${renderSelect('equipment-category', EQUIPMENT_CATEGORIES, category, `data-${key}-category`)}</label>
+            <label><span class="helper-text">Preset</span>${renderSelect('equipment-template', ['Custom', ...templateNames], templateNames.includes(item.name) ? item.name : '', `data-${key}-template`, ['', ...templateNames])}</label>
             <label><span class="helper-text">Name</span><input ${readOnly ? 'disabled' : ''} data-${key}-name value="${escapeHtml(item.name)}" /></label>
             <label><span class="helper-text">Details</span><input ${readOnly ? 'disabled' : ''} data-${key}-details value="${escapeHtml(item.details || '')}" /></label>
             ${readOnly ? '' : '<button class="remove-button" type="button" data-remove-entry>Remove</button>'}
           </div>
-        `,
-      )
+        `;
+      })
       .join('');
   }
 
@@ -4453,11 +5986,36 @@ export function createApp(root) {
     try {
       const npcRoot = await runtime.archiveRootHandle.getDirectoryHandle('npc', { create: true });
       const chronicleFolder = await npcRoot.getDirectoryHandle(getChronicleFolderName(chronicle), { create: true });
+      const archiveFolder = await chronicleFolder.getDirectoryHandle('chat-archives', { create: true });
 
       await writeTextFile(chronicleFolder, 'campaign-memory.txt', formatCampaignMemoryForExport(chronicle));
       await writeTextFile(chronicleFolder, 'chronicle-summary.txt', chronicle.summary || 'No chronicle summary recorded yet.');
       await writeTextFile(chronicleFolder, 'chronicle-notes.txt', chronicle.notes || 'No notes recorded yet.');
       await writeTextFile(chronicleFolder, 'plot-points.txt', chronicle.plotPoints || 'No plot points recorded yet.');
+
+      const archives = Array.isArray(chronicle.messageArchives) ? chronicle.messageArchives : [];
+      await writeTextFile(
+        archiveFolder,
+        'index.txt',
+        archives.length
+          ? archives
+              .map(
+                (archive, index) => `${index + 1}. ${archive.title || `Archive ${index + 1}`} | ${formatArchiveDateRange(archive.startedAt, archive.endedAt)} | ${archive.messageCount} messages`,
+              )
+              .join('\n')
+          : 'No archived chat blocks yet.',
+      );
+
+      for (let index = 0; index < archives.length; index += 1) {
+        const archive = archives[index];
+        const baseName = `${String(index + 1).padStart(3, '0')}-${safeSegment(archive.title || `archive-${index + 1}`)}`;
+        await writeTextFile(archiveFolder, `${baseName}.txt`, archive.text || 'No archive transcript stored.');
+        await writeTextFile(
+          archiveFolder,
+          `${baseName}.summary.txt`,
+          archive.summary || 'Summary unavailable for this archive.',
+        );
+      }
 
       for (const npc of chronicle.npcs) {
         const body = [
@@ -4487,6 +6045,11 @@ export function createApp(root) {
     event.preventDefault();
     syncApiConfigFromInputs();
 
+    if (isStorytellerRequestPending(getActiveChronicle())) {
+      setStatus('The Storyteller is already responding. Stop the current request before sending another.', true);
+      return;
+    }
+
     const chronicle = getActiveChronicle();
     if (!chronicle.character.created) {
       setStatus('Finish character creation before entering the chronicle.', true);
@@ -4509,9 +6072,35 @@ export function createApp(root) {
       pendingStatus: 'The Storyteller is considering the night.',
     });
     if (sent) {
+      runtime.retryableStorytellerRequest = null;
       ui.messageInput.value = '';
       syncComposerHeight();
     }
+  }
+
+  async function onRetryStorytellerResponse() {
+    const chronicle = getActiveChronicle();
+    const retryRequest = getRetryableStorytellerRequest(chronicle);
+    if (!retryRequest) {
+      setStatus('There is no retryable Storyteller response for this chronicle.', true);
+      return;
+    }
+
+    runtime.retryableStorytellerRequest = null;
+    await requestStorytellerTurn(chronicle, {
+      ...retryRequest,
+      pendingStatus: 'Retrying the Storyteller response.',
+      reuseTrailingUserMessage: Boolean(retryRequest.appendUserMessage),
+      replaceLastAssistant: true,
+    });
+  }
+
+  function onStopStorytellerRequest() {
+    if (!runtime.storytellerAbortController) {
+      return;
+    }
+
+    runtime.storytellerAbortController.abort();
   }
 
   function getLastStorytellerRequest(chronicle) {
@@ -4635,6 +6224,145 @@ export function createApp(root) {
     return resolvedResult;
   }
 
+  function buildStorytellerHistory(chronicle, { appendUserMessage, reuseTrailingUserMessage = false, policyReduced = false } = {}) {
+    const baseHistory = appendUserMessage || reuseTrailingUserMessage ? chronicle.messages.slice(0, -1) : chronicle.messages;
+    let recent = baseHistory.slice(-8);
+
+    if (!policyReduced) {
+      return recent;
+    }
+
+    // If a previous narrator turn tripped moderation, retry without the latest Storyteller turn and with fewer lines.
+    const reduced = [...recent];
+    for (let index = reduced.length - 1; index >= 0; index -= 1) {
+      if (isStorytellerMessage(reduced[index])) {
+        reduced.splice(index, 1);
+        break;
+      }
+    }
+
+    return reduced.slice(-6);
+  }
+
+  async function requestArchiveSummary(chronicle, archiveRecord) {
+    const transcript = String(archiveRecord?.text || '').trim();
+    if (!transcript) {
+      return 'Summary unavailable: archive transcript was empty.';
+    }
+
+    if (!state.apiKey) {
+      return 'Summary unavailable: API key is not configured.';
+    }
+
+    const primaryModel = state.model || DEFAULT_MODEL;
+    const modelChain = isKnownStoryModel(primaryModel)
+      ? [primaryModel, ...getFallbackModelChain(primaryModel)]
+      : [primaryModel];
+
+    const systemPrompt = [
+      'You are a Vampire: The Masquerade chronicle archivist.',
+      'Summarize archived chat for continuity recall.',
+      'Return plain text only with exactly four lines:',
+      'Scene Arc: ...',
+      'Major Revelations: ...',
+      'Unresolved Threads: ...',
+      'Current Pressure: ...',
+      'Do not include markdown, bullets, or extra headings.',
+    ].join('\n');
+
+    const userMessage = [
+      `Chronicle: ${chronicle.title}`,
+      `Archive window: ${formatArchiveDateRange(archiveRecord.startedAt, archiveRecord.endedAt)}`,
+      `Archived message count: ${archiveRecord.messageCount}`,
+      '',
+      'Archive transcript:',
+      transcript,
+    ].join('\n');
+
+    for (const model of modelChain) {
+      try {
+        const result = await sendChatCompletion({
+          apiKey: state.apiKey,
+          model,
+          systemPrompt,
+          history: [],
+          userMessage,
+          temperature: 0.2,
+          maxTokens: 260,
+        });
+
+        return String(result.content || '').trim() || 'Summary unavailable: model returned empty output.';
+      } catch (error) {
+        if (!error?.isRateLimit && !error?.isPolicyViolation) {
+          return `Summary unavailable: ${error.message}`;
+        }
+      }
+    }
+
+    return 'Summary unavailable: all configured models rejected the archive summary request.';
+  }
+
+  async function compactChronicleMessagesIfNeeded(chronicle) {
+    if (!Array.isArray(chronicle.messages) || !chronicle.messages.length) {
+      return false;
+    }
+
+    const latestStorytellerIndex = (() => {
+      for (let index = chronicle.messages.length - 1; index >= 0; index -= 1) {
+        if (isStorytellerMessage(chronicle.messages[index])) {
+          return index;
+        }
+      }
+      return -1;
+    })();
+
+    if (latestStorytellerIndex < 0) {
+      return false;
+    }
+
+    const eligibleIndices = [];
+    for (let index = 0; index < chronicle.messages.length; index += 1) {
+      if (index === latestStorytellerIndex) {
+        continue;
+      }
+      if (isArchiveEligibleMessage(chronicle.messages[index])) {
+        eligibleIndices.push(index);
+      }
+    }
+
+    if (eligibleIndices.length < ARCHIVE_MESSAGE_BATCH_SIZE) {
+      return false;
+    }
+
+    const archivedIndices = eligibleIndices.slice(0, ARCHIVE_MESSAGE_BATCH_SIZE);
+    const archivedMessages = archivedIndices.map((index) => chronicle.messages[index]);
+    const startedAt = archivedMessages[0]?.timestamp || '';
+    const endedAt = archivedMessages[archivedMessages.length - 1]?.timestamp || '';
+    const archiveText = formatArchiveTranscript(archivedMessages);
+    const archiveIndex = (Array.isArray(chronicle.messageArchives) ? chronicle.messageArchives.length : 0) + 1;
+
+    const archiveRecord = {
+      id: uid('archive'),
+      createdAt: new Date().toISOString(),
+      startedAt,
+      endedAt,
+      messageCount: archivedMessages.length,
+      summary: '',
+      text: archiveText,
+      title: buildArchiveTitle(chronicle, archiveIndex),
+      originalMessageIds: archivedMessages.map((message) => message?.id).filter(Boolean),
+    };
+
+    archiveRecord.summary = await requestArchiveSummary(chronicle, archiveRecord);
+
+    const archiveIndexSet = new Set(archivedIndices);
+    chronicle.messages = chronicle.messages.filter((_, index) => !archiveIndexSet.has(index));
+    chronicle.messageArchives = Array.isArray(chronicle.messageArchives) ? chronicle.messageArchives : [];
+    chronicle.messageArchives.push(archiveRecord);
+
+    return true;
+  }
+
   async function requestStorytellerTurn(chronicle, options) {
     const {
       userMessage,
@@ -4666,10 +6394,16 @@ export function createApp(root) {
         timestamp: new Date().toISOString(),
       });
       persist();
-      renderChat(chronicle.messages);
+      renderChat(chronicle.messages, chronicle);
     }
 
+    runtime.retryableStorytellerRequest = null;
+    runtime.storytellerPending = true;
+    runtime.pendingChronicleId = chronicle.id;
+    runtime.storytellerAbortController = new AbortController();
     setStatus(pendingStatus);
+    renderComposerState(chronicle);
+    renderChat(chronicle.messages, chronicle);
     debugLog(openingScene ? 'Requesting opening scene' : 'Sending chat message', {
       chronicleId: chronicle.id,
       model: selectedModel,
@@ -4687,7 +6421,7 @@ export function createApp(root) {
       const city = getChronicleCity(chronicle);
       const selectedHooks = getChronicleHookSummaries(chronicle.cityId, chronicle.plotHookIds);
       const pack = getChroniclePack(chronicle.cityId);
-      const history = appendUserMessage || reuseTrailingUserMessage ? chronicle.messages.slice(0, -1).slice(-8) : chronicle.messages.slice(-8);
+      const history = buildStorytellerHistory(chronicle, { appendUserMessage, reuseTrailingUserMessage });
       const characterSummaryMode = shouldUseFullCharacterSummary(chronicle, { openingScene, userMessage }) ? 'full' : 'compact';
       const systemPrompt = buildSystemPrompt({
         guardrails,
@@ -4709,6 +6443,7 @@ export function createApp(root) {
         systemPrompt,
         history,
         userMessage,
+        signal: runtime.storytellerAbortController.signal,
       });
       let resolvedResult = result;
 
@@ -4752,6 +6487,8 @@ export function createApp(root) {
         timestamp: new Date().toISOString(),
       });
 
+      await compactChronicleMessagesIfNeeded(chronicle);
+
       if (openingScene) {
         chronicle.openingSceneDelivered = true;
       }
@@ -4764,6 +6501,11 @@ export function createApp(root) {
       setStatus(responseStatus, responseStatus.includes('warning'));
       return true;
     } catch (error) {
+      if (error?.name === 'AbortError') {
+        setStatus('Storyteller response canceled.');
+        return false;
+      }
+
       if (error?.isRateLimit) {
         registerModelRateLimit(selectedModel);
         const fallbackResult = await tryRateLimitFallback({ chronicle, userMessage, appendUserMessage, reuseTrailingUserMessage, sourceModel: selectedModel });
@@ -4771,22 +6513,57 @@ export function createApp(root) {
           return finalizeFallbackResponse(chronicle, fallbackResult, replaceIntroMessage, openingScene, replaceLastAssistant);
         }
         error.message = getRateLimitStatusMessage(selectedModel, getFallbackModelChain(selectedModel));
+      } else if (error?.isPolicyViolation) {
+        const fallbackResult = await tryRateLimitFallback({
+          chronicle,
+          userMessage,
+          appendUserMessage,
+          reuseTrailingUserMessage,
+          sourceModel: selectedModel,
+          reason: 'policy',
+          policyReduced: true,
+        });
+        if (fallbackResult) {
+          return finalizeFallbackResponse(chronicle, fallbackResult, replaceIntroMessage, openingScene, replaceLastAssistant);
+        }
       }
+
+      if (error?.message === 'OpenRouter returned no assistant content.') {
+        runtime.retryableStorytellerRequest = {
+          chronicleId: chronicle.id,
+          userMessage,
+          appendUserMessage: Boolean(appendUserMessage),
+          replaceIntroMessage: Boolean(replaceIntroMessage),
+          openingScene: Boolean(openingScene),
+        };
+      } else if (runtime.retryableStorytellerRequest?.chronicleId === chronicle.id) {
+        runtime.retryableStorytellerRequest = null;
+      }
+
       debugLog('Storyteller request failed', { chronicleId: chronicle.id, message: error.message, openingScene });
       chronicle.messages.push({
         id: uid('msg'),
         role: 'assistant',
+        kind: 'error',
         content: `Storyteller connection error: ${error.message}`,
         timestamp: new Date().toISOString(),
       });
       persist();
-      renderChat(chronicle.messages);
+      renderChat(chronicle.messages, chronicle);
       setStatus(error.message, true);
       return false;
+    } finally {
+      runtime.storytellerPending = false;
+      runtime.pendingChronicleId = null;
+      runtime.storytellerAbortController = null;
+      renderComposerState(chronicle);
+      if (state.activeView === 'play' && state.activeChronicleId === chronicle.id) {
+        renderChat(chronicle.messages, chronicle);
+      }
     }
   }
 
-  async function tryRateLimitFallback({ chronicle, userMessage, appendUserMessage, reuseTrailingUserMessage = false, sourceModel }) {
+  async function tryRateLimitFallback({ chronicle, userMessage, appendUserMessage, reuseTrailingUserMessage = false, sourceModel, reason = 'rate-limit', policyReduced = false }) {
     const currentModel = sourceModel || state.model || DEFAULT_MODEL;
     const fallbackModels = isKnownStoryModel(currentModel) ? getFallbackModelChain(currentModel) : [];
     if (!fallbackModels.length) {
@@ -4796,7 +6573,7 @@ export function createApp(root) {
     const city = getChronicleCity(chronicle);
     const selectedHooks = getChronicleHookSummaries(chronicle.cityId, chronicle.plotHookIds);
     const pack = getChroniclePack(chronicle.cityId);
-    const history = appendUserMessage || reuseTrailingUserMessage ? chronicle.messages.slice(0, -1).slice(-8) : chronicle.messages.slice(-8);
+    const history = buildStorytellerHistory(chronicle, { appendUserMessage, reuseTrailingUserMessage, policyReduced });
     const characterSummaryMode = shouldUseFullCharacterSummary(chronicle, { userMessage }) ? 'full' : 'compact';
     const systemPrompt = buildSystemPrompt({
       guardrails,
@@ -4819,7 +6596,10 @@ export function createApp(root) {
       }
 
       try {
-        setStatus(`Primary model was rate-limited. Retrying with ${fallbackModel}.`);
+        const fallbackStatus = reason === 'policy'
+          ? `Primary model rejected content by policy. Retrying with ${fallbackModel} using reduced history.`
+          : `Primary model was rate-limited. Retrying with ${fallbackModel}.`;
+        setStatus(fallbackStatus);
         const result = await sendChatCompletion({
           apiKey: state.apiKey,
           model: fallbackModel,
@@ -4841,6 +6621,9 @@ export function createApp(root) {
       } catch (fallbackError) {
         if (fallbackError?.isRateLimit) {
           registerModelRateLimit(fallbackModel);
+        }
+        if (reason === 'policy' && fallbackError?.isPolicyViolation) {
+          continue;
         }
         if (!fallbackError?.isRateLimit) {
           throw fallbackError;
@@ -4892,6 +6675,8 @@ export function createApp(root) {
       content: parsed.text || resolvedResult.content,
       timestamp: new Date().toISOString(),
     });
+
+    await compactChronicleMessagesIfNeeded(chronicle);
 
     if (openingScene) {
       chronicle.openingSceneDelivered = true;
@@ -4983,9 +6768,47 @@ export function createApp(root) {
     if (Array.isArray(updates.equipment)) {
       chronicle.character.equipment = updates.equipment.map((item) => ({
         id: uid('equipment'),
+        category: EQUIPMENT_CATEGORIES.includes(item.category) ? item.category : EQUIPMENT_CATEGORIES[0],
         name: item.name || 'Equipment',
         details: item.details || '',
       }));
+      markCharacterSummaryDirty(chronicle);
+    }
+
+    if (Array.isArray(updates.disciplines)) {
+      const existingByName = new Map(
+        (chronicle.character.disciplines || [])
+          .filter((item) => item?.name)
+          .map((item) => [String(item.name).toLowerCase(), item]),
+      );
+      chronicle.character.disciplines = updates.disciplines.map((item) => {
+        const existing = existingByName.get(String(item?.name || '').toLowerCase());
+        const incomingRituals = Array.isArray(item?.rituals)
+          ? item.rituals
+              .map((ritual) => ({ id: uid('ritual'), name: String(ritual?.name || '').trim() }))
+              .filter((ritual) => ritual.name)
+              .slice(0, RITUAL_MAX_PER_DISCIPLINE)
+          : null;
+        const fallbackRituals = Array.isArray(existing?.rituals)
+          ? existing.rituals
+              .map((ritual) => ({ id: uid('ritual'), name: String(ritual?.name || '').trim() }))
+              .filter((ritual) => ritual.name)
+              .slice(0, RITUAL_MAX_PER_DISCIPLINE)
+          : [];
+        const next = {
+          id: uid('discipline'),
+          name: item?.name || disciplinesData[0]?.name || 'Discipline',
+          dots: Math.max(1, Math.min(5, Number(item?.dots) || 1)),
+          primaryPath: typeof item?.primaryPath === 'string' ? item.primaryPath : existing?.primaryPath || '',
+          secondaryPath: typeof item?.secondaryPath === 'string' ? item.secondaryPath : existing?.secondaryPath || '',
+          tertiaryPath: typeof item?.tertiaryPath === 'string' ? item.tertiaryPath : existing?.tertiaryPath || '',
+          secondaryPathDots: Number.isFinite(Number(item?.secondaryPathDots)) ? Number(item.secondaryPathDots) : Number(existing?.secondaryPathDots) || 0,
+          tertiaryPathDots: Number.isFinite(Number(item?.tertiaryPathDots)) ? Number(item.tertiaryPathDots) : Number(existing?.tertiaryPathDots) || 0,
+          rituals: incomingRituals ?? fallbackRituals,
+        };
+        ensureDisciplinePathState(next);
+        return next;
+      });
       markCharacterSummaryDirty(chronicle);
     }
 
@@ -5085,6 +6908,8 @@ export function createApp(root) {
   function closeOverlay() {
     state.activePanel = null;
     runtime.xpDraft = null;
+    runtime.referenceDetail = null;
+    runtime.referenceReturnPanel = null;
     persist();
     render();
   }
@@ -5339,6 +7164,13 @@ function ensureChronicleProgressionState(chronicle) {
       phase: 'scene',
       sessionNumber: 1,
       downtimeReason: '',
+      downtimeActivity: {
+        type: '',
+        status: 'idle',
+        completed: false,
+        progressSuccesses: 0,
+        targetSuccesses: 0,
+      },
       rewardCaps: {
         desireGranted: false,
         ambitionGranted: false,
@@ -5350,6 +7182,15 @@ function ensureChronicleProgressionState(chronicle) {
   chronicle.progression.phase = chronicle.progression.phase === 'downtime' ? 'downtime' : 'scene';
   chronicle.progression.sessionNumber = Math.max(1, Number(chronicle.progression.sessionNumber) || 1);
   chronicle.progression.downtimeReason = chronicle.progression.downtimeReason || '';
+  chronicle.progression.downtimeActivity = {
+    type: typeof chronicle.progression.downtimeActivity?.type === 'string' ? chronicle.progression.downtimeActivity.type : '',
+    status: typeof chronicle.progression.downtimeActivity?.status === 'string' ? chronicle.progression.downtimeActivity.status : 'idle',
+    completed: Boolean(chronicle.progression.downtimeActivity?.completed),
+    progressSuccesses: Math.max(0, Number(chronicle.progression.downtimeActivity?.progressSuccesses) || 0),
+    targetSuccesses: Math.max(0, Number(chronicle.progression.downtimeActivity?.targetSuccesses) || 0),
+    rollPool: typeof chronicle.progression.downtimeActivity?.rollPool === 'string' ? chronicle.progression.downtimeActivity.rollPool : '',
+    rollDifficulty: Math.max(2, Math.min(10, Number(chronicle.progression.downtimeActivity?.rollDifficulty) || 6)),
+  };
   chronicle.progression.rewardCaps = {
     desireGranted: Boolean(chronicle.progression.rewardCaps?.desireGranted),
     ambitionGranted: Boolean(chronicle.progression.rewardCaps?.ambitionGranted),
@@ -5369,6 +7210,15 @@ function beginDowntime(chronicle, reason = '') {
   const progression = ensureChronicleProgressionState(chronicle);
   progression.phase = 'downtime';
   progression.downtimeReason = reason.trim();
+  progression.downtimeActivity = {
+    type: '',
+    status: 'idle',
+    completed: false,
+    progressSuccesses: 0,
+    targetSuccesses: 0,
+    rollPool: '',
+    rollDifficulty: 6,
+  };
   chronicle.temporaryEffects = [];
   markCharacterSummaryDirty(chronicle);
 }
@@ -5384,6 +7234,15 @@ function resumeScenesFromDowntime(chronicle) {
     willpowerRecovered = recoverTemporaryWillpower(chronicle.character, TEMPORARY_WILLPOWER_RECOVERY);
     resourcesRecovered = recoverTemporaryResources(chronicle.character, TEMPORARY_RESOURCES_RECOVERY);
     progression.sessionNumber += 1;
+    progression.downtimeActivity = {
+      type: '',
+      status: 'idle',
+      completed: false,
+      progressSuccesses: 0,
+      targetSuccesses: 0,
+      rollPool: '',
+      rollDifficulty: 6,
+    };
     progression.rewardCaps = {
       desireGranted: false,
       ambitionGranted: false,
@@ -5450,6 +7309,27 @@ function applyDowntimeUpdate(chronicle, downtimeUpdate) {
 
   if (downtimeUpdate.active === false) {
     resumeScenesFromDowntime(chronicle);
+  }
+
+  if (downtimeUpdate.activity && typeof downtimeUpdate.activity === 'object') {
+    const progression = ensureChronicleProgressionState(chronicle);
+    const current = progression.downtimeActivity || {};
+    progression.downtimeActivity = {
+      ...current,
+      type: typeof downtimeUpdate.activity.type === 'string' ? downtimeUpdate.activity.type : current.type,
+      status: typeof downtimeUpdate.activity.status === 'string' ? downtimeUpdate.activity.status : current.status,
+      completed: typeof downtimeUpdate.activity.completed === 'boolean' ? downtimeUpdate.activity.completed : current.completed,
+      progressSuccesses: Number.isFinite(Number(downtimeUpdate.activity.progressSuccesses))
+        ? Math.max(0, Number(downtimeUpdate.activity.progressSuccesses))
+        : current.progressSuccesses,
+      targetSuccesses: Number.isFinite(Number(downtimeUpdate.activity.targetSuccesses))
+        ? Math.max(0, Number(downtimeUpdate.activity.targetSuccesses))
+        : current.targetSuccesses,
+      rollPool: typeof downtimeUpdate.activity.rollPool === 'string' ? downtimeUpdate.activity.rollPool : current.rollPool,
+      rollDifficulty: Number.isFinite(Number(downtimeUpdate.activity.rollDifficulty))
+        ? parseDifficultyValue(downtimeUpdate.activity.rollDifficulty, current.rollDifficulty || 6)
+        : current.rollDifficulty,
+    };
   }
 }
 
@@ -5552,11 +7432,16 @@ function applyClanDisciplineDefaults(character) {
     return;
   }
 
-  character.disciplines = clanDisciplines.map((name) => ({
-    id: uid('discipline'),
-    name,
-    dots: 1,
-  }));
+  character.disciplines = clanDisciplines.map((name) => {
+    const entry = {
+      id: uid('discipline'),
+      name,
+      dots: 1,
+      rituals: [],
+    };
+    ensureDisciplinePathState(entry);
+    return entry;
+  });
 }
 
 function getMeritOrFlawDefinition(kind, name) {
@@ -6177,6 +8062,58 @@ function parseCampaignMemoryPayload(content) {
   }
 }
 
+function getMessageKind(message) {
+  if (typeof message?.kind === 'string' && message.kind.trim()) {
+    return message.kind;
+  }
+
+  if (message?.role === 'user') {
+    return 'player';
+  }
+
+  if (message?.role === 'assistant' && /^Storyteller connection error:/i.test(String(message?.content || ''))) {
+    return 'error';
+  }
+
+  if (message?.role === 'assistant') {
+    return 'storyteller';
+  }
+
+  return 'system';
+}
+
+function isStorytellerMessage(message) {
+  return getMessageKind(message) === 'storyteller';
+}
+
+function isArchiveEligibleMessage(message) {
+  const kind = getMessageKind(message);
+  return kind === 'player' || kind === 'storyteller';
+}
+
+function formatArchiveTranscript(messages) {
+  return messages
+    .map((message, index) => {
+      const speaker = isStorytellerMessage(message) ? 'Storyteller' : 'Player';
+      const timestamp = typeof message?.timestamp === 'string' && message.timestamp ? message.timestamp : 'Unknown time';
+      return [
+        `[${index + 1}] ${speaker} | ${timestamp}`,
+        String(message?.content || '').trim() || '(No content)',
+      ].join('\n');
+    })
+    .join('\n\n---\n\n');
+}
+
+function formatArchiveDateRange(startedAt, endedAt) {
+  const parts = [startedAt, endedAt].filter(Boolean).map((value) => formatTimestamp(value));
+  return parts.length ? parts.join(' -> ') : 'Unknown range';
+}
+
+function buildArchiveTitle(chronicle, archiveIndex) {
+  const chronicleTitle = chronicle?.title?.trim() || 'Chronicle';
+  return `${chronicleTitle} Archive ${archiveIndex}`;
+}
+
 function getDefaultCampaignMemoryState() {
   return {
     establishedFacts: '',
@@ -6246,17 +8183,17 @@ function formatMessageContent(value, { enableInteractiveRolls = false } = {}) {
 
     const label = directive.traitLabels.join(' + ');
     const traitsValue = directive.traitIds.join('+');
-    return `${formatted}<br /><span class="inline-roll-actions"><button class="inline-roll-trigger" type="button" data-action="roll-from-prompt" data-roll-traits="${escapeHtml(traitsValue)}" data-roll-difficulty="${directive.difficulty}" aria-label="Roll ${escapeHtml(label)} at difficulty ${directive.difficulty}">[roll]</button> <button class="inline-roll-trigger" type="button" data-action="roll-with-willpower-from-prompt" data-roll-traits="${escapeHtml(traitsValue)}" data-roll-difficulty="${directive.difficulty}" aria-label="Spend willpower and roll ${escapeHtml(label)} at difficulty ${directive.difficulty}">[willpower]</button> <span class="meta-text">(${escapeHtml(label)}, Diff ${directive.difficulty})</span></span>`;
+    const pathData = directive.path ? ` data-roll-path="${escapeHtml(directive.path)}"` : '';
+    const resistanceTraitsValue = directive.resistanceTraitIds?.join('+') || '';
+    const resistanceData = directive.resistanceTraitIds
+      ? ` data-roll-resistance-traits="${escapeHtml(resistanceTraitsValue)}" data-roll-resistance-difficulty="${directive.resistanceDifficulty}"`
+      : '';
+    const pathLabel = directive.path ? `; Path ${directive.path}` : '';
+    const resistanceLabel = directive.resistanceTraitLabels?.length
+      ? `; Resist ${directive.resistanceTraitLabels.join(' + ')} Diff ${directive.resistanceDifficulty}`
+      : '';
+    return `${formatted}<br /><span class="inline-roll-actions"><button class="inline-roll-trigger" type="button" data-action="roll-from-prompt" data-roll-traits="${escapeHtml(traitsValue)}" data-roll-difficulty="${directive.difficulty}"${pathData}${resistanceData} aria-label="Roll ${escapeHtml(label)} at difficulty ${directive.difficulty}">[roll]</button> <button class="inline-roll-trigger" type="button" data-action="roll-with-willpower-from-prompt" data-roll-traits="${escapeHtml(traitsValue)}" data-roll-difficulty="${directive.difficulty}"${pathData}${resistanceData} aria-label="Spend willpower and roll ${escapeHtml(label)} at difficulty ${directive.difficulty}">[willpower]</button> <span class="meta-text">(${escapeHtml(label)}, Diff ${directive.difficulty}${escapeHtml(pathLabel)}${escapeHtml(resistanceLabel)})</span></span>`;
   });
 
-  const renderedText = renderedLines.join('<br />');
-  if (!enableInteractiveRolls || !directives.length) {
-    return renderedText;
-  }
-
-  const primaryDirective = directives[0];
-  const label = primaryDirective.traitLabels.join(' + ');
-  const traitsValue = primaryDirective.traitIds.join('+');
-  const actionBlock = `<div class="chat-roll-action-block"><div class="helper-text">If you wish to proceed, click below to roll.</div><span class="inline-roll-actions"><button class="inline-roll-trigger" type="button" data-action="roll-from-prompt" data-roll-traits="${escapeHtml(traitsValue)}" data-roll-difficulty="${primaryDirective.difficulty}" aria-label="Roll ${escapeHtml(label)} at difficulty ${primaryDirective.difficulty}">[roll]</button> <button class="inline-roll-trigger" type="button" data-action="roll-with-willpower-from-prompt" data-roll-traits="${escapeHtml(traitsValue)}" data-roll-difficulty="${primaryDirective.difficulty}" aria-label="Spend willpower and roll ${escapeHtml(label)} at difficulty ${primaryDirective.difficulty}">[willpower]</button> <span class="meta-text">(${escapeHtml(label)}, Diff ${primaryDirective.difficulty})</span></span></div>`;
-  return `${renderedText}<br />${actionBlock}`;
+  return renderedLines.join('<br />');
 }

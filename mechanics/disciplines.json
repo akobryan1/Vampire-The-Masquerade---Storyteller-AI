@@ -219,5 +219,200 @@
       "Reaches monstrous full transformation"
     ],
     "source": "V20 Core"
+  },
+  {
+    "name": "Abombwe",
+    "summary": "A predatory discipline of spiritual ferocity used to dominate through fear, pain, and bestial force.",
+    "commonClans": ["Akunanse"],
+    "levels": [
+      "Predator's Communion",
+      "Feral Whispers of the Jungle",
+      "Conquer the Beast",
+      "Summon Predatory Terror",
+      "Apex of the Hunter"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Abyss Mysticism",
+    "summary": "Lasombra occult discipline of abyssal rites and shadow-bound ritual sorcery.",
+    "commonClans": ["Lasombra abyss mystics"],
+    "levels": [
+      "Initiate abyssal ritecraft",
+      "Deepen abyssal channeling",
+      "Invoke stronger abyss manifestations",
+      "Command advanced abyss rites",
+      "Master high-circle abyss mysticism"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Daimoinon",
+    "summary": "Baali corruption discipline tied to infernal influence, revelation of sin, and spiritual ruin.",
+    "commonClans": ["Baali"],
+    "levels": [
+      "Sense the Sin",
+      "Fear the Void",
+      "Corrupting Touch",
+      "Unleash the Beast of Damnation",
+      "Manifest Infernal Majesty"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Flight",
+    "summary": "Grants supernatural airborne movement, maneuverability, and combat positioning in three dimensions.",
+    "commonClans": ["Gargoyle"],
+    "levels": [
+      "Glide and controlled descent",
+      "Short-range powered flight",
+      "Reliable tactical flight",
+      "High-speed aerial control",
+      "Masterful predatory flight"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Koldunic Sorcery",
+    "summary": "Elemental and territorial blood sorcery rooted in old Tzimisce pacts and spirits of place.",
+    "commonClans": ["Old Clan Tzimisce", "Tzimisce Koldun"],
+    "levels": [
+      "Initiate path control",
+      "Command local elemental resonance",
+      "Shape hostile terrain and weather",
+      "Invoke major elemental manifestations",
+      "Dominate the land through ancient rites"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Melpominee",
+    "summary": "Weaponizes voice, song, and vibration into fear, pain, and supernatural influence.",
+    "commonClans": ["Daughters of Cacophony"],
+    "levels": [
+      "Haunting whisper",
+      "Shattering voice",
+      "Compelling aria",
+      "Voice of torment",
+      "Cataclysmic chorus"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Mortis",
+    "summary": "Funerary and corpse-focused necromantic discipline associated with deathly stasis and decay.",
+    "commonClans": ["Harbingers of Skulls", "Cappadocian lineages"],
+    "levels": [
+      "Cadaverous stillness",
+      "Grasp of the grave",
+      "Rotting curse",
+      "Deepened dominion over deathly flesh",
+      "Catastrophic sepulchral power"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Mytherceria",
+    "summary": "Faerie-tainted discipline of trickery, paradox, and reality-warping mischief.",
+    "commonClans": ["Kiasyd"],
+    "levels": [
+      "Sense glamour and oddity",
+      "Twist simple perception",
+      "Bind targets in uncanny logic",
+      "Warp probabilities and certainty",
+      "Enforce impossible fae mandates"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Obeah",
+    "summary": "Salubri healing and soul-reading discipline focused on restoration and spiritual awareness.",
+    "commonClans": ["Salubri"],
+    "levels": [
+      "Sense suffering and imbalance",
+      "Soothe pain and turmoil",
+      "Mend wounds with vitae",
+      "Restore deep afflictions",
+      "Profound miracle of renewal"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Sanguinus",
+    "summary": "Blood Brothers discipline that redistributes vitae, strength, and cohesion through the shared circulatory bond.",
+    "commonClans": ["Blood Brothers"],
+    "levels": [
+      "Shared pulse",
+      "Synchronized vitality",
+      "Collective reinforcement",
+      "Pack-level blood command",
+      "Perfectly unified blood lattice"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Spiritus",
+    "summary": "Calls and channels beast-spirits for scouting, influence, and predatory intervention.",
+    "commonClans": ["Ahrimane"],
+    "levels": [
+      "Call lesser spirit-animals",
+      "Guide and communicate through spirits",
+      "Bind stronger spirit allies",
+      "Unleash dangerous spirit hunters",
+      "Rule the spirit-pack as alpha"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Temporis",
+    "summary": "Manipulates temporal flow, reaction windows, and sequence of events around the vampire.",
+    "commonClans": ["True Brujah"],
+    "levels": [
+      "Momentary temporal slip",
+      "Alter reaction timing",
+      "Suspend local sequence",
+      "Rewrite short-span causality",
+      "Assert near-sovereignty over local time"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Thanatosis",
+    "summary": "Samedi death discipline of decay, rigor, and grave-tainted affliction.",
+    "commonClans": ["Samedi"],
+    "levels": [
+      "Inflict corpse-like numbness",
+      "Spread wasting rot",
+      "Paralyzing death-touch",
+      "Accelerate decomposition",
+      "Embodied avatar of corruption"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Valeren",
+    "summary": "Salubri warrior discipline combining focused combat insight with soul-directed force.",
+    "commonClans": ["Salubri Antitribu", "Warrior Salubri"],
+    "levels": [
+      "Read combat intent",
+      "Strike with soul-aimed precision",
+      "Disrupt enemy will and posture",
+      "Overwhelm through transcendent focus",
+      "Legendary union of spirit and blade"
+    ],
+    "source": "Lore of the Clans"
+  },
+  {
+    "name": "Visceratika",
+    "summary": "Gargoyle discipline that hardens stone-like flesh, fuses with architecture, and controls resonant mass.",
+    "commonClans": ["Gargoyle"],
+    "levels": [
+      "Feel the stone",
+      "Harden into living masonry",
+      "Merge with walls and structures",
+      "Reshape stone-adjacent form",
+      "Become an indomitable living monument"
+    ],
+    "source": "Lore of the Clans"
   }
 ]

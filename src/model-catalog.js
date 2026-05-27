@@ -12,12 +12,6 @@ export const STORYTELLER_MODEL_OPTIONS = [
     description: 'Strong general-purpose free option for scene narration and continuity.',
   },
   {
-    id: 'deepseek/deepseek-v4-flash:free',
-    label: 'DeepSeek V4 Flash',
-    costUnits: 0,
-    description: 'Reliable free fallback that handles concise Storyteller turns well.',
-  },
-  {
     id: 'openrouter/owl-alpha',
     label: 'OpenRouter Owl Alpha',
     costUnits: 0,

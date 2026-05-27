@@ -1,0 +1,205 @@
+{
+  "generatedAt": "2026-05-27T06:28:06.838Z",
+  "counts": {
+    "total": 32,
+    "assessed": 32,
+    "verified": 17,
+    "provisional": 15
+  },
+  "verified": [
+    {
+      "name": "Animalism",
+      "source": "V20 Core",
+      "basis": "Manually verified Feral Whispers command rule and rat difficulty from V20 excerpt supplied in-session.",
+      "updatedAt": "2026-05-23T09:17:50.062Z"
+    },
+    {
+      "name": "Auspex",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Celerity",
+      "source": "V20 Core",
+      "basis": "Verified against V20 Core extracted text: Celerity System states dot-based Dexterity dice bonus plus optional blood-spend extra actions (extracted_text lines ~11409-11429); no standalone power-roll pool/difficulty block.",
+      "updatedAt": "2026-05-23T09:31:00.000Z"
+    },
+    {
+      "name": "Chimerstry",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Dementation",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Dominate",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Fortitude",
+      "source": "V20 Core",
+      "basis": "Verified against V20 Core extracted text: Fortitude System adds Fortitude dots to soak and allows aggravated soak (extracted_text lines ~12784-12788); represented as passive/system-modifier discipline mechanics.",
+      "updatedAt": "2026-05-23T09:31:00.000Z"
+    },
+    {
+      "name": "Necromancy",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Obfuscate",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Obtenebration",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Potence",
+      "source": "V20 Core",
+      "basis": "Verified against V20 Core extracted text: Potence System adds dice to Strength rolls with optional blood-spend conversion to automatic successes (extracted_text lines ~15822-15827); represented as passive/system-modifier discipline mechanics.",
+      "updatedAt": "2026-05-23T09:31:00.000Z"
+    },
+    {
+      "name": "Presence",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Protean",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Quietus",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Serpentis",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Thaumaturgy",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Vicissitude",
+      "source": "V20 Core",
+      "basis": "Promoted in final wave for live QA pass at user request. Mechanics are enabled for Storyteller use and will be corrected from user-tagged findings.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    }
+  ],
+  "provisional": [
+    {
+      "name": "Abombwe",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Daimoinon",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Flight",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Koldunic Sorcery",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Melpominee",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Mortis",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Mytherceria",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Obeah",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Sanguinus",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Spiritus",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Temporis",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Thanatosis",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Valeren",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Visceratika",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    },
+    {
+      "name": "Abyss Mysticism",
+      "source": "Lore of the Clans",
+      "basis": "Marked provisional per V20 Patch instruction: not approved for Storyteller mechanics adjudication.",
+      "updatedAt": "2026-05-23T10:05:00.000Z"
+    }
+  ]
+}
